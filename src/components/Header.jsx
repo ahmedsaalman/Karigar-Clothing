@@ -1,79 +1,82 @@
 // src/components/Header.jsx
+// Add onNavigate prop to nav links
 
-import { useState } from 'react';   // ALWAYS import useState
+import { useState } from 'react';
 
-function Header({ cartCount = 0 }) {   // cartCount comes from App later
+function Header({ cartCount = 0, currentPage, onNavigate }) {
 
-  // State for mobile menu
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { label: 'Home', href: '#' },
-    { label: 'Collection', href: '#' },
-    { label: 'About', href: '#' },
-    { label: 'Contact', href: '#' },
+    { label: 'Home', page: 'home' },
+    { label: 'Collection', page: 'products' },
+    { label: 'About', page: 'about' },
   ];
 
   return (
     <header style={styles.header}>
       <div style={styles.container}>
 
-        {/* Brand */}
         <div style={styles.brand}>
-          <h1 style={styles.brandName}>Karigar Co.</h1>
+          <h1
+            style={styles.brandName}
+            onClick={() => onNavigate('home')}
+          >
+            Karigar Co.
+          </h1>
           <p style={styles.tagline}>Crafted for Professionals</p>
         </div>
 
-        {/* Desktop Navigation */}
         <nav style={styles.nav}>
           {navLinks.map(link => (
-            <a key={link.label} href={link.href} style={styles.navLink}>
+            <button
+              key={link.label}
+              onClick={() => onNavigate(link.page)}
+              style={{
+                ...styles.navLink,
+                // Highlight active page
+                color: currentPage === link.page ? '#d4af37' : '#ffffff',
+                borderBottom: currentPage === link.page
+                  ? '2px solid #d4af37'
+                  : '2px solid transparent',
+              }}
+            >
               {link.label}
-            </a>
+            </button>
           ))}
         </nav>
 
-        {/* Right side — cart + hamburger */}
         <div style={styles.rightSide}>
-
-          {/* Cart Button */}
           <div style={styles.cartArea}>
             <span style={styles.cartIcon}>🛒</span>
-            {/* Only show count badge if cart has items */}
             {cartCount > 0 && (
               <span style={styles.cartCount}>{cartCount}</span>
             )}
           </div>
 
-          {/* Hamburger button — mobile only */}
           <button
             style={styles.hamburger}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            // Toggle: if open → close, if closed → open
-            // !isMenuOpen flips the boolean
-            aria-label="Toggle menu"
           >
-            {/* Change icon based on state */}
             {isMenuOpen ? '✕' : '☰'}
           </button>
-
         </div>
 
       </div>
 
-      {/* Mobile Menu — only renders when isMenuOpen is true */}
       {isMenuOpen && (
         <div style={styles.mobileMenu}>
           {navLinks.map(link => (
-            <a
+            <button
               key={link.label}
-              href={link.href}
               style={styles.mobileNavLink}
-              onClick={() => setIsMenuOpen(false)}
-              // Close menu when a link is clicked
+              onClick={() => {
+                onNavigate(link.page);
+                setIsMenuOpen(false);
+              }}
             >
               {link.label}
-            </a>
+            </button>
           ))}
         </div>
       )}
@@ -101,6 +104,7 @@ const styles = {
   brand: {
     display: 'flex',
     flexDirection: 'column',
+    cursor: 'pointer',
   },
   brandName: {
     color: '#d4af37',
@@ -108,6 +112,7 @@ const styles = {
     fontWeight: '700',
     letterSpacing: '2px',
     textTransform: 'uppercase',
+    cursor: 'pointer',
   },
   tagline: {
     color: '#888',
@@ -120,11 +125,16 @@ const styles = {
     gap: '32px',
   },
   navLink: {
+    background: 'none',
+    border: 'none',
+    borderBottom: '2px solid transparent',
     color: '#ffffff',
-    textDecoration: 'none',
     fontSize: '0.9rem',
     letterSpacing: '1px',
     textTransform: 'uppercase',
+    cursor: 'pointer',
+    padding: '4px 0',
+    transition: 'color 0.2s',
   },
   rightSide: {
     display: 'flex',
@@ -159,24 +169,56 @@ const styles = {
     color: '#ffffff',
     fontSize: '1.4rem',
     cursor: 'pointer',
-    padding: '4px',
   },
   mobileMenu: {
     backgroundColor: '#2a2a2a',
     padding: '16px 20px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '16px',
+    gap: '8px',
     borderTop: '1px solid #333',
   },
   mobileNavLink: {
-    color: '#ffffff',
-    textDecoration: 'none',
-    fontSize: '1rem',
-    padding: '8px 0',
+    background: 'none',
+    border: 'none',
     borderBottom: '1px solid #333',
+    color: '#ffffff',
+    fontSize: '1rem',
+    padding: '12px 0',
+    cursor: 'pointer',
+    textAlign: 'left',
     letterSpacing: '1px',
   },
 };
 
 export default Header;
+```
+
+---
+
+// ## 4.5 — The Debounce Concept Explained
+
+// This deserves its own section because it's used everywhere in real apps:
+// ```
+// WITHOUT debounce — user types "shirt":
+
+// User presses 's'  → API call 1: search("s")
+// User presses 'h'  → API call 2: search("sh")
+// User presses 'i'  → API call 3: search("shi")
+// User presses 'r'  → API call 4: search("shir")
+// User presses 't'  → API call 5: search("shirt")
+
+// 5 API calls for one word. Wasteful. Slow. Can cause
+// results to appear out of order.
+
+// WITH debounce (500ms) — user types "shirt":
+
+// User presses 's'  → start 500ms timer
+// User presses 'h'  → CANCEL timer, start new 500ms timer
+// User presses 'i'  → CANCEL timer, start new 500ms timer
+// User presses 'r'  → CANCEL timer, start new 500ms timer
+// User presses 't'  → CANCEL timer, start new 500ms timer
+// ...500ms passes with no new keypress...
+// → API call 1: search("shirt")
+
+// Only 1 API call. Clean. Efficient.
