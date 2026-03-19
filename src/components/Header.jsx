@@ -192,33 +192,3 @@ const styles = {
 };
 
 export default Header;
-```
-
----
-
-// ## 4.5 — The Debounce Concept Explained
-
-// This deserves its own section because it's used everywhere in real apps:
-// ```
-// WITHOUT debounce — user types "shirt":
-
-// User presses 's'  → API call 1: search("s")
-// User presses 'h'  → API call 2: search("sh")
-// User presses 'i'  → API call 3: search("shi")
-// User presses 'r'  → API call 4: search("shir")
-// User presses 't'  → API call 5: search("shirt")
-
-// 5 API calls for one word. Wasteful. Slow. Can cause
-// results to appear out of order.
-
-// WITH debounce (500ms) — user types "shirt":
-
-// User presses 's'  → start 500ms timer
-// User presses 'h'  → CANCEL timer, start new 500ms timer
-// User presses 'i'  → CANCEL timer, start new 500ms timer
-// User presses 'r'  → CANCEL timer, start new 500ms timer
-// User presses 't'  → CANCEL timer, start new 500ms timer
-// ...500ms passes with no new keypress...
-// → API call 1: search("shirt")
-
-// Only 1 API call. Clean. Efficient.
