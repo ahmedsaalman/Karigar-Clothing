@@ -1,14 +1,16 @@
 // src/components/ProductCard.jsx
+// Add the "View Details" button that navigates to product page
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Badge from './Badge';
 import PriceDisplay from './PriceDisplay';
 
 function ProductCard({ product, onAddToCart }) {
-  // onAddToCart is a function passed from parent
-  // when called, it updates the cart count in App
+  const navigate = useNavigate();
 
   const {
+    id,
     name,
     price,
     originalPrice,
@@ -22,49 +24,32 @@ function ProductCard({ product, onAddToCart }) {
     colorNames,
   } = product;
 
-  // ── LOCAL STATE ──────────────────────────────────
-  // Each card has its OWN independent state
-  // Liking card 1 doesn't affect card 2
-
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
   const [addedToCart, setAddedToCart] = useState(false);
 
-  // ── EVENT HANDLERS ───────────────────────────────
-
   function handleWishlistToggle() {
     setIsWishlisted(!isWishlisted);
-    // ! flips the boolean: false→true, true→false
   }
 
   function handleSizeSelect(size) {
-    // If clicking already selected size, deselect it
-    if (selectedSize === size) {
-      setSelectedSize(null);
-    } else {
-      setSelectedSize(size);
-    }
+    setSelectedSize(selectedSize === size ? null : size);
   }
 
   function handleAddToCart() {
-    if (!inStock) return;          // guard clause
-    if (!selectedSize) {
-      alert('Please select a size first');
+    if (!inStock || !selectedSize) {
+      if (!selectedSize) alert('Please select a size');
       return;
     }
-
-    // Tell parent component an item was added
-    // Parent will update the global cart count
-    if (onAddToCart) {
-      onAddToCart(product, selectedSize);
-    }
-
-    // Show "Added!" feedback for 2 seconds
+    if (onAddToCart) onAddToCart(product, selectedSize);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   }
 
-  // ── HELPERS ──────────────────────────────────────
+  function handleViewDetails() {
+    // Navigate to the product detail page
+    navigate(`/products/${id}`);
+  }
 
   function renderStars(rating) {
     const full = Math.floor(rating);
@@ -78,14 +63,11 @@ function ProductCard({ product, onAddToCart }) {
     );
   }
 
-  // ── RENDER ───────────────────────────────────────
-
   return (
-    <article style={{ ...styles.card, opacity: inStock ? 1 : 0.7 }}>
+    <article style={{ ...styles.card, opacity: inStock ? 1 : 0.75 }}>
 
-      {/* IMAGE SECTION */}
+      {/* Image Section */}
       <div style={styles.imageContainer}>
-
         <img
           src={image}
           alt={name}
@@ -94,43 +76,34 @@ function ProductCard({ product, onAddToCart }) {
             e.target.src = 'https://via.placeholder.com/400x300?text=Karigar+Co.';
           }}
         />
-
-        {/* Badge */}
         <div style={styles.badgePosition}>
           <Badge type={badge} />
         </div>
-
-        {/* Out of stock overlay */}
         {!inStock && (
           <div style={styles.outOfStockOverlay}>
             <span style={styles.outOfStockText}>Out of Stock</span>
           </div>
         )}
-
-        {/* Wishlist button */}
         <button
           style={styles.wishlistBtn}
           onClick={handleWishlistToggle}
-          title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
         >
-          {/* Heart changes based on isWishlisted state */}
-          <span style={{
-            color: isWishlisted ? '#e74c3c' : '#999',
-            fontSize: '1.2rem',
-            transition: 'color 0.2s',
-          }}>
+          <span style={{ color: isWishlisted ? '#e74c3c' : '#999' }}>
             {isWishlisted ? '♥' : '♡'}
           </span>
         </button>
-
       </div>
 
-      {/* CONTENT SECTION */}
+      {/* Content Section */}
       <div style={styles.content}>
 
-        <h3 style={styles.name}>{name}</h3>
+        <h3
+          style={styles.name}
+          onClick={handleViewDetails}
+        >
+          {name}
+        </h3>
 
-        {/* Rating */}
         <div style={styles.ratingRow}>
           {renderStars(rating)}
           <span style={styles.reviewCount}>({reviewCount})</span>
@@ -138,7 +111,6 @@ function ProductCard({ product, onAddToCart }) {
 
         {/* Color swatches */}
         <div style={styles.colorsRow}>
-          <span style={styles.colorsLabel}>Colors:</span>
           {colors.map((color, index) => (
             <div
               key={index}
@@ -154,13 +126,17 @@ function ProductCard({ product, onAddToCart }) {
           ))}
         </div>
 
-        {/* Size Selector — interactive */}
+        {/* Size Selector */}
         <div>
           <p style={styles.sizeLabel}>
             Size:
             {selectedSize
-              ? <span style={styles.selectedSizeText}> {selectedSize}</span>
-              : <span style={styles.noSizeText}> Select one</span>
+              ? <span style={{ color: '#1a1a1a', fontWeight: '700' }}>
+                  {' '}{selectedSize}
+                </span>
+              : <span style={{ color: '#e74c3c', fontStyle: 'italic' }}>
+                  {' '}Select one
+                </span>
             }
           </p>
           <div style={styles.sizesRow}>
@@ -170,16 +146,10 @@ function ProductCard({ product, onAddToCart }) {
                 onClick={() => handleSizeSelect(size)}
                 style={{
                   ...styles.sizeBtn,
-                  // Dynamic styles based on whether this size is selected
                   backgroundColor: selectedSize === size
-                    ? '#1a1a1a'
-                    : '#ffffff',
-                  color: selectedSize === size
-                    ? '#ffffff'
-                    : '#555',
-                  borderColor: selectedSize === size
-                    ? '#1a1a1a'
-                    : '#ddd',
+                    ? '#1a1a1a' : '#ffffff',
+                  color: selectedSize === size ? '#ffffff' : '#555',
+                  borderColor: selectedSize === size ? '#1a1a1a' : '#ddd',
                   fontWeight: selectedSize === size ? '700' : '400',
                 }}
               >
@@ -189,31 +159,37 @@ function ProductCard({ product, onAddToCart }) {
           </div>
         </div>
 
-        {/* Price */}
         <PriceDisplay price={price} originalPrice={originalPrice} />
 
-        {/* Add to Cart Button */}
-        <button
-          onClick={handleAddToCart}
-          disabled={!inStock}
-          style={{
-            ...styles.cartBtn,
-            // Three visual states: added, active, disabled
-            backgroundColor: addedToCart
-              ? '#27ae60'
-              : inStock ? '#1a1a1a' : '#f0f0f0',
-            color: inStock ? '#ffffff' : '#999',
-            cursor: inStock ? 'pointer' : 'not-allowed',
-          }}
-        >
-          {/* Button text changes based on state */}
-          {!inStock
-            ? 'Out of Stock'
-            : addedToCart
-              ? '✓ Added to Cart!'
-              : 'Add to Cart'
-          }
-        </button>
+        {/* Two buttons: View Details + Add to Cart */}
+        <div style={styles.buttonGroup}>
+          <button
+            onClick={handleViewDetails}
+            style={styles.detailsBtn}
+          >
+            Details
+          </button>
+
+          <button
+            onClick={handleAddToCart}
+            disabled={!inStock}
+            style={{
+              ...styles.cartBtn,
+              backgroundColor: addedToCart
+                ? '#27ae60'
+                : inStock ? '#1a1a1a' : '#ddd',
+              cursor: inStock ? 'pointer' : 'not-allowed',
+              flex: 2,
+            }}
+          >
+            {!inStock
+              ? 'Out of Stock'
+              : addedToCart
+                ? '✓ Added!'
+                : 'Add to Cart'
+            }
+          </button>
+        </div>
 
       </div>
     </article>
@@ -228,7 +204,7 @@ const styles = {
     boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
     display: 'flex',
     flexDirection: 'column',
-    transition: 'transform 0.2s, box-shadow 0.2s',
+    transition: 'box-shadow 0.2s',
   },
   imageContainer: {
     position: 'relative',
@@ -238,16 +214,13 @@ const styles = {
   },
   image: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
+    top: 0, left: 0,
+    width: '100%', height: '100%',
     objectFit: 'cover',
   },
   badgePosition: {
     position: 'absolute',
-    top: '12px',
-    left: '12px',
+    top: '12px', left: '12px',
     zIndex: 2,
   },
   outOfStockOverlay: {
@@ -269,10 +242,8 @@ const styles = {
   },
   wishlistBtn: {
     position: 'absolute',
-    top: '12px',
-    right: '12px',
-    width: '36px',
-    height: '36px',
+    top: '12px', right: '12px',
+    width: '36px', height: '36px',
     borderRadius: '50%',
     border: 'none',
     backgroundColor: '#ffffff',
@@ -281,19 +252,21 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    fontSize: '1.2rem',
     zIndex: 2,
   },
   content: {
     padding: '16px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '12px',
+    gap: '10px',
     flex: 1,
   },
   name: {
     fontSize: '1rem',
     fontWeight: '600',
     color: '#1a1a1a',
+    cursor: 'pointer',
   },
   ratingRow: {
     display: 'flex',
@@ -310,17 +283,11 @@ const styles = {
   },
   colorsRow: {
     display: 'flex',
-    alignItems: 'center',
     gap: '6px',
-  },
-  colorsLabel: {
-    fontSize: '0.75rem',
-    color: '#888',
-    marginRight: '4px',
+    alignItems: 'center',
   },
   colorSwatch: {
-    width: '18px',
-    height: '18px',
+    width: '18px', height: '18px',
     borderRadius: '50%',
     cursor: 'pointer',
   },
@@ -328,14 +295,6 @@ const styles = {
     fontSize: '0.8rem',
     color: '#555',
     marginBottom: '8px',
-  },
-  selectedSizeText: {
-    color: '#1a1a1a',
-    fontWeight: '700',
-  },
-  noSizeText: {
-    color: '#e74c3c',
-    fontStyle: 'italic',
   },
   sizesRow: {
     display: 'flex',
@@ -351,17 +310,34 @@ const styles = {
     borderRadius: '2px',
     backgroundColor: '#ffffff',
   },
+  buttonGroup: {
+    display: 'flex',
+    gap: '8px',
+    marginTop: 'auto',
+  },
+  detailsBtn: {
+    flex: 1,
+    padding: '12px 8px',
+    backgroundColor: 'transparent',
+    color: '#1a1a1a',
+    border: '1px solid #1a1a1a',
+    fontSize: '0.75rem',
+    fontWeight: '700',
+    letterSpacing: '1px',
+    cursor: 'pointer',
+    textTransform: 'uppercase',
+    borderRadius: '2px',
+  },
   cartBtn: {
-    width: '100%',
     padding: '12px',
     border: 'none',
-    fontSize: '0.8rem',
+    color: '#ffffff',
+    fontSize: '0.75rem',
     fontWeight: '700',
-    letterSpacing: '1.5px',
+    letterSpacing: '1px',
     textTransform: 'uppercase',
     transition: 'background-color 0.3s',
     borderRadius: '2px',
-    marginTop: 'auto',
   },
 };
 

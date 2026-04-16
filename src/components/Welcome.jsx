@@ -1,10 +1,11 @@
 // src/components/Welcome.jsx
+// Update buttons to actually navigate
+
+import { useNavigate } from 'react-router-dom';
 
 function Welcome() {
-  // JavaScript logic ABOVE the return statement
+  const navigate = useNavigate();
   const today = new Date();
-  
-  // Format: "Monday, January 15, 2025"
   const formattedDate = today.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
@@ -15,29 +16,27 @@ function Welcome() {
   return (
     <section style={styles.hero}>
       <div style={styles.container}>
-        
         <p style={styles.eyebrow}>New Collection 2025</p>
-        
         <h1 style={styles.heading}>
           Premium Shirts for <br />
           <span style={styles.highlight}>Professionals</span>
         </h1>
-        
-        <p style={styles.subtext}>
-          Every stitch tells a story of craftsmanship.
-        </p>
-
-        {/* 
-          {} lets us use JavaScript inside JSX.
-          formattedDate is a JS variable, so it goes in {}
-        */}
+        <p style={styles.subtext}>Every stitch tells a story of craftsmanship.</p>
         <p style={styles.date}>Today is {formattedDate}</p>
-
         <div style={styles.buttonGroup}>
-          <button style={styles.primaryBtn}>Shop Collection</button>
-          <button style={styles.secondaryBtn}>Our Story</button>
+          <button
+            style={styles.primaryBtn}
+            onClick={() => navigate('/products')}
+          >
+            Shop Collection
+          </button>
+          <button
+            style={styles.secondaryBtn}
+            onClick={() => navigate('/about')}
+          >
+            Our Story
+          </button>
         </div>
-
       </div>
     </section>
   );
@@ -53,9 +52,7 @@ const styles = {
     textAlign: 'center',
     padding: '60px 20px',
   },
-  container: {
-    maxWidth: '700px',
-  },
+  container: { maxWidth: '700px' },
   eyebrow: {
     color: '#d4af37',
     fontSize: '0.85rem',
@@ -65,14 +62,12 @@ const styles = {
   },
   heading: {
     color: '#ffffff',
-    fontSize: 'clamp(2rem, 5vw, 3.5rem)',  // responsive font size
+    fontSize: 'clamp(2rem, 5vw, 3.5rem)',
     fontWeight: '700',
     lineHeight: '1.2',
     marginBottom: '24px',
   },
-  highlight: {
-    color: '#d4af37',
-  },
+  highlight: { color: '#d4af37' },
   subtext: {
     color: '#aaa',
     fontSize: '1.1rem',

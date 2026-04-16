@@ -1,17 +1,26 @@
 // src/App.jsx
 
 import { useState } from 'react';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import { Routes, Route } from 'react-router-dom';
+
+// Layout
+import RootLayout from './layouts/RootLayout';
+
+// Pages
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
+import ProductDetailPage from './pages/ProductDetailPage';
+import CartPage from './pages/CartPage';
+import AboutPage from './pages/AboutPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
 
+  // Cart state lives here — highest level
+  // Accessible to all pages through RootLayout context
   const [cartItems, setCartItems] = useState([]);
 
-  // Simple page state — we'll replace with React Router in Lesson 5
-  const [currentPage, setCurrentPage] = useState('home');
+  // ── CART FUNCTIONS ─────────────────────────────────────
 
   function handleAddToCart(product, selectedSize) {
     setCartItems(prevItems => {
@@ -20,6 +29,7 @@ function App() {
       );
 
       if (existingIndex !== -1) {
+        // Already in cart — increase quantity
         return prevItems.map((item, index) =>
           index === existingIndex
             ? { ...item, quantity: item.quantity + 1 }
@@ -27,35 +37,86 @@ function App() {
         );
       }
 
-      return [...prevItems, { ...product, size: selectedSize, quantity: 1 }];
+      // New item — add to cart
+      return [
+        ...prevItems,
+        { ...product, size: selectedSize, quantity: 1 }
+      ];
     });
   }
 
-  const cartCount = cartItems.reduce(
-    (total, item) => total + item.quantity, 0
-  );
-
-  // Render different page based on currentPage state
-  function renderPage() {
-    if (currentPage === 'products') {
-      return <ProductsPage onAddToCart={handleAddToCart} />;
-    }
-    return <HomePage onAddToCart={handleAddToCart} />;
+  function handleRemoveFromCart(productId, size) {
+    setCartItems(prevItems =>
+      prevItems.filter(
+        item => !(item.id === productId && item.size === size)
+      )
+    );
   }
 
+  function handleUpdateQuantity(productId, size, newQuantity) {
+    if (newQuantity < 1) {
+      handleRemoveFromCart(productId, size);
+      return;
+    }
+
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.id === productId && item.size === size
+          ? { ...item, quantity: newQuantity }
+          : item
+      )
+    );
+  }
+
+  // ── ROUTES ─────────────────────────────────────────────
+
   return (
-    <div>
-      <Header
-        cartCount={cartCount}
-        currentPage={currentPage}
-        onNavigate={setCurrentPage}
-        // pass navigation handler to header
-      />
-      <main>
-        {renderPage()}
-      </main>
-      <Footer />
-    </div>
+    <Routes>
+
+      {/*
+        RootLayout wraps ALL routes.
+        Every page gets Header and Footer automatically.
+        We pass cart data and handlers as props.
+      */}
+      <Route
+        element={
+          <RootLayout
+            cartItems={cartItems}
+            onAddToCart={handleAddToCart}
+            onRemoveFromCart={handleRemoveFromCart}
+          />
+        }
+      >
+
+        {/* index = the default child route for "/" */}
+        <Route index element={<HomePage />} />
+
+        {/* Products listing page */}
+        <Route path="/products" element={<ProductsPage />} />
+
+        {/*
+          Dynamic route — :productId is a variable
+          /products/1 → productId = "1"
+          /products/oxford-shirt → productId = "oxford-shirt"
+        */}
+        <Route path="/products/:productId" element={<ProductDetailPage />} />
+
+        {/* Cart page */}
+        <Route path="/cart" element={<CartPage />} />
+
+        {/* About page */}
+        <Route path="/about" element={<AboutPage />} />
+
+        {/*
+          Catch-all — must be LAST
+          Matches anything not matched above
+          The * is special syntax meaning "anything"
+        */}
+        <Route path="*" element={<NotFoundPage />} />
+
+      </Route>
+
+    </Routes>
   );
 }
 
