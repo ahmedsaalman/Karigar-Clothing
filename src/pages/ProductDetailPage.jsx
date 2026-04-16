@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useOutletContext } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import Badge from '../components/Badge';
 import PriceDisplay from '../components/PriceDisplay';
 import { getProductById } from '../services/productService';
+
+
+import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 
 function ProductDetailPage() {
 
@@ -15,8 +18,8 @@ function ProductDetailPage() {
   const { productId } = useParams();
 
   // Get cart function from RootLayout's Outlet context
-  const { onAddToCart } = useOutletContext();
-
+    const { addToCart } = useCart();
+    const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
 
   // ── STATE ───────────────────────────────────────────
@@ -57,20 +60,20 @@ function ProductDetailPage() {
 
 
   // ── HANDLERS ────────────────────────────────────────
-  function handleAddToCart() {
-    if (!selectedSize) {
-      alert('Please select a size first');
-      return;
-    }
-    if (onAddToCart) {
-      // Add the product 'quantity' times
-      for (let i = 0; i < quantity; i++) {
-        onAddToCart(product, selectedSize);
-      }
-    }
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
+function handleAddToCart() {
+  if (!selectedSize) {
+    showError('Please select a size first');
+    return;
   }
+  for (let i = 0; i < quantity; i++) {
+    addToCart(product, selectedSize);
+  }
+  showSuccess(
+    `${quantity} × ${product.name} (${selectedSize}) added to cart!`
+  );
+  setAddedToCart(true);
+  setTimeout(() => setAddedToCart(false), 2000);
+}
 
 
   // ── LOADING STATE ────────────────────────────────────

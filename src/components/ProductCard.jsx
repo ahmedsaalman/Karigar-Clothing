@@ -1,54 +1,45 @@
 // src/components/ProductCard.jsx
-// Add the "View Details" button that navigates to product page
+// Now uses context directly — no props needed for cart
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import Badge from './Badge';
 import PriceDisplay from './PriceDisplay';
 
-function ProductCard({ product, onAddToCart }) {
+function ProductCard({ product }) {
+  // Get cart functions directly from context
+  const { addToCart } = useCart();
+  const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
 
   const {
-    id,
-    name,
-    price,
-    originalPrice,
-    image,
-    badge,
-    inStock,
-    rating,
-    reviewCount,
-    sizes,
-    colors,
-    colorNames,
+    id, name, price, originalPrice,
+    image, badge, inStock,
+    rating, reviewCount,
+    sizes, colors, colorNames,
   } = product;
 
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
   const [addedToCart, setAddedToCart] = useState(false);
 
-  function handleWishlistToggle() {
-    setIsWishlisted(!isWishlisted);
-  }
-
-  function handleSizeSelect(size) {
-    setSelectedSize(selectedSize === size ? null : size);
-  }
-
   function handleAddToCart() {
-    if (!inStock || !selectedSize) {
-      if (!selectedSize) alert('Please select a size');
+    if (!inStock) return;
+    if (!selectedSize) {
+      showError('Please select a size first');
       return;
     }
-    if (onAddToCart) onAddToCart(product, selectedSize);
+
+    // Call context function directly
+    addToCart(product, selectedSize);
+
+    // Show toast notification
+    showSuccess(`${name} (${selectedSize}) added to cart!`);
+
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
-  }
-
-  function handleViewDetails() {
-    // Navigate to the product detail page
-    navigate(`/products/${id}`);
   }
 
   function renderStars(rating) {
@@ -56,8 +47,7 @@ function ProductCard({ product, onAddToCart }) {
     const half = rating % 1 >= 0.5;
     return (
       <span style={styles.stars}>
-        {'★'.repeat(full)}
-        {half ? '½' : ''}
+        {'★'.repeat(full)}{half ? '½' : ''}
         {'☆'.repeat(5 - full - (half ? 1 : 0))}
       </span>
     );
@@ -66,14 +56,13 @@ function ProductCard({ product, onAddToCart }) {
   return (
     <article style={{ ...styles.card, opacity: inStock ? 1 : 0.75 }}>
 
-      {/* Image Section */}
       <div style={styles.imageContainer}>
         <img
           src={image}
           alt={name}
           style={styles.image}
           onError={(e) => {
-            e.target.src = 'https://via.placeholder.com/400x300?text=Karigar+Co.';
+            e.target.src = 'https://via.placeholder.com/400x300?text=Karigar';
           }}
         />
         <div style={styles.badgePosition}>
@@ -86,7 +75,7 @@ function ProductCard({ product, onAddToCart }) {
         )}
         <button
           style={styles.wishlistBtn}
-          onClick={handleWishlistToggle}
+          onClick={() => setIsWishlisted(!isWishlisted)}
         >
           <span style={{ color: isWishlisted ? '#e74c3c' : '#999' }}>
             {isWishlisted ? '♥' : '♡'}
@@ -94,12 +83,11 @@ function ProductCard({ product, onAddToCart }) {
         </button>
       </div>
 
-      {/* Content Section */}
       <div style={styles.content}>
 
         <h3
           style={styles.name}
-          onClick={handleViewDetails}
+          onClick={() => navigate(`/products/${id}`)}
         >
           {name}
         </h3>
@@ -109,7 +97,6 @@ function ProductCard({ product, onAddToCart }) {
           <span style={styles.reviewCount}>({reviewCount})</span>
         </div>
 
-        {/* Color swatches */}
         <div style={styles.colorsRow}>
           {colors.map((color, index) => (
             <div
@@ -118,15 +105,13 @@ function ProductCard({ product, onAddToCart }) {
                 ...styles.colorSwatch,
                 backgroundColor: color,
                 border: color === 'white' || color === '#ffffff'
-                  ? '1px solid #ddd'
-                  : '1px solid transparent',
+                  ? '1px solid #ddd' : '1px solid transparent',
               }}
               title={colorNames[index]}
             />
           ))}
         </div>
 
-        {/* Size Selector */}
         <div>
           <p style={styles.sizeLabel}>
             Size:
@@ -143,7 +128,9 @@ function ProductCard({ product, onAddToCart }) {
             {sizes.map(size => (
               <button
                 key={size}
-                onClick={() => handleSizeSelect(size)}
+                onClick={() => setSelectedSize(
+                  selectedSize === size ? null : size
+                )}
                 style={{
                   ...styles.sizeBtn,
                   backgroundColor: selectedSize === size
@@ -161,15 +148,13 @@ function ProductCard({ product, onAddToCart }) {
 
         <PriceDisplay price={price} originalPrice={originalPrice} />
 
-        {/* Two buttons: View Details + Add to Cart */}
         <div style={styles.buttonGroup}>
           <button
-            onClick={handleViewDetails}
+            onClick={() => navigate(`/products/${id}`)}
             style={styles.detailsBtn}
           >
             Details
           </button>
-
           <button
             onClick={handleAddToCart}
             disabled={!inStock}
@@ -182,12 +167,7 @@ function ProductCard({ product, onAddToCart }) {
               flex: 2,
             }}
           >
-            {!inStock
-              ? 'Out of Stock'
-              : addedToCart
-                ? '✓ Added!'
-                : 'Add to Cart'
-            }
+            {!inStock ? 'Out of Stock' : addedToCart ? '✓ Added!' : 'Add to Cart'}
           </button>
         </div>
 
@@ -204,7 +184,6 @@ const styles = {
     boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
     display: 'flex',
     flexDirection: 'column',
-    transition: 'box-shadow 0.2s',
   },
   imageContainer: {
     position: 'relative',
@@ -273,34 +252,15 @@ const styles = {
     alignItems: 'center',
     gap: '6px',
   },
-  stars: {
-    color: '#d4af37',
-    fontSize: '0.85rem',
-  },
-  reviewCount: {
-    color: '#888',
-    fontSize: '0.8rem',
-  },
-  colorsRow: {
-    display: 'flex',
-    gap: '6px',
-    alignItems: 'center',
-  },
+  stars: { color: '#d4af37', fontSize: '0.85rem' },
+  reviewCount: { color: '#888', fontSize: '0.8rem' },
+  colorsRow: { display: 'flex', gap: '6px', alignItems: 'center' },
   colorSwatch: {
     width: '18px', height: '18px',
-    borderRadius: '50%',
-    cursor: 'pointer',
+    borderRadius: '50%', cursor: 'pointer',
   },
-  sizeLabel: {
-    fontSize: '0.8rem',
-    color: '#555',
-    marginBottom: '8px',
-  },
-  sizesRow: {
-    display: 'flex',
-    gap: '6px',
-    flexWrap: 'wrap',
-  },
+  sizeLabel: { fontSize: '0.8rem', color: '#555', marginBottom: '8px' },
+  sizesRow: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
   sizeBtn: {
     padding: '6px 12px',
     border: '1px solid #ddd',
@@ -310,11 +270,7 @@ const styles = {
     borderRadius: '2px',
     backgroundColor: '#ffffff',
   },
-  buttonGroup: {
-    display: 'flex',
-    gap: '8px',
-    marginTop: 'auto',
-  },
+  buttonGroup: { display: 'flex', gap: '8px', marginTop: 'auto' },
   detailsBtn: {
     flex: 1,
     padding: '12px 8px',

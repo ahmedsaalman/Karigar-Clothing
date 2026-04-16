@@ -1,39 +1,27 @@
 // src/layouts/RootLayout.jsx
 
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useState } from 'react';
+import { useCart } from '../context/CartContext';
 
-function RootLayout({ cartItems, onAddToCart, onRemoveFromCart }) {
+function RootLayout() {
 
-  // Calculate cart count from cartItems array
-  const cartCount = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  // Get cart count directly from context
+  // No props needed — context broadcasts it
+  const { cartCount } = useCart();
 
   return (
     <div style={styles.wrapper}>
-
-      {/* Header is always visible */}
       <Header cartCount={cartCount} />
-
-      {/* Main content area */}
       <main style={styles.main}>
         {/*
-          Outlet is where the matched child route renders.
-          Think of it as a "slot" that React Router fills in.
-
-          We pass data to child routes using the context prop.
-          Child routes can read this via useOutletContext() hook.
+          No more context prop needed on Outlet.
+          Pages get cart data from useCart() directly.
         */}
-        <Outlet context={{ cartItems, onAddToCart, onRemoveFromCart }} />
+        <Outlet />
       </main>
-
-      {/* Footer is always visible */}
       <Footer />
-
     </div>
   );
 }
@@ -45,7 +33,7 @@ const styles = {
     flexDirection: 'column',
   },
   main: {
-    flex: 1,  // takes all available space between header and footer
+    flex: 1,
   },
 };
 
