@@ -1,68 +1,72 @@
 // src/pages/ProductsPage.jsx
+// Updated with useRef for focus and previous query tracking
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import ProductCard from '../components/ProductCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import SectionTitle from '../components/SectionTitle';
 import { getProducts, searchProducts } from '../services/productService';
 
-function ProductsPage({ onAddToCart }) {
+function ProductsPage() {
 
-  // ── STATE ──────────────────────────────────────────────
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [sortBy, setSortBy] = useState('default');
+  const [filterCategory, setFilterCategory] = useState('all');
 
-  // ── EFFECT 1: Load products on page mount ─────────────
-  // The [] means this runs ONCE when component first appears
+  // ── useRef USE CASE 1: DOM Reference ──────────────
+  // searchInputRef.current will point to the actual <input> element
+  const searchInputRef = useRef(null);
 
+  // ── useRef USE CASE 2: Persisting Value ───────────
+  // Track how many times search has run
+  // We don't want this to trigger re-renders
+  const searchCountRef = useRef(0);
+
+  // Track previous search query for comparison
+  const prevQueryRef = useRef('');
+
+
+  // ── Auto-focus search input on page load ──────────
   useEffect(() => {
-
-    // Define the async function inside the effect
-    async function loadProducts() {
-      try {
-        // try: attempt this code
-        setIsLoading(true);    // show spinner
-        setError(null);        // clear any previous errors
-
-        const data = await getProducts();
-        // await PAUSES here until getProducts() finishes
-        // during this pause, React doesn't freeze —
-        // user can still interact with other parts of the page
-
-        setProducts(data);     // store the data in state
-
-      } catch (err) {
-        // catch: if ANYTHING in try goes wrong, come here
-        // err.message is the error text from our throw statement
-        setError(err.message);
-      } finally {
-        // finally: runs whether try succeeded OR catch ran
-        // ALWAYS runs — perfect for cleanup
-        setIsLoading(false);   // hide spinner either way
-      }
+    // searchInputRef.current IS the actual input DOM element
+    // We can call any DOM method on it
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
     }
-
-    loadProducts();
-    // Call the function immediately after defining it
-
   }, []);
   // [] = run once on mount
 
 
-  // ── EFFECT 2: Search when query changes ───────────────
-  // [searchQuery] = re-run whenever searchQuery changes
-
+  // ── Load products ─────────────────────────────────
   useEffect(() => {
+    async function loadProducts() {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const data = await getProducts();
+        setProducts(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadProducts();
+  }, []);
 
-    // If search is empty, reload all products
+
+  // ── Search with debounce ──────────────────────────
+  useEffect(() => {
+    if (searchQuery === prevQueryRef.current) return;
+    prevQueryRef.current = searchQuery;
+    // Update ref — does NOT trigger re-render
+
     if (searchQuery.trim() === '') {
-      // trim() removes spaces from start and end
-      // '   '.trim() === '' is true
-
       async function reloadAll() {
         try {
           setIsSearching(true);
@@ -76,14 +80,13 @@ function ProductsPage({ onAddToCart }) {
       }
       reloadAll();
       return;
-      // return exits the effect early
-      // the code below won't run
     }
 
-    // Search with the query
-    async function runSearch() {
+    const timer = setTimeout(async () => {
       try {
         setIsSearching(true);
+        searchCountRef.current += 1;  // increment without re-render
+        console.log(`Search #${searchCountRef.current}: "${searchQuery}"`);
         const data = await searchProducts(searchQuery);
         setProducts(data);
       } catch (err) {
@@ -91,51 +94,77 @@ function ProductsPage({ onAddToCart }) {
       } finally {
         setIsSearching(false);
       }
-    }
-
-    // DEBOUNCE — wait 500ms after user stops typing
-    // Without this: searches on every single keystroke
-    // With this: searches 500ms after user pauses
-
-    // Set a timer
-    const timer = setTimeout(() => {
-      runSearch();
     }, 500);
 
-    // CLEANUP FUNCTION
-    // This runs if searchQuery changes BEFORE the 500ms is up
-    // It cancels the previous timer — only the last one fires
-    return () => {
-      clearTimeout(timer);
-    };
-
+    return () => clearTimeout(timer);
   }, [searchQuery]);
-  // Re-run whenever searchQuery changes
 
 
-  // ── RETRY HANDLER ─────────────────────────────────────
-  function handleRetry() {
-    // Reset state and trigger reload
-    setError(null);
-    setProducts([]);
-    setIsLoading(true);
+  // ── useMemo: Filter + Sort Products ───────────────
+  // This calculation runs on EVERY render without useMemo
+  // With useMemo, it only runs when products, filterCategory,
+  // or sortBy changes
 
-    async function reload() {
-      try {
-        const data = await getProducts();
-        setProducts(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
+  const processedProducts = useMemo(() => {
+
+    // Start with all products
+    let result = [...products];
+
+    // Step 1: Filter by category
+    if (filterCategory !== 'all') {
+      result = result.filter(
+        product => product.category === filterCategory
+      );
     }
-    reload();
-  }
+
+    // Step 2: Sort
+    switch (sortBy) {
+      case 'price-low':
+        // sort returns negative/positive/zero to determine order
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-high':
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case 'rating':
+        result.sort((a, b) => b.rating - a.rating);
+        break;
+      case 'name':
+        result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        // Keep original order
+        break;
+    }
+
+    return result;
+
+  }, [products, filterCategory, sortBy]);
+  // Only recalculates when these three values change
 
 
-  // ── RENDER ────────────────────────────────────────────
+  // ── useMemo: Get unique categories from products ──
+  const categories = useMemo(() => {
+    const cats = products.map(p => p.category);
+    // Set removes duplicates, Array.from converts back to array
+    return ['all', ...Array.from(new Set(cats))];
+  }, [products]);
+  // Only recalculates when products changes
 
+
+  // ── useCallback: Clear search ─────────────────────
+  // Stable function reference — won't cause child re-renders
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery('');
+    // After clearing, re-focus the input
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, []);
+  // [] = this function never needs to be recreated
+
+
+  // ── RENDER ────────────────────────────────────────
   return (
     <div style={styles.page}>
 
@@ -146,19 +175,19 @@ function ProductsPage({ onAddToCart }) {
           subtitle="Premium shirts crafted for professionals"
         />
 
-        {/* Search Bar */}
+        {/* Search Bar — ref attached to input */}
         <div style={styles.searchContainer}>
           <input
+            ref={searchInputRef}        // ← useRef attached here
             type="text"
-            placeholder="Search shirts..."
+            placeholder="Search shirts... (auto-focused)"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             style={styles.searchInput}
           />
-          {/* Show X button only if there's a query */}
           {searchQuery && (
             <button
-              onClick={() => setSearchQuery('')}
+              onClick={handleClearSearch}   // stable useCallback function
               style={styles.clearBtn}
             >
               ✕
@@ -166,79 +195,98 @@ function ProductsPage({ onAddToCart }) {
           )}
         </div>
 
-        {/* Search query feedback */}
-        {searchQuery && (
-          <p style={styles.searchFeedback}>
-            {isSearching
-              ? 'Searching...'
-              : `${products.length} results for "${searchQuery}"`
-            }
-          </p>
-        )}
+        {/* Filter + Sort Controls */}
+        <div style={styles.controls}>
+
+          {/* Category Filter */}
+          <div style={styles.filterGroup}>
+            <span style={styles.controlLabel}>Category:</span>
+            <div style={styles.filterButtons}>
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setFilterCategory(cat)}
+                  style={{
+                    ...styles.filterBtn,
+                    backgroundColor: filterCategory === cat
+                      ? '#1a1a1a' : 'transparent',
+                    color: filterCategory === cat
+                      ? '#ffffff' : '#555',
+                    borderColor: filterCategory === cat
+                      ? '#1a1a1a' : '#ddd',
+                  }}
+                >
+                  {cat === 'all' ? 'All' : cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Sort */}
+          <div style={styles.filterGroup}>
+            <span style={styles.controlLabel}>Sort by:</span>
+            <select
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value)}
+              style={styles.sortSelect}
+            >
+              <option value="default">Default</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+              <option value="name">Name: A to Z</option>
+            </select>
+          </div>
+
+        </div>
+
+        {/* Results info */}
+        <p style={styles.resultsInfo}>
+          {isSearching
+            ? 'Searching...'
+            : `${processedProducts.length} product${processedProducts.length !== 1 ? 's' : ''} found`
+          }
+          {searchQuery && ` for "${searchQuery}"`}
+        </p>
+
       </div>
 
 
-      {/* ── CONDITIONAL RENDERING ── */}
-      {/* Show different UI based on state */}
-
-      {/* Loading state — initial load */}
+      {/* Loading */}
       {isLoading && (
-        <LoadingSpinner message="Loading our collection..." />
+        <LoadingSpinner message="Loading collection..." />
       )}
 
-      {/* Error state */}
+      {/* Error */}
       {!isLoading && error && (
-        <ErrorMessage
-          message={error}
-          onRetry={handleRetry}
-        />
+        <ErrorMessage message={error} />
       )}
 
-      {/* Success state — show products */}
+      {/* Products */}
       {!isLoading && !error && (
         <>
-          {/* Searching indicator */}
-          {isSearching && (
-            <p style={styles.searchingText}>Searching...</p>
-          )}
-
-          {/* No results */}
-          {products.length === 0 && !isSearching && (
+          {processedProducts.length === 0 ? (
             <div style={styles.noResults}>
               <p style={styles.noResultsText}>
-                No shirts found
+                No products found
                 {searchQuery ? ` for "${searchQuery}"` : ''}
               </p>
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  style={styles.showAllBtn}
-                >
-                  Show All Products
-                </button>
-              )}
+              <button
+                onClick={handleClearSearch}
+                style={styles.showAllBtn}
+              >
+                Show All Products
+              </button>
             </div>
-          )}
-
-          {/* Product Grid */}
-          {products.length > 0 && (
+          ) : (
             <div style={styles.grid}>
-              {products.map(product => (
+              {processedProducts.map(product => (
                 <ProductCard
                   key={product.id}
                   product={product}
-                  onAddToCart={onAddToCart}
                 />
               ))}
             </div>
-          )}
-
-          {/* Results count */}
-          {products.length > 0 && (
-            <p style={styles.count}>
-              Showing {products.length} product
-              {products.length !== 1 ? 's' : ''}
-            </p>
           )}
         </>
       )}
@@ -255,6 +303,9 @@ const styles = {
   },
   header: {
     marginBottom: '48px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
   },
   searchContainer: {
     position: 'relative',
@@ -281,19 +332,54 @@ const styles = {
     fontSize: '1rem',
     color: '#999',
     cursor: 'pointer',
-    padding: '4px',
   },
-  searchFeedback: {
+  controls: {
+    display: 'flex',
+    gap: '24px',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  filterGroup: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
+  controlLabel: {
+    fontSize: '0.8rem',
+    color: '#888',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+    whiteSpace: 'nowrap',
+  },
+  filterButtons: {
+    display: 'flex',
+    gap: '6px',
+    flexWrap: 'wrap',
+  },
+  filterBtn: {
+    padding: '6px 14px',
+    border: '1px solid #ddd',
+    fontSize: '0.8rem',
+    cursor: 'pointer',
+    borderRadius: '20px',
+    transition: 'all 0.15s',
+    textTransform: 'capitalize',
+  },
+  sortSelect: {
+    padding: '8px 12px',
+    border: '1px solid #ddd',
+    fontSize: '0.85rem',
+    backgroundColor: '#ffffff',
+    cursor: 'pointer',
+    borderRadius: '2px',
+    outline: 'none',
+  },
+  resultsInfo: {
     textAlign: 'center',
     color: '#888',
     fontSize: '0.85rem',
-    marginTop: '12px',
-  },
-  searchingText: {
-    textAlign: 'center',
-    color: '#888',
-    fontSize: '0.9rem',
-    padding: '20px',
   },
   grid: {
     display: 'grid',
@@ -319,13 +405,7 @@ const styles = {
     border: 'none',
     fontSize: '0.85rem',
     cursor: 'pointer',
-    letterSpacing: '1px',
-  },
-  count: {
-    textAlign: 'center',
-    color: '#888',
-    fontSize: '0.85rem',
-    marginTop: '32px',
+    borderRadius: '2px',
   },
 };
 

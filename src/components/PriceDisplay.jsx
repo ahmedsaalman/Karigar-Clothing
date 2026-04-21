@@ -1,43 +1,47 @@
 // src/components/PriceDisplay.jsx
+// Updated with useMemo for formatted prices
+
+import { useMemo } from 'react';
 
 function PriceDisplay({ price, originalPrice }) {
-  const hasDiscount = originalPrice && originalPrice > price;
-  
-  const discountPercent = hasDiscount
-    ? Math.round(((originalPrice - price) / originalPrice) * 100)
-    : 0;
 
-  // Format number as Pakistani Rupees
-  // Intl.NumberFormat is built into JavaScript — no library needed
-  const formatPrice = (amount) => {
+  // useMemo caches these formatted strings
+  // Only recalculates if price or originalPrice changes
+  // Small optimization but good practice for formatters
+
+  const formattedPrice = useMemo(() => {
     return new Intl.NumberFormat('en-PK', {
       style: 'currency',
       currency: 'PKR',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+    }).format(price);
+  }, [price]);
+
+  const formattedOriginal = useMemo(() => {
+    if (!originalPrice || originalPrice <= price) return null;
+    return new Intl.NumberFormat('en-PK', {
+      style: 'currency',
+      currency: 'PKR',
+      minimumFractionDigits: 0,
+    }).format(originalPrice);
+  }, [originalPrice, price]);
+
+  const discountPercent = useMemo(() => {
+    if (!originalPrice || originalPrice <= price) return 0;
+    return Math.round(((originalPrice - price) / originalPrice) * 100);
+  }, [price, originalPrice]);
+
+  const hasDiscount = discountPercent > 0;
 
   return (
     <div style={styles.container}>
-      
-      {/* Current price - always shown */}
-      <span style={styles.currentPrice}>
-        {formatPrice(price)}
-      </span>
-
-      {/* Original price and discount - only shown if discounted */}
+      <span style={styles.currentPrice}>{formattedPrice}</span>
       {hasDiscount && (
         <>
-          <span style={styles.originalPrice}>
-            {formatPrice(originalPrice)}
-          </span>
-          <span style={styles.discountBadge}>
-            -{discountPercent}%
-          </span>
+          <span style={styles.originalPrice}>{formattedOriginal}</span>
+          <span style={styles.discountBadge}>-{discountPercent}%</span>
         </>
       )}
-
     </div>
   );
 }
