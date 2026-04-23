@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
+import SearchFocusButton from './SearchFocusButton';
 
 function Header({ cartCount = 0 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,8 +14,6 @@ function Header({ cartCount = 0 }) {
     { label: 'About', to: '/about' },
   ];
 
-  // NavLink receives isActive from React Router automatically
-  // We use it to style the active link differently
   function getNavLinkStyle({ isActive }) {
     return {
       ...styles.navLink,
@@ -29,7 +28,6 @@ function Header({ cartCount = 0 }) {
     <header style={styles.header}>
       <div style={styles.container}>
 
-        {/* Brand — clicking goes home */}
         <Link to="/" style={styles.brandLink}>
           <div style={styles.brand}>
             <h1 style={styles.brandName}>Karigar Co.</h1>
@@ -37,16 +35,12 @@ function Header({ cartCount = 0 }) {
           </div>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav style={styles.nav}>
           {navLinks.map(link => (
             <NavLink
               key={link.label}
               to={link.to}
               style={getNavLinkStyle}
-              // For "/" we want EXACT matching
-              // Without this, "/" would be "active" on every page
-              // because every path starts with "/"
               end={link.to === '/'}
             >
               {link.label}
@@ -54,10 +48,12 @@ function Header({ cartCount = 0 }) {
           ))}
         </nav>
 
-        {/* Right side */}
         <div style={styles.rightSide}>
 
-          {/* Cart — clicking navigates to /cart */}
+          {/* Search Button — new addition */}
+          <SearchFocusButton />
+
+          {/* Cart */}
           <div
             style={styles.cartArea}
             onClick={() => navigate('/cart')}
@@ -68,7 +64,6 @@ function Header({ cartCount = 0 }) {
             )}
           </div>
 
-          {/* Mobile hamburger */}
           <button
             style={styles.hamburger}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -79,7 +74,6 @@ function Header({ cartCount = 0 }) {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <nav style={styles.mobileMenu}>
           {navLinks.map(link => (
@@ -102,6 +96,7 @@ function Header({ cartCount = 0 }) {
     </header>
   );
 }
+
 
 const styles = {
   header: {
