@@ -1,17 +1,17 @@
 // src/components/ProductCard.jsx
-// Now uses context directly — no props needed for cart
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import { useWishlistContext } from '../context/WishlistContext';
 import Badge from './Badge';
 import PriceDisplay from './PriceDisplay';
 
 function ProductCard({ product }) {
-  // Get cart functions directly from context
   const { addToCart } = useCart();
   const { showSuccess, showError } = useToast();
+  const { toggleWishlist, isWishlisted } = useWishlistContext();
   const navigate = useNavigate();
 
   const {
@@ -21,9 +21,19 @@ function ProductCard({ product }) {
     sizes, colors, colorNames,
   } = product;
 
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
   const [addedToCart, setAddedToCart] = useState(false);
+
+  const wishlisted = isWishlisted(id);
+
+  function handleWishlistToggle() {
+    const added = toggleWishlist(product);
+    if (added) {
+      showSuccess(`${name} added to wishlist!`);
+    } else {
+      showSuccess(`${name} removed from wishlist`);
+    }
+  }
 
   function handleAddToCart() {
     if (!inStock) return;
@@ -31,13 +41,8 @@ function ProductCard({ product }) {
       showError('Please select a size first');
       return;
     }
-
-    // Call context function directly
     addToCart(product, selectedSize);
-
-    // Show toast notification
     showSuccess(`${name} (${selectedSize}) added to cart!`);
-
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   }
@@ -47,7 +52,8 @@ function ProductCard({ product }) {
     const half = rating % 1 >= 0.5;
     return (
       <span style={styles.stars}>
-        {'★'.repeat(full)}{half ? '½' : ''}
+        {'★'.repeat(full)}
+        {half ? '½' : ''}
         {'☆'.repeat(5 - full - (half ? 1 : 0))}
       </span>
     );
@@ -61,8 +67,9 @@ function ProductCard({ product }) {
           src={image}
           alt={name}
           style={styles.image}
-          onError={(e) => {
-            e.target.src = 'https://via.placeholder.com/400x300?text=Karigar';
+          onError={e => {
+            e.target.src =
+              'https://via.placeholder.com/400x300?text=Karigar';
           }}
         />
         <div style={styles.badgePosition}>
@@ -75,10 +82,11 @@ function ProductCard({ product }) {
         )}
         <button
           style={styles.wishlistBtn}
-          onClick={() => setIsWishlisted(!isWishlisted)}
+          onClick={handleWishlistToggle}
+          title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
-          <span style={{ color: isWishlisted ? '#e74c3c' : '#999' }}>
-            {isWishlisted ? '♥' : '♡'}
+          <span style={{ color: wishlisted ? '#e74c3c' : '#999' }}>
+            {wishlisted ? '♥' : '♡'}
           </span>
         </button>
       </div>
@@ -104,8 +112,10 @@ function ProductCard({ product }) {
               style={{
                 ...styles.colorSwatch,
                 backgroundColor: color,
-                border: color === 'white' || color === '#ffffff'
-                  ? '1px solid #ddd' : '1px solid transparent',
+                border:
+                  color === 'white' || color === '#ffffff'
+                    ? '1px solid #ddd'
+                    : '1px solid transparent',
               }}
               title={colorNames[index]}
             />
@@ -115,28 +125,30 @@ function ProductCard({ product }) {
         <div>
           <p style={styles.sizeLabel}>
             Size:
-            {selectedSize
-              ? <span style={{ color: '#1a1a1a', fontWeight: '700' }}>
-                  {' '}{selectedSize}
-                </span>
-              : <span style={{ color: '#e74c3c', fontStyle: 'italic' }}>
-                  {' '}Select one
-                </span>
-            }
+            {selectedSize ? (
+              <span style={{ color: '#1a1a1a', fontWeight: '700' }}>
+                {' '}{selectedSize}
+              </span>
+            ) : (
+              <span style={{ color: '#e74c3c', fontStyle: 'italic' }}>
+                {' '}Select one
+              </span>
+            )}
           </p>
           <div style={styles.sizesRow}>
             {sizes.map(size => (
               <button
                 key={size}
-                onClick={() => setSelectedSize(
-                  selectedSize === size ? null : size
-                )}
+                onClick={() =>
+                  setSelectedSize(selectedSize === size ? null : size)
+                }
                 style={{
                   ...styles.sizeBtn,
-                  backgroundColor: selectedSize === size
-                    ? '#1a1a1a' : '#ffffff',
+                  backgroundColor:
+                    selectedSize === size ? '#1a1a1a' : '#ffffff',
                   color: selectedSize === size ? '#ffffff' : '#555',
-                  borderColor: selectedSize === size ? '#1a1a1a' : '#ddd',
+                  borderColor:
+                    selectedSize === size ? '#1a1a1a' : '#ddd',
                   fontWeight: selectedSize === size ? '700' : '400',
                 }}
               >
@@ -162,12 +174,18 @@ function ProductCard({ product }) {
               ...styles.cartBtn,
               backgroundColor: addedToCart
                 ? '#27ae60'
-                : inStock ? '#1a1a1a' : '#ddd',
+                : inStock
+                ? '#1a1a1a'
+                : '#ddd',
               cursor: inStock ? 'pointer' : 'not-allowed',
               flex: 2,
             }}
           >
-            {!inStock ? 'Out of Stock' : addedToCart ? '✓ Added!' : 'Add to Cart'}
+            {!inStock
+              ? 'Out of Stock'
+              : addedToCart
+              ? '✓ Added!'
+              : 'Add to Cart'}
           </button>
         </div>
 
@@ -193,13 +211,16 @@ const styles = {
   },
   image: {
     position: 'absolute',
-    top: 0, left: 0,
-    width: '100%', height: '100%',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
     objectFit: 'cover',
   },
   badgePosition: {
     position: 'absolute',
-    top: '12px', left: '12px',
+    top: '12px',
+    left: '12px',
     zIndex: 2,
   },
   outOfStockOverlay: {
@@ -221,8 +242,10 @@ const styles = {
   },
   wishlistBtn: {
     position: 'absolute',
-    top: '12px', right: '12px',
-    width: '36px', height: '36px',
+    top: '12px',
+    right: '12px',
+    width: '36px',
+    height: '36px',
     borderRadius: '50%',
     border: 'none',
     backgroundColor: '#ffffff',
@@ -254,13 +277,27 @@ const styles = {
   },
   stars: { color: '#d4af37', fontSize: '0.85rem' },
   reviewCount: { color: '#888', fontSize: '0.8rem' },
-  colorsRow: { display: 'flex', gap: '6px', alignItems: 'center' },
-  colorSwatch: {
-    width: '18px', height: '18px',
-    borderRadius: '50%', cursor: 'pointer',
+  colorsRow: {
+    display: 'flex',
+    gap: '6px',
+    alignItems: 'center',
   },
-  sizeLabel: { fontSize: '0.8rem', color: '#555', marginBottom: '8px' },
-  sizesRow: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
+  colorSwatch: {
+    width: '18px',
+    height: '18px',
+    borderRadius: '50%',
+    cursor: 'pointer',
+  },
+  sizeLabel: {
+    fontSize: '0.8rem',
+    color: '#555',
+    marginBottom: '8px',
+  },
+  sizesRow: {
+    display: 'flex',
+    gap: '6px',
+    flexWrap: 'wrap',
+  },
   sizeBtn: {
     padding: '6px 12px',
     border: '1px solid #ddd',
@@ -270,7 +307,11 @@ const styles = {
     borderRadius: '2px',
     backgroundColor: '#ffffff',
   },
-  buttonGroup: { display: 'flex', gap: '8px', marginTop: 'auto' },
+  buttonGroup: {
+    display: 'flex',
+    gap: '8px',
+    marginTop: 'auto',
+  },
   detailsBtn: {
     flex: 1,
     padding: '12px 8px',

@@ -2,11 +2,17 @@
 
 import { useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { useWishlistContext } from '../context/WishlistContext';
 import SearchFocusButton from './SearchFocusButton';
+import { useWindowSize } from '../hooks/useWindowSize';
 
-function Header({ cartCount = 0 }) {
+function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { cartCount } = useCart();
+  const { wishlistCount } = useWishlistContext();
   const navigate = useNavigate();
+  const { isMobile } = useWindowSize();
 
   const navLinks = [
     { label: 'Home', to: '/' },
@@ -31,42 +37,59 @@ function Header({ cartCount = 0 }) {
         <Link to="/" style={styles.brandLink}>
           <div style={styles.brand}>
             <h1 style={styles.brandName}>Karigar Co.</h1>
-            <p style={styles.tagline}>Crafted for Professionals</p>
+            {!isMobile && (
+              <p style={styles.tagline}>Crafted for Professionals</p>
+            )}
           </div>
         </Link>
 
-        <nav style={styles.nav}>
-          {navLinks.map(link => (
-            <NavLink
-              key={link.label}
-              to={link.to}
-              style={getNavLinkStyle}
-              end={link.to === '/'}
-            >
-              {link.label}
-            </NavLink>
-          ))}
-        </nav>
+        {!isMobile && (
+          <nav style={styles.nav}>
+            {navLinks.map(link => (
+              <NavLink
+                key={link.label}
+                to={link.to}
+                style={getNavLinkStyle}
+                end={link.to === '/'}
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </nav>
+        )}
 
         <div style={styles.rightSide}>
 
-          {/* Search Button — new addition */}
           <SearchFocusButton />
+
+          {/* Wishlist */}
+          <div
+            style={styles.iconArea}
+            onClick={() => navigate('/wishlist')}
+            title="Wishlist"
+          >
+            <span style={styles.icon}>♡</span>
+            {wishlistCount > 0 && (
+              <span style={styles.badge}>{wishlistCount}</span>
+            )}
+          </div>
 
           {/* Cart */}
           <div
-            style={styles.cartArea}
+            style={styles.iconArea}
             onClick={() => navigate('/cart')}
+            title="Cart"
           >
-            <span style={styles.cartIcon}>🛒</span>
+            <span style={styles.icon}>🛒</span>
             {cartCount > 0 && (
-              <span style={styles.cartCount}>{cartCount}</span>
+              <span style={styles.badge}>{cartCount}</span>
             )}
           </div>
 
           <button
             style={styles.hamburger}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
             {isMenuOpen ? '✕' : '☰'}
           </button>
@@ -90,13 +113,22 @@ function Header({ cartCount = 0 }) {
               {link.label}
             </NavLink>
           ))}
+          <NavLink
+            to="/wishlist"
+            style={({ isActive }) => ({
+              ...styles.mobileNavLink,
+              color: isActive ? '#d4af37' : '#ffffff',
+            })}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
+          </NavLink>
         </nav>
       )}
 
     </header>
   );
 }
-
 
 const styles = {
   header: {
@@ -149,28 +181,32 @@ const styles = {
   rightSide: {
     display: 'flex',
     alignItems: 'center',
-    gap: '20px',
+    gap: '16px',
   },
-  cartArea: {
+  iconArea: {
     position: 'relative',
     cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  cartIcon: {
-    fontSize: '1.4rem',
+  icon: {
+    fontSize: '1.3rem',
+    color: '#ffffff',
   },
-  cartCount: {
+  badge: {
     position: 'absolute',
     top: '-8px',
     right: '-8px',
     backgroundColor: '#d4af37',
     color: '#1a1a1a',
     borderRadius: '50%',
-    width: '20px',
-    height: '20px',
+    width: '18px',
+    height: '18px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '0.7rem',
+    fontSize: '0.65rem',
     fontWeight: '800',
   },
   hamburger: {

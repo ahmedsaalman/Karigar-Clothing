@@ -1,126 +1,80 @@
 // src/pages/ProductsPage.jsx
-// Updated with useRef for focus and previous query tracking
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import ProductCard from '../components/ProductCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import SectionTitle from '../components/SectionTitle';
+import useFetch from '../hooks/useFetch';
+import useDebounce from '../hooks/useDebounce';
 import { getProducts, searchProducts } from '../services/productService';
 
 function ProductsPage() {
 
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
   const [sortBy, setSortBy] = useState('default');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [searchResults, setSearchResults] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
 
-  // ── useRef USE CASE 1: DOM Reference ──────────────
-  // searchInputRef.current will point to the actual <input> element
   const searchInputRef = useRef(null);
+  const debouncedQuery = useDebounce(searchQuery, 500);
 
-  // ── useRef USE CASE 2: Persisting Value ───────────
-  // Track how many times search has run
-  // We don't want this to trigger re-renders
-  const searchCountRef = useRef(0);
+  const {
+    data: allProducts,
+    isLoading,
+    error,
+    refetch,
+  } = useFetch(getProducts);
 
-  // Track previous search query for comparison
-  const prevQueryRef = useRef('');
-
-
-  // ── Auto-focus search input on page load ──────────
+  // Auto focus search input
   useEffect(() => {
-    // searchInputRef.current IS the actual input DOM element
-    // We can call any DOM method on it
     if (searchInputRef.current) {
       searchInputRef.current.focus();
     }
   }, []);
-  // [] = run once on mount
 
-
-  // ── Load products ─────────────────────────────────
+  // Search effect — uses debouncedQuery from custom hook
   useEffect(() => {
-    async function loadProducts() {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const data = await getProducts();
-        setProducts(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadProducts();
-  }, []);
-
-
-  // ── Search with debounce ──────────────────────────
-  useEffect(() => {
-    if (searchQuery === prevQueryRef.current) return;
-    prevQueryRef.current = searchQuery;
-    // Update ref — does NOT trigger re-render
-
-    if (searchQuery.trim() === '') {
-      async function reloadAll() {
-        try {
-          setIsSearching(true);
-          const data = await getProducts();
-          setProducts(data);
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setIsSearching(false);
-        }
-      }
-      reloadAll();
+    if (!debouncedQuery.trim()) {
+      setSearchResults(null);
       return;
     }
 
-    const timer = setTimeout(async () => {
+    async function runSearch() {
       try {
         setIsSearching(true);
-        searchCountRef.current += 1;  // increment without re-render
-        console.log(`Search #${searchCountRef.current}: "${searchQuery}"`);
-        const data = await searchProducts(searchQuery);
-        setProducts(data);
+        const results = await searchProducts(debouncedQuery);
+        setSearchResults(results);
       } catch (err) {
-        setError(err.message);
+        setSearchResults([]);
       } finally {
         setIsSearching(false);
       }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-
-  // ── useMemo: Filter + Sort Products ───────────────
-  // This calculation runs on EVERY render without useMemo
-  // With useMemo, it only runs when products, filterCategory,
-  // or sortBy changes
-
-  const processedProducts = useMemo(() => {
-
-    // Start with all products
-    let result = [...products];
-
-    // Step 1: Filter by category
-    if (filterCategory !== 'all') {
-      result = result.filter(
-        product => product.category === filterCategory
-      );
     }
 
-    // Step 2: Sort
+    runSearch();
+  }, [debouncedQuery]);
+
+  const baseProducts = searchResults !== null
+    ? searchResults
+    : allProducts || [];
+
+  const categories = useMemo(() => {
+    if (!allProducts) return ['all'];
+    const cats = allProducts.map(p => p.category);
+    return ['all', ...Array.from(new Set(cats))];
+  }, [allProducts]);
+
+  const processedProducts = useMemo(() => {
+    let result = [...baseProducts];
+
+    if (filterCategory !== 'all') {
+      result = result.filter(p => p.category === filterCategory);
+    }
+
     switch (sortBy) {
       case 'price-low':
-        // sort returns negative/positive/zero to determine order
         result.sort((a, b) => a.price - b.price);
         break;
       case 'price-high':
@@ -133,72 +87,46 @@ function ProductsPage() {
         result.sort((a, b) => a.name.localeCompare(b.name));
         break;
       default:
-        // Keep original order
         break;
     }
 
     return result;
+  }, [baseProducts, filterCategory, sortBy]);
 
-  }, [products, filterCategory, sortBy]);
-  // Only recalculates when these three values change
-
-
-  // ── useMemo: Get unique categories from products ──
-  const categories = useMemo(() => {
-    const cats = products.map(p => p.category);
-    // Set removes duplicates, Array.from converts back to array
-    return ['all', ...Array.from(new Set(cats))];
-  }, [products]);
-  // Only recalculates when products changes
-
-
-  // ── useCallback: Clear search ─────────────────────
-  // Stable function reference — won't cause child re-renders
   const handleClearSearch = useCallback(() => {
     setSearchQuery('');
-    // After clearing, re-focus the input
+    setSearchResults(null);
     if (searchInputRef.current) {
       searchInputRef.current.focus();
     }
   }, []);
-  // [] = this function never needs to be recreated
 
-
-  // ── RENDER ────────────────────────────────────────
   return (
     <div style={styles.page}>
 
-      {/* Page Header */}
       <div style={styles.header}>
         <SectionTitle
           title="Our Collection"
           subtitle="Premium shirts crafted for professionals"
         />
 
-        {/* Search Bar — ref attached to input */}
         <div style={styles.searchContainer}>
           <input
-            ref={searchInputRef}        // ← useRef attached here
+            ref={searchInputRef}
             type="text"
-            placeholder="Search shirts... (auto-focused)"
+            placeholder="Search shirts..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             style={styles.searchInput}
           />
           {searchQuery && (
-            <button
-              onClick={handleClearSearch}   // stable useCallback function
-              style={styles.clearBtn}
-            >
+            <button onClick={handleClearSearch} style={styles.clearBtn}>
               ✕
             </button>
           )}
         </div>
 
-        {/* Filter + Sort Controls */}
         <div style={styles.controls}>
-
-          {/* Category Filter */}
           <div style={styles.filterGroup}>
             <span style={styles.controlLabel}>Category:</span>
             <div style={styles.filterButtons}>
@@ -208,12 +136,11 @@ function ProductsPage() {
                   onClick={() => setFilterCategory(cat)}
                   style={{
                     ...styles.filterBtn,
-                    backgroundColor: filterCategory === cat
-                      ? '#1a1a1a' : 'transparent',
-                    color: filterCategory === cat
-                      ? '#ffffff' : '#555',
-                    borderColor: filterCategory === cat
-                      ? '#1a1a1a' : '#ddd',
+                    backgroundColor:
+                      filterCategory === cat ? '#1a1a1a' : 'transparent',
+                    color: filterCategory === cat ? '#ffffff' : '#555',
+                    borderColor:
+                      filterCategory === cat ? '#1a1a1a' : '#ddd',
                   }}
                 >
                   {cat === 'all' ? 'All' : cat}
@@ -222,9 +149,8 @@ function ProductsPage() {
             </div>
           </div>
 
-          {/* Sort */}
           <div style={styles.filterGroup}>
-            <span style={styles.controlLabel}>Sort by:</span>
+            <span style={styles.controlLabel}>Sort:</span>
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value)}
@@ -237,32 +163,22 @@ function ProductsPage() {
               <option value="name">Name: A to Z</option>
             </select>
           </div>
-
         </div>
 
-        {/* Results info */}
         <p style={styles.resultsInfo}>
           {isSearching
             ? 'Searching...'
-            : `${processedProducts.length} product${processedProducts.length !== 1 ? 's' : ''} found`
-          }
+            : `${processedProducts.length} product${processedProducts.length !== 1 ? 's' : ''} found`}
           {searchQuery && ` for "${searchQuery}"`}
         </p>
-
       </div>
 
+      {isLoading && <LoadingSpinner message="Loading collection..." />}
 
-      {/* Loading */}
-      {isLoading && (
-        <LoadingSpinner message="Loading collection..." />
-      )}
-
-      {/* Error */}
       {!isLoading && error && (
-        <ErrorMessage message={error} />
+        <ErrorMessage message={error} onRetry={refetch} />
       )}
 
-      {/* Products */}
       {!isLoading && !error && (
         <>
           {processedProducts.length === 0 ? (
@@ -271,20 +187,14 @@ function ProductsPage() {
                 No products found
                 {searchQuery ? ` for "${searchQuery}"` : ''}
               </p>
-              <button
-                onClick={handleClearSearch}
-                style={styles.showAllBtn}
-              >
+              <button onClick={handleClearSearch} style={styles.showAllBtn}>
                 Show All Products
               </button>
             </div>
           ) : (
             <div style={styles.grid}>
               {processedProducts.map(product => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                />
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           )}
