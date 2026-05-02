@@ -58,9 +58,8 @@ function LoginPage() {
         <p style={styles.subtitle}>Please log in to continue</p>
         
         <div style={styles.hintBox}>
-          <strong>Demo Credentials:</strong><br/>
-          Email: admin@karigar.co<br/>
-          Password: password123
+          <strong>Use your registered account credentials.</strong><br />
+          Login now uses the live backend authentication API.
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -74,7 +73,7 @@ function LoginPage() {
               onBlur={handleBlur}
               error={errors.email}
               touched={touched.email}
-              placeholder="admin@karigar.co"
+              placeholder="you@example.com"
               required
             />
             

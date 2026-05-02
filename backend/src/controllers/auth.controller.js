@@ -144,7 +144,7 @@ const refreshToken = async (req, res, next) => {
     let decoded;
     try {
       decoded = jwt.verify(token, env.jwtRefreshSecret);
-    } catch (error) {
+    } catch {
       clearAuthCookies(res);
       return res.status(401).json({ success: false, message: 'Invalid refresh token' });
     }

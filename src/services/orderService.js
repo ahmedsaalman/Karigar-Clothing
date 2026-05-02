@@ -1,9 +1,4 @@
-// src/services/orderService.js
-// Handles placing and fetching orders from the backend
-
-import { getToken } from './authService';
-
-const BASE_URL = 'http://localhost:5000/api/orders';
+import { getRequest, postRequest } from './apiClient';
 
 // ── Place a new order ─────────────────────────────────────────
 async function placeOrder({
@@ -25,51 +20,31 @@ async function placeOrder({
     quantity: item.quantity,
   }));
 
-  const res = await fetch(BASE_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getToken()}`,
-    },
-    body: JSON.stringify({
-      items,
-      shippingAddress,
-      paymentMethod,
-      orderNotes,
-      discountCode,
-      discountPercent,
-      subtotal,
-      shipping,
-      grandTotal,
-    }),
+  const data = await postRequest('/orders', {
+    items,
+    shippingAddress,
+    paymentMethod,
+    orderNotes,
+    discountCode,
+    discountPercent,
+    subtotal,
+    shipping,
+    grandTotal,
   });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Failed to place order');
 
   return data.order; // contains orderId, status, etc.
 }
 
 // ── Get current user's order history ─────────────────────────
 async function getMyOrders() {
-  const res = await fetch(BASE_URL, {
-    headers: { Authorization: `Bearer ${getToken()}` },
-  });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Failed to fetch orders');
+  const data = await getRequest('/orders');
 
   return data.orders;
 }
 
 // ── Get single order by ID ────────────────────────────────────
 async function getOrderById(orderId) {
-  const res = await fetch(`${BASE_URL}/${orderId}`, {
-    headers: { Authorization: `Bearer ${getToken()}` },
-  });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Order not found');
+  const data = await getRequest(`/orders/${orderId}`);
 
   return data.order;
 }

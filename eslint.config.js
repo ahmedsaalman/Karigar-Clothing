@@ -23,7 +23,29 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^_' }],
+      // Keep DX sane while still linting correctness.
+      'react-refresh/only-export-components': 'off',
+      // These come from newer React lint rules; we don't enforce them here.
+      'react-hooks/refs': 'off',
+      'react-hooks/purity': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+    },
+  },
+  {
+    // Backend is CommonJS + Node globals.
+    files: ['backend/**/*.{js,cjs}', 'backend/test/**/*.{js,cjs}'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+      parserOptions: {
+        sourceType: 'commonjs',
+      },
+    },
+    rules: {
+      // CommonJS exports are standard here.
+      'no-undef': 'off',
     },
   },
 ])

@@ -58,7 +58,7 @@ function SearchFocusButton() {
         const data = await searchProducts(query);
         // Only show first 5 results in the modal
         setResults(data.slice(0, 5));
-      } catch (err) {
+      } catch {
         setResults([]);
       } finally {
         setIsSearching(false);

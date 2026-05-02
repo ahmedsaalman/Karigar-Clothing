@@ -13,6 +13,10 @@ function Header() {
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlistContext();
   const { isAuthenticated, logout, user } = useAuth();
+  async function handleLogout() {
+    await logout();
+  }
+
   const navigate = useNavigate();
   const { isMobile } = useWindowSize();
 
@@ -58,9 +62,16 @@ function Header() {
               </NavLink>
             ))}
             {isAuthenticated ? (
-              <button style={{ ...styles.navLink, background: 'none', border: 'none', cursor: 'pointer', borderBottom: '2px solid transparent' }} onClick={logout}>
+              <>
+                {user?.role === 'admin' && (
+                  <NavLink to="/admin" style={getNavLinkStyle}>
+                    Admin
+                  </NavLink>
+                )}
+                <button style={{ ...styles.navLink, background: 'none', border: 'none', cursor: 'pointer', borderBottom: '2px solid transparent' }} onClick={handleLogout}>
                 Logout
-              </button>
+                </button>
+              </>
             ) : (
               <NavLink to="/login" style={getNavLinkStyle}>
                 Login
@@ -135,15 +146,29 @@ function Header() {
             Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
           </NavLink>
           {isAuthenticated ? (
-            <button
-              style={{ ...styles.mobileNavLink, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: '#ffffff' }}
-              onClick={() => {
-                logout();
-                setIsMenuOpen(false);
-              }}
-            >
-              Logout
-            </button>
+            <>
+              {user?.role === 'admin' && (
+                <NavLink
+                  to="/admin"
+                  style={({ isActive }) => ({
+                    ...styles.mobileNavLink,
+                    color: isActive ? '#d4af37' : '#ffffff',
+                  })}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Admin
+                </NavLink>
+              )}
+              <button
+                style={{ ...styles.mobileNavLink, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: '#ffffff' }}
+                onClick={async () => {
+                  await logout();
+                  setIsMenuOpen(false);
+                }}
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <NavLink
               to="/login"

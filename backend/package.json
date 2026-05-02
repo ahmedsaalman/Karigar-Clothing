@@ -7,7 +7,8 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "seed": "node src/seed.js",
-    "seed:clear": "node src/seed.js --clear"
+    "seed:clear": "node src/seed.js --clear",
+    "test": "node --test \"test/**/*.test.js\""
   },
   "keywords": [],
   "author": "",

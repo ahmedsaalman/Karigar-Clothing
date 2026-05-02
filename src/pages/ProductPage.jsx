@@ -49,7 +49,7 @@ function ProductsPage() {
         setIsSearching(true);
         const results = await searchProducts(filterQuery);
         setSearchResults(results);
-      } catch (err) {
+      } catch {
         setSearchResults([]);
       } finally {
         setIsSearching(false);
