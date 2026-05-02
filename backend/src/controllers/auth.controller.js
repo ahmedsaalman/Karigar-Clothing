@@ -104,9 +104,10 @@ const login = async (req, res, next) => {
     }
 
     const { email, password } = req.body;
+    const identifier = (email || '').trim().toLowerCase();
 
     // Find user and explicitly include password for comparison
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email: identifier }).select('+password');
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }

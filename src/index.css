@@ -6,8 +6,60 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8f5f0;
-  color: #2c2c2c;
+  font-family: Georgia, 'Times New Roman', serif;
+  background-color: #f3eadf;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(143, 94, 60, 0.06), transparent 40%),
+    radial-gradient(circle at 80% 0%, rgba(111, 72, 46, 0.08), transparent 30%);
+  color: #2b1f17;
   line-height: 1.6;
+}
+
+a {
+  color: #6b4226;
+}
+
+button {
+  font-family: inherit;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes softZoom {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes panelFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

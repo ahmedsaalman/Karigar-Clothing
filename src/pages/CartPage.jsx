@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import { postRequest } from '../services/apiClient';
+import cartHero from '../../photos/shirt_pics/sample6.jpg';
 
 function CartPage() {
   const {
@@ -299,6 +300,11 @@ const styles = {
     maxWidth: '1100px',
     margin: '0 auto',
     padding: '60px 20px 100px',
+    backgroundImage: `linear-gradient(rgba(244, 234, 222, 0.9), rgba(244, 234, 222, 0.9)), url(${cartHero})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    borderRadius: '8px',
+    animation: 'panelFadeUp 500ms ease',
   },
   pageHeader: {
     display: 'flex',

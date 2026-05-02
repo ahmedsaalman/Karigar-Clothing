@@ -1,6 +1,6 @@
 // src/layouts/RootLayout.jsx
 
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useCart } from '../context/CartContext';
@@ -9,6 +9,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 function RootLayout() {
+  const location = useLocation();
 
   // Get cart count directly from context
   // No props needed — context broadcasts it
@@ -24,7 +25,9 @@ function RootLayout() {
         */}
         <ErrorBoundary>
           <Suspense fallback={<LoadingSpinner message="Loading page..." />}>
-            <Outlet />
+            <div key={location.pathname} style={styles.routeTransition}>
+              <Outlet />
+            </div>
           </Suspense>
         </ErrorBoundary>
       </main>
@@ -41,6 +44,9 @@ const styles = {
   },
   main: {
     flex: 1,
+  },
+  routeTransition: {
+    animation: 'pageFadeIn 420ms ease',
   },
 };
 

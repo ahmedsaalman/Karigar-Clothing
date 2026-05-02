@@ -8,6 +8,7 @@ import useForm from '../hooks/useForm';
 import FormField from '../components/FormField';
 import withAuthGuard from '../components/withAuthGuard';
 import { postRequest } from '../services/apiClient';
+import checkoutHero from '../../photos/shirt_pics/sample5.jpg';
 
 const VALIDATION_RULES = {
   firstName: {
@@ -472,6 +473,11 @@ const styles = {
     maxWidth: '1100px',
     margin: '0 auto',
     padding: '60px 20px 100px',
+    backgroundImage: `linear-gradient(rgba(244, 234, 222, 0.9), rgba(244, 234, 222, 0.9)), url(${checkoutHero})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    borderRadius: '8px',
+    animation: 'panelFadeUp 500ms ease',
   },
   title: {
     fontSize: '2rem',

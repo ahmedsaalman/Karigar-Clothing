@@ -2,6 +2,7 @@
 // Update buttons to actually navigate
 
 import { useNavigate } from 'react-router-dom';
+import modelHero from '../../photos/shirt_pics/sample3.jpg';
 
 function Welcome() {
   const navigate = useNavigate();
@@ -44,7 +45,9 @@ function Welcome() {
 
 const styles = {
   hero: {
-    background: 'linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%)',
+    backgroundImage: `linear-gradient(rgba(28, 20, 14, 0.72), rgba(28, 20, 14, 0.82)), url(${modelHero})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center top',
     minHeight: '70vh',
     display: 'flex',
     alignItems: 'center',
@@ -54,27 +57,27 @@ const styles = {
   },
   container: { maxWidth: '700px' },
   eyebrow: {
-    color: '#d4af37',
+    color: '#d7b17c',
     fontSize: '0.85rem',
     letterSpacing: '3px',
     textTransform: 'uppercase',
     marginBottom: '16px',
   },
   heading: {
-    color: '#ffffff',
+    color: '#f7ede0',
     fontSize: 'clamp(2rem, 5vw, 3.5rem)',
     fontWeight: '700',
     lineHeight: '1.2',
     marginBottom: '24px',
   },
-  highlight: { color: '#d4af37' },
+  highlight: { color: '#d7b17c' },
   subtext: {
-    color: '#aaa',
+    color: '#e4d5c2',
     fontSize: '1.1rem',
     marginBottom: '12px',
   },
   date: {
-    color: '#666',
+    color: '#cebca5',
     fontSize: '0.85rem',
     marginBottom: '40px',
     fontStyle: 'italic',
@@ -86,8 +89,8 @@ const styles = {
     flexWrap: 'wrap',
   },
   primaryBtn: {
-    backgroundColor: '#d4af37',
-    color: '#1a1a1a',
+    backgroundColor: '#8b5e3c',
+    color: '#fff4e6',
     border: 'none',
     padding: '14px 32px',
     fontSize: '0.9rem',
@@ -99,8 +102,8 @@ const styles = {
   },
   secondaryBtn: {
     backgroundColor: 'transparent',
-    color: '#ffffff',
-    border: '1px solid #555',
+    color: '#f7ede0',
+    border: '1px solid #a78865',
     padding: '14px 32px',
     fontSize: '0.9rem',
     letterSpacing: '1px',

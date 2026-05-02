@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -58,6 +59,12 @@ if (env.nodeEnv !== 'test') {
 app.use(cookieParser());
 app.use(express.json({ limit: env.requestLimit }));
 app.use(express.urlencoded({ extended: false }));
+app.use(
+  '/assets/photos',
+  express.static(path.resolve(__dirname, '../../photos'), {
+    maxAge: env.isProd ? '7d' : 0,
+  })
+);
 
 // ── Health Check ──────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

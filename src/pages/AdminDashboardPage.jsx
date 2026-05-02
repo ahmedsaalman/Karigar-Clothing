@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getRequest, patchRequest, postRequest } from '../services/apiClient';
 import withAuthGuard from '../components/withAuthGuard';
+import dashboardHero from '../../photos/shirt_pics/sample4.jpg';
 
 function AdminDashboardPage() {
   const [orders, setOrders] = useState([]);
@@ -144,10 +145,25 @@ function AdminDashboardPage() {
 }
 
 const styles = {
-  page: { maxWidth: '1000px', margin: '0 auto', padding: '40px 20px' },
+  page: {
+    maxWidth: '1000px',
+    margin: '0 auto',
+    padding: '40px 20px',
+    backgroundImage: `linear-gradient(rgba(244, 234, 222, 0.92), rgba(244, 234, 222, 0.96)), url(${dashboardHero})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    borderRadius: 8,
+    animation: 'panelFadeUp 520ms ease',
+  },
   title: { fontSize: '2rem', marginBottom: 8 },
   subtitle: { color: '#666', marginBottom: 20 },
-  section: { background: '#fff', padding: 20, marginBottom: 20, border: '1px solid #eee' },
+  section: {
+    background: 'rgba(255, 255, 255, 0.92)',
+    padding: 20,
+    marginBottom: 20,
+    border: '1px solid #e8d7c1',
+    animation: 'panelFadeUp 420ms ease',
+  },
   row: { display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8 },
   formRow: { display: 'flex', gap: 8, alignItems: 'center' },
   grid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 },

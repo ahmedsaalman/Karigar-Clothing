@@ -1,7 +1,8 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import useForm from '../hooks/useForm';
 import FormField from '../components/FormField';
+import heroImage from '../../photos/shirt_pics/sample1.jpg';
 
 const VALIDATION_RULES = {
   email: {
@@ -57,11 +58,6 @@ function LoginPage() {
         <h1 style={styles.title}>Welcome Back</h1>
         <p style={styles.subtitle}>Please log in to continue</p>
         
-        <div style={styles.hintBox}>
-          <strong>Use your registered account credentials.</strong><br />
-          Login now uses the live backend authentication API.
-        </div>
-
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div style={styles.fieldGroup}>
             <FormField
@@ -103,6 +99,15 @@ function LoginPage() {
             {isSubmitting ? 'Logging in...' : 'Log In'}
           </button>
         </form>
+
+        <div style={{ marginTop: '24px', textAlign: 'center', color: '#555' }}>
+          <p>
+            Don't have an account?{' '}
+            <Link to="/signup" style={{ color: '#1a1a1a', fontWeight: '600', textDecoration: 'none' }}>
+              Sign Up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -115,7 +120,10 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     padding: '40px 20px',
-    backgroundColor: '#f9f9f9',
+    backgroundImage: `linear-gradient(rgba(34, 23, 17, 0.72), rgba(34, 23, 17, 0.82)), url(${heroImage})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    animation: 'softZoom 700ms ease',
   },
   formContainer: {
     backgroundColor: '#ffffff',
@@ -124,6 +132,7 @@ const styles = {
     boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
     width: '100%',
     maxWidth: '480px',
+    animation: 'panelFadeUp 480ms ease',
   },
   title: {
     fontSize: '2rem',
@@ -136,16 +145,6 @@ const styles = {
     color: '#666',
     textAlign: 'center',
     marginBottom: '32px',
-  },
-  hintBox: {
-    backgroundColor: '#f5f5f5',
-    padding: '16px',
-    borderRadius: '4px',
-    marginBottom: '24px',
-    fontSize: '0.9rem',
-    color: '#555',
-    lineHeight: '1.5',
-    borderLeft: '4px solid #d4af37',
   },
   fieldGroup: {
     display: 'flex',

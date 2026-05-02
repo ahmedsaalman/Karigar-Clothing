@@ -33,6 +33,7 @@ function ProductDetailPage() {
   const [addedToCart, setAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(null);
 
   // ── FETCH PRODUCT ───────────────────────────────────
   // Re-runs if productId changes (user navigates to different product)
@@ -75,6 +76,25 @@ function handleAddToCart() {
   );
   setAddedToCart(true);
   setTimeout(() => setAddedToCart(false), 2000);
+}
+
+function handleTouchStart(event) {
+  setTouchStartX(event.changedTouches[0].clientX);
+}
+
+function handleTouchEnd(event) {
+  if (touchStartX === null || !product?.images || product.images.length <= 1) return;
+  const endX = event.changedTouches[0].clientX;
+  const deltaX = touchStartX - endX;
+  const threshold = 40;
+
+  if (deltaX > threshold) {
+    setSelectedImage((prev) => (prev + 1) % product.images.length);
+  } else if (deltaX < -threshold) {
+    setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length);
+  }
+
+  setTouchStartX(null);
 }
 
 
@@ -122,7 +142,11 @@ function handleAddToCart() {
         <div style={styles.gallery}>
 
           {/* Main Image */}
-          <div style={styles.mainImageContainer}>
+          <div
+            style={styles.mainImageContainer}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             <img
               src={product.images?.[selectedImage] || product.image}
               alt={product.name}

@@ -15,6 +15,7 @@ const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
 const FaqPage = React.lazy(() => import('./pages/FaqPage'));
 const CheckoutPage = React.lazy(() => import('./pages/CheckoutPage'));
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
+const SignUpPage = React.lazy(() => import('./pages/SignUpPage'));
 const AdminDashboardPage = React.lazy(() => import('./pages/AdminDashboardPage'));
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
           <Route path="/admin" element={<AdminDashboardPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>

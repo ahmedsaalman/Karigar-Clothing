@@ -13,6 +13,7 @@ const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const Product = require('./models/Product');
 const DiscountCode = require('./models/DiscountCode');
+const User = require('./models/User');
 
 const products = [
   {
@@ -132,6 +133,54 @@ const products = [
     badge: null,
     featured: false,
   },
+  {
+    name: 'Article 001 - Knitted Polo Shirt',
+    slug: 'article-001-knitted-polo',
+    price: 4000,
+    originalPrice: 4000,
+    category: 'premium',
+    sizes: ['S', 'M', 'L', 'XL'],
+    colors: ['#1f1f1f', '#f5f5f0'],
+    colorNames: ['Charcoal', 'Ivory'],
+    inStock: true,
+    stockCount: 40,
+    thumbnail: '/assets/photos/article_01/blckwh1.png',
+    images: [
+      '/assets/photos/article_01/blckwh1.png',
+      '/assets/photos/article_01/blckwh2.png',
+      '/assets/photos/article_01/blckwh3.png',
+    ],
+    rating: 4.7,
+    reviewCount: 52,
+    description:
+      'Article 001 is a textured knitted polo shirt with a clean collar and tailored silhouette. Designed for smart-casual wear with a premium hand-feel.',
+    badge: 'new',
+    featured: true,
+  },
+  {
+    name: 'Article 002 - Knitted Polo Shirt',
+    slug: 'article-002-knitted-polo',
+    price: 4000,
+    originalPrice: 4000,
+    category: 'premium',
+    sizes: ['S', 'M', 'L', 'XL'],
+    colors: ['#2e4057', '#b08d57'],
+    colorNames: ['Navy', 'Camel'],
+    inStock: true,
+    stockCount: 35,
+    thumbnail: '/assets/photos/article_02/001.png',
+    images: [
+      '/assets/photos/article_02/001.png',
+      '/assets/photos/article_02/002.png',
+      '/assets/photos/article_02/003.png',
+    ],
+    rating: 4.6,
+    reviewCount: 44,
+    description:
+      'Article 002 is a modern knitted polo shirt with soft stretch comfort and a structured drape. Built for all-day wear while keeping a polished look.',
+    badge: 'premium',
+    featured: true,
+  },
 ];
 
 const discountCodes = [
@@ -151,7 +200,8 @@ const seed = async () => {
   // Clear existing data
   await Product.deleteMany();
   await DiscountCode.deleteMany();
-  console.log('🗑️  Cleared existing products and discount codes');
+  await User.deleteMany();
+  console.log('🗑️  Cleared existing products, discount codes, and users');
 
   if (clearOnly) {
     console.log('✅ Clear complete. Exiting.\n');
@@ -166,6 +216,15 @@ const seed = async () => {
   // Insert discount codes
   const codes = await DiscountCode.insertMany(discountCodes);
   console.log(`✅ Seeded ${codes.length} discount codes`);
+
+  // Seed Admin User (requested default credentials)
+  await User.create({
+    name: 'Admin User',
+    email: 'admin@karigar',
+    password: 'ahmed96955',
+    role: 'admin',
+  });
+  console.log('✅ Seeded admin user (admin@karigar / ahmed96955)');
 
   console.log('\nReady! Start the server with: npm run dev\n');
   await mongoose.connection.close();
