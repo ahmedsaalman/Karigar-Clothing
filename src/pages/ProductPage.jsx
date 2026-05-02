@@ -1,24 +1,27 @@
 // src/pages/ProductsPage.jsx
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo, useTransition } from 'react';
+import * as pkg from 'react-window';
+const { FixedSizeList: List } = pkg;
 import ProductCard from '../components/ProductCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import SectionTitle from '../components/SectionTitle';
 import useFetch from '../hooks/useFetch';
-import useDebounce from '../hooks/useDebounce';
 import { getProducts, searchProducts } from '../services/productService';
 
 function ProductsPage() {
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterQuery, setFilterQuery] = useState('');
   const [sortBy, setSortBy] = useState('default');
   const [filterCategory, setFilterCategory] = useState('all');
   const [searchResults, setSearchResults] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [viewMode, setViewMode] = useState('grid');
+  const [isPending, startTransition] = useTransition();
 
   const searchInputRef = useRef(null);
-  const debouncedQuery = useDebounce(searchQuery, 500);
 
   const {
     data: allProducts,
@@ -34,9 +37,9 @@ function ProductsPage() {
     }
   }, []);
 
-  // Search effect — uses debouncedQuery from custom hook
+  // Search effect
   useEffect(() => {
-    if (!debouncedQuery.trim()) {
+    if (!filterQuery.trim()) {
       setSearchResults(null);
       return;
     }
@@ -44,7 +47,7 @@ function ProductsPage() {
     async function runSearch() {
       try {
         setIsSearching(true);
-        const results = await searchProducts(debouncedQuery);
+        const results = await searchProducts(filterQuery);
         setSearchResults(results);
       } catch (err) {
         setSearchResults([]);
@@ -54,7 +57,7 @@ function ProductsPage() {
     }
 
     runSearch();
-  }, [debouncedQuery]);
+  }, [filterQuery]);
 
   const baseProducts = searchResults !== null
     ? searchResults
@@ -95,7 +98,10 @@ function ProductsPage() {
 
   const handleClearSearch = useCallback(() => {
     setSearchQuery('');
-    setSearchResults(null);
+    startTransition(() => {
+      setFilterQuery('');
+      setSearchResults(null);
+    });
     if (searchInputRef.current) {
       searchInputRef.current.focus();
     }
@@ -116,7 +122,12 @@ function ProductsPage() {
             type="text"
             placeholder="Search shirts..."
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            onChange={e => {
+              setSearchQuery(e.target.value);
+              startTransition(() => {
+                setFilterQuery(e.target.value);
+              });
+            }}
             style={styles.searchInput}
           />
           {searchQuery && (
@@ -127,6 +138,34 @@ function ProductsPage() {
         </div>
 
         <div style={styles.controls}>
+          <div style={styles.filterGroup}>
+            <span style={styles.controlLabel}>View:</span>
+            <div style={styles.filterButtons}>
+              <button 
+                onClick={() => setViewMode('grid')}
+                style={{
+                  ...styles.filterBtn,
+                  backgroundColor: viewMode === 'grid' ? '#1a1a1a' : 'transparent',
+                  color: viewMode === 'grid' ? '#ffffff' : '#555',
+                  borderColor: viewMode === 'grid' ? '#1a1a1a' : '#ddd',
+                }}
+              >
+                Grid
+              </button>
+              <button 
+                onClick={() => setViewMode('list')}
+                style={{
+                  ...styles.filterBtn,
+                  backgroundColor: viewMode === 'list' ? '#1a1a1a' : 'transparent',
+                  color: viewMode === 'list' ? '#ffffff' : '#555',
+                  borderColor: viewMode === 'list' ? '#1a1a1a' : '#ddd',
+                }}
+              >
+                List
+              </button>
+            </div>
+          </div>
+
           <div style={styles.filterGroup}>
             <span style={styles.controlLabel}>Category:</span>
             <div style={styles.filterButtons}>
@@ -191,8 +230,23 @@ function ProductsPage() {
                 Show All Products
               </button>
             </div>
+          ) : viewMode === 'list' ? (
+            <div style={{ opacity: isPending ? 0.6 : 1, transition: 'opacity 0.2s', width: '100%', maxWidth: '800px', margin: '0 auto' }}>
+              <List
+                height={800}
+                itemCount={processedProducts.length}
+                itemSize={500}
+                width={'100%'}
+              >
+                {({ index, style }) => (
+                  <div style={{ ...style, paddingBottom: '24px' }}>
+                    <ProductCard product={processedProducts[index]} />
+                  </div>
+                )}
+              </List>
+            </div>
           ) : (
-            <div style={styles.grid}>
+            <div style={{ ...styles.grid, opacity: isPending ? 0.6 : 1, transition: 'opacity 0.2s' }}>
               {processedProducts.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}

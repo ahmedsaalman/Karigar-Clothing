@@ -6,6 +6,8 @@ import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import useForm from '../hooks/useForm';
 import FormField from '../components/FormField';
+import withAuthGuard from '../components/withAuthGuard';
+import { postRequest } from '../services/apiClient';
 
 const VALIDATION_RULES = {
   firstName: {
@@ -87,7 +89,16 @@ const PROVINCES = [
 ];
 
 function CheckoutPage() {
-  const { cartItems, grandTotal, cartCount, clearCart } = useCart();
+  const {
+    cartItems,
+    grandTotal,
+    cartCount,
+    clearCart,
+    subtotal,
+    shipping,
+    discountCode,
+    discountPercent,
+  } = useCart();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -112,14 +123,40 @@ function CheckoutPage() {
   }
 
   async function onSubmit(formValues) {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const payload = {
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          size: item.size,
+          quantity: item.quantity,
+        })),
+        shippingAddress: {
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          email: formValues.email,
+          phone: formValues.phone,
+          address: formValues.address,
+          city: formValues.city,
+          province: formValues.province,
+          postalCode: formValues.postalCode,
+        },
+        paymentMethod: formValues.paymentMethod,
+        orderNotes: formValues.orderNotes,
+        discountCode,
+        discountPercent,
+        subtotal,
+        shipping,
+        grandTotal,
+      };
 
-    const newOrderId = `KRG-${Date.now().toString().slice(-6)}`;
-    setOrderId(newOrderId);
-    setOrderPlaced(true);
-    clearCart();
-    showSuccess('Order placed successfully!');
+      const response = await postRequest('/orders', payload);
+      setOrderId(response.order.orderId);
+      setOrderPlaced(true);
+      clearCart();
+      showSuccess('Order placed successfully!');
+    } catch (error) {
+      showError(error.message || 'Could not place order');
+    }
   }
 
   if (cartItems.length === 0 && !orderPlaced) {
@@ -702,4 +739,4 @@ const styles = {
   },
 };
 
-export default CheckoutPage;
+export default withAuthGuard(CheckoutPage);

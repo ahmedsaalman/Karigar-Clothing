@@ -7,6 +7,8 @@ import { useToast } from '../context/ToastContext';
 import { useWishlistContext } from '../context/WishlistContext';
 import Badge from './Badge';
 import PriceDisplay from './PriceDisplay';
+import LazyImage from './LazyImage';
+import { memo } from 'react';
 
 function ProductCard({ product }) {
   const { addToCart } = useCart();
@@ -63,7 +65,7 @@ function ProductCard({ product }) {
     <article style={{ ...styles.card, opacity: inStock ? 1 : 0.75 }}>
 
       <div style={styles.imageContainer}>
-        <img
+        <LazyImage
           src={image}
           alt={name}
           style={styles.image}
@@ -338,4 +340,6 @@ const styles = {
   },
 };
 
-export default ProductCard;
+export default memo(ProductCard, (prevProps, nextProps) => {
+  return prevProps.product.id === nextProps.product.id;
+});

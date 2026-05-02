@@ -25,14 +25,6 @@ const initialState = {
   discountPercent: 0,
 };
 
-// ── DISCOUNT CODES ────────────────────────────────────
-// In a real app this would come from the backend
-const VALID_DISCOUNT_CODES = {
-  'KARIGAR10': 10,
-  'NEWUSER20': 20,
-  'PREMIUM15': 15,
-};
-
 // ── THE REDUCER ───────────────────────────────────────
 // One function handles ALL cart state changes
 // Pure function: same inputs always give same output
@@ -126,18 +118,11 @@ function cartReducer(state, action) {
 
     // ── APPLY DISCOUNT ────────────────────────────────
     case CART_ACTIONS.APPLY_DISCOUNT: {
-      const code = action.payload.toUpperCase();
-      const percent = VALID_DISCOUNT_CODES[code];
-
-      if (!percent) {
-        // Invalid code — return state unchanged
-        // We signal the error differently (see below)
-        return state;
-      }
+      const { code, percent } = action.payload;
 
       return {
         ...state,
-        discountCode: code,
+        discountCode: code.toUpperCase(),
         discountPercent: percent,
       };
     }
@@ -198,21 +183,11 @@ function CartProvider({ children }) {
     dispatch({ type: CART_ACTIONS.CLEAR });
   }
 
-  function applyDiscount(code) {
-    const upperCode = code.toUpperCase();
-    const isValid = VALID_DISCOUNT_CODES[upperCode] !== undefined;
-
-    if (!isValid) {
-      // Return false so the component knows it failed
-      return false;
-    }
-
+  function applyDiscount(code, percent) {
     dispatch({
       type: CART_ACTIONS.APPLY_DISCOUNT,
-      payload: code,
+      payload: { code, percent },
     });
-
-    return true;  // signal success
   }
 
   function removeDiscount() {

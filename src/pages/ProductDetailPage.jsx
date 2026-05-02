@@ -11,6 +11,7 @@ import { getProductById } from '../services/productService';
 
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import ImageZoomPortal from '../components/ImageZoomPortal';
 
 function ProductDetailPage() {
 
@@ -31,6 +32,7 @@ function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
 
   // ── FETCH PRODUCT ───────────────────────────────────
   // Re-runs if productId changes (user navigates to different product)
@@ -124,7 +126,8 @@ function handleAddToCart() {
             <img
               src={product.images?.[selectedImage] || product.image}
               alt={product.name}
-              style={styles.mainImage}
+              style={{ ...styles.mainImage, cursor: 'zoom-in' }}
+              onClick={() => setIsZoomOpen(true)}
               onError={(e) => {
                 e.target.src = 'https://via.placeholder.com/600x700?text=Karigar+Co.';
               }}
@@ -328,6 +331,13 @@ function handleAddToCart() {
         </div>
       </div>
 
+      {isZoomOpen && (
+        <ImageZoomPortal
+          images={product.images || [product.image]}
+          initialIndex={selectedImage}
+          onClose={() => setIsZoomOpen(false)}
+        />
+      )}
     </div>
   );
 }

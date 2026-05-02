@@ -22,9 +22,9 @@ function Footer() {
           <div>
             <h4 style={styles.colTitle}>Quick Links</h4>
             <ul style={styles.linkList}>
-              <li><a href="#" style={styles.link}>Home</a></li>
-              <li><a href="#" style={styles.link}>Collection</a></li>
-              <li><a href="#" style={styles.link}>Size Guide</a></li>
+              <li><a href="/" style={styles.link}>Home</a></li>
+              <li><a href="/products" style={styles.link}>Collection</a></li>
+              <li><a href="/faq" style={styles.link}>FAQs</a></li>
               <li><a href="#" style={styles.link}>Care Instructions</a></li>
             </ul>
           </div>

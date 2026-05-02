@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlistContext } from '../context/WishlistContext';
+import { useAuth } from '../context/AuthContext';
 import SearchFocusButton from './SearchFocusButton';
 import { useWindowSize } from '../hooks/useWindowSize';
 
@@ -11,6 +12,7 @@ function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlistContext();
+  const { isAuthenticated, logout, user } = useAuth();
   const navigate = useNavigate();
   const { isMobile } = useWindowSize();
 
@@ -55,6 +57,15 @@ function Header() {
                 {link.label}
               </NavLink>
             ))}
+            {isAuthenticated ? (
+              <button style={{ ...styles.navLink, background: 'none', border: 'none', cursor: 'pointer', borderBottom: '2px solid transparent' }} onClick={logout}>
+                Logout
+              </button>
+            ) : (
+              <NavLink to="/login" style={getNavLinkStyle}>
+                Login
+              </NavLink>
+            )}
           </nav>
         )}
 
@@ -123,6 +134,28 @@ function Header() {
           >
             Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
           </NavLink>
+          {isAuthenticated ? (
+            <button
+              style={{ ...styles.mobileNavLink, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: '#ffffff' }}
+              onClick={() => {
+                logout();
+                setIsMenuOpen(false);
+              }}
+            >
+              Logout
+            </button>
+          ) : (
+            <NavLink
+              to="/login"
+              style={({ isActive }) => ({
+                ...styles.mobileNavLink,
+                color: isActive ? '#d4af37' : '#ffffff',
+              })}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Login
+            </NavLink>
+          )}
         </nav>
       )}
 

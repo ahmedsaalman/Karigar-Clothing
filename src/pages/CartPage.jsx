@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import { postRequest } from '../services/apiClient';
 
 function CartPage() {
   const {
@@ -51,28 +52,21 @@ function CartPage() {
     }
   }
 
-  function handleApplyDiscount() {
+  async function handleApplyDiscount() {
     if (!discountInput.trim()) return;
 
     setDiscountLoading(true);
-
-    // Simulate API call delay
-    setTimeout(() => {
-      const success = applyDiscount(discountInput);
-
-      if (success) {
-        showSuccess(`Discount code applied! ${discountInput.toUpperCase()} — ${VALID_PERCENT}% off`);
-        setDiscountInput('');
-      } else {
-        showError('Invalid discount code. Try KARIGAR10, NEWUSER20, or PREMIUM15');
-      }
-
+    try {
+      const response = await postRequest('/discounts/validate', { code: discountInput });
+      applyDiscount(response.code, response.discountPercent);
+      showSuccess(`Discount applied! ${response.code} — ${response.discountPercent}% off`);
+      setDiscountInput('');
+    } catch (error) {
+      showError(error.message || 'Invalid discount code');
+    } finally {
       setDiscountLoading(false);
-    }, 800);
+    }
   }
-
-  // Helper to get percent for toast message
-  const VALID_PERCENT = discountPercent;
 
   // ── EMPTY CART ────────────────────────────────────
   if (cartItems.length === 0) {
@@ -282,7 +276,7 @@ function CartPage() {
           </div>
 
           {/* Checkout Button */}
-          <button style={styles.checkoutBtn}>
+          <button style={styles.checkoutBtn} onClick={() => navigate('/checkout')}>
             Proceed to Checkout
           </button>
 

@@ -4,6 +4,9 @@ import { Outlet } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useCart } from '../context/CartContext';
+import { Suspense } from 'react';
+import ErrorBoundary from '../components/ErrorBoundary';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function RootLayout() {
 
@@ -19,7 +22,11 @@ function RootLayout() {
           No more context prop needed on Outlet.
           Pages get cart data from useCart() directly.
         */}
-        <Outlet />
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingSpinner message="Loading page..." />}>
+            <Outlet />
+          </Suspense>
+        </ErrorBoundary>
       </main>
       <Footer />
     </div>
