@@ -35,11 +35,16 @@ export function AuthProvider({ children }) {
   }, []);
 
   const register = async (name, email, password) => {
-    const newUser = await authService.register(name, email, password);
-    setUser(newUser);
-    setIsAuthenticated(true);
-    showSuccess('Account created! Welcome to Karigar.');
-    return newUser;
+    try {
+      const newUser = await authService.register(name, email, password);
+      setUser(newUser);
+      setIsAuthenticated(true);
+      showSuccess('Account created! Welcome to Karigar.');
+      return newUser;
+    } catch (error) {
+      showError(error.message || 'Registration failed');
+      throw error;
+    }
   };
 
   const login = async (email, password) => {

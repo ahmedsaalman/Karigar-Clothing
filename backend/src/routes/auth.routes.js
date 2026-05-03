@@ -12,17 +12,16 @@ const { protect } = require('../middleware/auth.middleware');
 
 const router = express.Router();
 
-// Validation rules
 const registerValidation = [
   body('name').trim().notEmpty().withMessage('Name is required'),
-  body('email').isEmail().withMessage('Enter a valid email').normalizeEmail(),
+  body('email').isEmail().withMessage('Enter a valid email').toLowerCase().trim(),
   body('password')
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters'),
 ];
 
 const loginValidation = [
-  body('email').trim().notEmpty().withMessage('Email/username is required'),
+  body('email').trim().toLowerCase().notEmpty().withMessage('Email/username is required'),
   body('password').notEmpty().withMessage('Password is required'),
 ];
 

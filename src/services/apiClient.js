@@ -48,8 +48,11 @@ async function request(path, options = {}, retryOn401 = true) {
   }
 
   if (!response.ok) {
-    const msg = payload?.error?.message || payload?.message || 'Request failed';
-    throw new Error(msg);
+    let msg = payload?.error?.message || payload?.message;
+    if (!msg && payload?.errors && Array.isArray(payload.errors) && payload.errors.length > 0) {
+      msg = payload.errors[0].msg;
+    }
+    throw new Error(msg || 'Request failed');
   }
 
   return payload;
