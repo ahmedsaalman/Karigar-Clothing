@@ -6,24 +6,18 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import Badge from '../components/Badge';
 import PriceDisplay from '../components/PriceDisplay';
+import LazyImage from '../components/LazyImage';
 import { getProductById } from '../services/productService';
-
-
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import ImageZoomPortal from '../components/ImageZoomPortal';
 
 function ProductDetailPage() {
-
-  // Get the :productId from the URL
   const { productId } = useParams();
-
-  // Get cart function from RootLayout's Outlet context
-    const { addToCart } = useCart();
-    const { showSuccess, showError } = useToast();
+  const { addToCart } = useCart();
+  const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
 
-  // ── STATE ───────────────────────────────────────────
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,556 +27,542 @@ function ProductDetailPage() {
   const [addedToCart, setAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
-  const [touchStartX, setTouchStartX] = useState(null);
 
-  // ── FETCH PRODUCT ───────────────────────────────────
-  // Re-runs if productId changes (user navigates to different product)
   useEffect(() => {
     async function loadProduct() {
       try {
         setIsLoading(true);
         setError(null);
-        // Reset selections when product changes
         setSelectedSize(null);
         setSelectedImage(0);
 
         const data = await getProductById(productId);
         setProduct(data);
-
       } catch (err) {
         setError(err.message);
       } finally {
         setIsLoading(false);
       }
     }
-
     loadProduct();
+    window.scrollTo(0, 0);
   }, [productId]);
-  // productId in dependency array means:
-  // "Re-run this effect when productId changes"
 
-
-  // ── HANDLERS ────────────────────────────────────────
-function handleAddToCart() {
-  if (!selectedSize) {
-    showError('Please select a size first');
-    return;
-  }
-  for (let i = 0; i < quantity; i++) {
-    addToCart(product, selectedSize);
-  }
-  showSuccess(
-    `${quantity} × ${product.name} (${selectedSize}) added to cart!`
-  );
-  setAddedToCart(true);
-  setTimeout(() => setAddedToCart(false), 2000);
-}
-
-function handleTouchStart(event) {
-  setTouchStartX(event.changedTouches[0].clientX);
-}
-
-function handleTouchEnd(event) {
-  if (touchStartX === null || !product?.images || product.images.length <= 1) return;
-  const endX = event.changedTouches[0].clientX;
-  const deltaX = touchStartX - endX;
-  const threshold = 40;
-
-  if (deltaX > threshold) {
-    setSelectedImage((prev) => (prev + 1) % product.images.length);
-  } else if (deltaX < -threshold) {
-    setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length);
+  function handleAddToCart() {
+    if (!selectedSize) {
+      showError('Please select a size first');
+      return;
+    }
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product, selectedSize);
+    }
+    showSuccess(`${quantity} × ${product.name} (${selectedSize}) added to cart!`);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2200);
   }
 
-  setTouchStartX(null);
-}
+  if (isLoading) return <LoadingSpinner message="Refining product details..." />;
+  if (error) return <ErrorMessage message={error} onRetry={() => navigate(`/products/${productId}`)} />;
+  if (!product) return <ErrorMessage message="Product not found" />;
 
+  const images = product.images || [product.image];
 
-  // ── LOADING STATE ────────────────────────────────────
-  if (isLoading) {
-    return <LoadingSpinner message="Loading product details..." />;
-  }
-
-  // ── ERROR STATE ──────────────────────────────────────
-  if (error) {
-    return (
-      <ErrorMessage
-        message={error}
-        onRetry={() => navigate(`/products/${productId}`)}
-      />
-    );
-  }
-
-  // ── NULL STATE (no product found) ────────────────────
-  if (!product) {
-    return (
-      <ErrorMessage message="Product not found" />
-    );
-  }
-
-
-  // ── MAIN RENDER ──────────────────────────────────────
   return (
-    <div style={styles.page}>
+    <>
+      <style>{detailCSS}</style>
+      <div className="pdp">
+        <nav className="pdp-nav">
+          <Link to="/" className="pdp-nav__link">Home</Link>
+          <span className="pdp-nav__sep">/</span>
+          <Link to="/products" className="pdp-nav__link">Collection</Link>
+          <span className="pdp-nav__sep">/</span>
+          <span className="pdp-nav__curr">{product.name}</span>
+        </nav>
 
-      {/* Breadcrumb Navigation */}
-      <nav style={styles.breadcrumb}>
-        <Link to="/" style={styles.breadcrumbLink}>Home</Link>
-        <span style={styles.breadcrumbSep}>/</span>
-        <Link to="/products" style={styles.breadcrumbLink}>Collection</Link>
-        <span style={styles.breadcrumbSep}>/</span>
-        <span style={styles.breadcrumbCurrent}>{product.name}</span>
-      </nav>
-
-
-      {/* Main Product Section */}
-      <div style={styles.productSection}>
-
-        {/* LEFT: Image Gallery */}
-        <div style={styles.gallery}>
-
-          {/* Main Image */}
-          <div
-            style={styles.mainImageContainer}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <img
-              src={product.images?.[selectedImage] || product.image}
-              alt={product.name}
-              style={{ ...styles.mainImage, cursor: 'zoom-in' }}
-              onClick={() => setIsZoomOpen(true)}
-              onError={(e) => {
-                e.target.src = 'https://via.placeholder.com/600x700?text=Karigar+Co.';
-              }}
-            />
-            {/* Badge on main image */}
-            <div style={styles.badgePosition}>
-              <Badge type={product.badge} />
-            </div>
-          </div>
-
-          {/* Thumbnail Images */}
-          {product.images && product.images.length > 1 && (
-            <div style={styles.thumbnails}>
-              {product.images.map((img, index) => (
-                <div
-                  key={index}
-                  style={{
-                    ...styles.thumbnail,
-                    border: selectedImage === index
-                      ? '2px solid #1a1a1a'
-                      : '2px solid transparent',
-                  }}
-                  onClick={() => setSelectedImage(index)}
-                >
-                  <img
-                    src={img}
-                    alt={`${product.name} view ${index + 1}`}
-                    style={styles.thumbnailImage}
-                    onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/80x80';
-                    }}
-                  />
+        <div className="pdp-main">
+          {/* Gallery */}
+          <div className="pdp-gallery">
+            <div className="pdp-gallery__main" onClick={() => setIsZoomOpen(true)}>
+              <LazyImage
+                src={images[selectedImage]}
+                alt={product.name}
+                className="pdp-gallery__img"
+              />
+              {product.badge && (
+                <div className="pdp-gallery__badge">
+                  <Badge type={product.badge} />
                 </div>
-              ))}
+              )}
+              <div className="pdp-gallery__zoom-hint">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                <span>Click to zoom</span>
+              </div>
             </div>
-          )}
 
-        </div>
-
-
-        {/* RIGHT: Product Info */}
-        <div style={styles.info}>
-
-          {/* Name and Rating */}
-          <h1 style={styles.productName}>{product.name}</h1>
-
-          <div style={styles.ratingRow}>
-            <span style={styles.stars}>
-              {'★'.repeat(Math.floor(product.rating))}
-              {'☆'.repeat(5 - Math.floor(product.rating))}
-            </span>
-            <span style={styles.ratingText}>
-              {product.rating} ({product.reviewCount} reviews)
-            </span>
-          </div>
-
-          {/* Price */}
-          <div style={styles.priceSection}>
-            <PriceDisplay
-              price={product.price}
-              originalPrice={product.originalPrice}
-            />
-          </div>
-
-          {/* Description */}
-          <p style={styles.description}>{product.description}</p>
-
-          <div style={styles.divider} />
-
-          {/* Color Selection */}
-          <div style={styles.selectionSection}>
-            <p style={styles.selectionLabel}>
-              Color:
-              <span style={styles.selectionValue}>
-                {' '}{product.colorNames?.[selectedColor] || 'Select'}
-              </span>
-            </p>
-            <div style={styles.colorSwatches}>
-              {product.colors?.map((color, index) => (
+            <div className="pdp-gallery__thumbs">
+              {images.map((img, i) => (
                 <button
-                  key={index}
-                  onClick={() => setSelectedColor(index)}
-                  style={{
-                    ...styles.colorSwatch,
-                    backgroundColor: color,
-                    border: selectedColor === index
-                      ? '3px solid #1a1a1a'
-                      : '2px solid transparent',
-                    outline: selectedColor === index
-                      ? '2px solid #d4af37'
-                      : 'none',
-                  }}
-                  title={product.colorNames?.[index]}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Size Selection */}
-          <div style={styles.selectionSection}>
-            <p style={styles.selectionLabel}>
-              Size:
-              {selectedSize
-                ? <span style={styles.selectionValue}> {selectedSize}</span>
-                : <span style={{ color: '#e74c3c', fontStyle: 'italic' }}>
-                    {' '}Required — select one
-                  </span>
-              }
-            </p>
-            <div style={styles.sizeButtons}>
-              {product.sizes?.map(size => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(
-                    selectedSize === size ? null : size
-                  )}
-                  style={{
-                    ...styles.sizeBtn,
-                    backgroundColor: selectedSize === size
-                      ? '#1a1a1a' : '#ffffff',
-                    color: selectedSize === size ? '#ffffff' : '#333',
-                    borderColor: selectedSize === size
-                      ? '#1a1a1a' : '#ddd',
-                  }}
+                  key={i}
+                  className={`pdp-gallery__thumb ${selectedImage === i ? 'pdp-gallery__thumb--active' : ''}`}
+                  onClick={() => setSelectedImage(i)}
                 >
-                  {size}
+                  <img src={img} alt="" />
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Quantity */}
-          <div style={styles.selectionSection}>
-            <p style={styles.selectionLabel}>Quantity:</p>
-            <div style={styles.quantityControl}>
+          {/* Info */}
+          <div className="pdp-info">
+            <header className="pdp-header">
+              <h1 className="pdp-title">{product.name}</h1>
+              <div className="pdp-rating">
+                <div className="pdp-stars">
+                  {[...Array(5)].map((_, i) => (
+                    <svg
+                      key={i}
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill={i < Math.floor(product.rating) ? '#c9a84c' : 'rgba(255,255,255,0.1)'}
+                      stroke={i < Math.floor(product.rating) ? '#c9a84c' : 'rgba(255,255,255,0.2)'}
+                    >
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                  ))}
+                </div>
+                <span className="pdp-rating-text">{product.rating} ({product.reviewCount} reviews)</span>
+              </div>
+            </header>
+
+            <div className="pdp-price">
+              <PriceDisplay price={product.price} originalPrice={product.originalPrice} />
+            </div>
+
+            <p className="pdp-desc">{product.description}</p>
+
+            <div className="pdp-divider" />
+
+            {/* Colors */}
+            <div className="pdp-option">
+              <label className="pdp-option__label">
+                Color: <span>{product.colorNames?.[selectedColor]}</span>
+              </label>
+              <div className="pdp-swatches">
+                {product.colors?.map((color, i) => (
+                  <button
+                    key={i}
+                    className={`pdp-swatch ${selectedColor === i ? 'pdp-swatch--active' : ''}`}
+                    style={{ backgroundColor: color }}
+                    onClick={() => setSelectedColor(i)}
+                    title={product.colorNames?.[i]}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Sizes */}
+            <div className="pdp-option">
+              <label className="pdp-option__label">
+                Size: <span className={!selectedSize ? 'pdp-option__req' : ''}>{selectedSize || 'Select Size'}</span>
+              </label>
+              <div className="pdp-sizes">
+                {product.sizes?.map(size => (
+                  <button
+                    key={size}
+                    className={`pdp-size-btn ${selectedSize === size ? 'pdp-size-btn--active' : ''}`}
+                    onClick={() => setSelectedSize(size === selectedSize ? null : size)}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Quantity */}
+            <div className="pdp-option">
+              <label className="pdp-option__label">Quantity:</label>
+              <div className="pdp-qty">
+                <button className="pdp-qty__btn" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <span className="pdp-qty__val">{quantity}</span>
+                <button className="pdp-qty__btn" onClick={() => setQuantity(q => Math.min(10, q + 1))}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Stock */}
+            <div className={`pdp-stock ${product.inStock ? 'pdp-stock--in' : 'pdp-stock--out'}`}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                {product.inStock 
+                  ? <polyline points="20 6 9 17 4 12" />
+                  : <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
+                }
+              </svg>
+              <span>{product.inStock ? `In Stock (${product.stockCount} available)` : 'Out of Stock'}</span>
+            </div>
+
+            {/* Actions */}
+            <div className="pdp-actions">
               <button
-                onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                style={styles.quantityBtn}
+                className={`pdp-cart-btn ${addedToCart ? 'pdp-cart-btn--success' : ''}`}
+                disabled={!product.inStock}
+                onClick={handleAddToCart}
               >
-                −
+                {addedToCart ? (
+                  <><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ marginRight: '8px' }}><polyline points="20 6 9 17 4 12" /></svg>Added!</>
+                ) : (
+                  product.inStock ? `Add to Cart` : 'Out of Stock'
+                )}
               </button>
-              <span style={styles.quantityDisplay}>{quantity}</span>
-              <button
-                onClick={() => setQuantity(q => Math.min(10, q + 1))}
-                style={styles.quantityBtn}
-              >
-                +
+              <button className="pdp-wish-btn" onClick={() => navigate('/cart')}>
+                View Shopping Cart
               </button>
             </div>
-          </div>
 
-          {/* Stock info */}
-          <p style={{
-            fontSize: '0.85rem',
-            color: product.inStock ? '#27ae60' : '#e74c3c',
-            fontWeight: '600',
-          }}>
-            {product.inStock
-              ? `✓ In Stock (${product.stockCount} available)`
-              : '✕ Out of Stock'
-            }
-          </p>
-
-          {/* Action Buttons */}
-          <div style={styles.actionButtons}>
-            <button
-              onClick={handleAddToCart}
-              disabled={!product.inStock}
-              style={{
-                ...styles.addToCartBtn,
-                backgroundColor: addedToCart
-                  ? '#27ae60'
-                  : product.inStock ? '#1a1a1a' : '#ddd',
-                cursor: product.inStock ? 'pointer' : 'not-allowed',
-              }}
-            >
-              {addedToCart
-                ? `✓ Added ${quantity} to Cart!`
-                : product.inStock
-                  ? `Add ${quantity > 1 ? `${quantity} ` : ''}to Cart`
-                  : 'Out of Stock'
-              }
-            </button>
-
-            <button
-              onClick={() => navigate('/cart')}
-              style={styles.viewCartBtn}
-            >
-              View Cart
+            <button className="pdp-back" onClick={() => navigate('/products')}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              Back to Collection
             </button>
           </div>
-
-          {/* Back to collection */}
-          <button
-            onClick={() => navigate('/products')}
-            style={styles.backLink}
-          >
-            ← Back to Collection
-          </button>
-
         </div>
       </div>
 
       {isZoomOpen && (
         <ImageZoomPortal
-          images={product.images || [product.image]}
+          images={images}
           initialIndex={selectedImage}
           onClose={() => setIsZoomOpen(false)}
         />
       )}
-    </div>
+    </>
   );
 }
 
-const styles = {
-  page: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '40px 20px 80px',
-  },
-  breadcrumb: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    marginBottom: '40px',
-  },
-  breadcrumbLink: {
-    color: '#888',
-    textDecoration: 'none',
-    fontSize: '0.85rem',
-  },
-  breadcrumbSep: {
-    color: '#ccc',
-    fontSize: '0.85rem',
-  },
-  breadcrumbCurrent: {
-    color: '#1a1a1a',
-    fontSize: '0.85rem',
-    fontWeight: '600',
-  },
-  productSection: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '60px',
-    alignItems: 'start',
-  },
-  gallery: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-  },
-  mainImageContainer: {
-    position: 'relative',
-    borderRadius: '4px',
-    overflow: 'hidden',
-    backgroundColor: '#f5f5f5',
-    aspectRatio: '3/4',
-  },
-  mainImage: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  },
-  badgePosition: {
-    position: 'absolute',
-    top: '16px',
-    left: '16px',
-  },
-  thumbnails: {
-    display: 'flex',
-    gap: '8px',
-  },
-  thumbnail: {
-    width: '70px',
-    height: '70px',
-    borderRadius: '2px',
-    overflow: 'hidden',
-    cursor: 'pointer',
-    flexShrink: 0,
-  },
-  thumbnailImage: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  },
-  info: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-  },
-  productName: {
-    fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-    fontWeight: '700',
-    color: '#1a1a1a',
-    letterSpacing: '0.5px',
-    lineHeight: '1.2',
-  },
-  ratingRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-  },
-  stars: {
-    color: '#d4af37',
-    fontSize: '1rem',
-  },
-  ratingText: {
-    color: '#888',
-    fontSize: '0.85rem',
-  },
-  priceSection: {
-    padding: '16px 0',
-    borderTop: '1px solid #f0f0f0',
-    borderBottom: '1px solid #f0f0f0',
-  },
-  description: {
-    color: '#555',
-    fontSize: '0.95rem',
-    lineHeight: '1.8',
-  },
-  divider: {
-    height: '1px',
-    backgroundColor: '#f0f0f0',
-  },
-  selectionSection: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-  },
-  selectionLabel: {
-    fontSize: '0.85rem',
-    color: '#555',
-    fontWeight: '600',
-  },
-  selectionValue: {
-    color: '#1a1a1a',
-    fontWeight: '700',
-  },
-  colorSwatches: {
-    display: 'flex',
-    gap: '8px',
-  },
-  colorSwatch: {
-    width: '28px',
-    height: '28px',
-    borderRadius: '50%',
-    cursor: 'pointer',
-    transition: 'transform 0.15s',
-  },
-  sizeButtons: {
-    display: 'flex',
-    gap: '8px',
-    flexWrap: 'wrap',
-  },
-  sizeBtn: {
-    padding: '10px 18px',
-    border: '1px solid #ddd',
-    fontSize: '0.85rem',
-    cursor: 'pointer',
-    transition: 'all 0.15s',
-    borderRadius: '2px',
-    fontWeight: '600',
-  },
-  quantityControl: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0',
-    width: 'fit-content',
-    border: '1px solid #ddd',
-    borderRadius: '2px',
-    overflow: 'hidden',
-  },
-  quantityBtn: {
-    width: '40px',
-    height: '40px',
-    border: 'none',
-    backgroundColor: '#f5f5f5',
-    fontSize: '1.2rem',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  quantityDisplay: {
-    width: '48px',
-    textAlign: 'center',
-    fontSize: '1rem',
-    fontWeight: '600',
-    borderLeft: '1px solid #ddd',
-    borderRight: '1px solid #ddd',
-    lineHeight: '40px',
-  },
-  actionButtons: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-  },
-  addToCartBtn: {
-    padding: '16px',
-    border: 'none',
-    color: '#ffffff',
-    fontSize: '0.9rem',
-    fontWeight: '700',
-    letterSpacing: '1.5px',
-    textTransform: 'uppercase',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-    borderRadius: '2px',
-  },
-  viewCartBtn: {
-    padding: '16px',
-    backgroundColor: 'transparent',
-    color: '#1a1a1a',
-    border: '1px solid #1a1a1a',
-    fontSize: '0.9rem',
-    fontWeight: '700',
-    letterSpacing: '1.5px',
-    textTransform: 'uppercase',
-    cursor: 'pointer',
-    borderRadius: '2px',
-  },
-  backLink: {
-    background: 'none',
-    border: 'none',
-    color: '#888',
-    fontSize: '0.85rem',
-    cursor: 'pointer',
-    textAlign: 'left',
-    padding: 0,
-    textDecoration: 'underline',
-  },
-};
+const detailCSS = `
+  .pdp {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 100px 24px;
+    background: #0a0a0a;
+  }
+  .pdp-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 48px;
+    font-family: 'Inter', sans-serif;
+  }
+  .pdp-nav__link {
+    color: #4a3f35;
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+  .pdp-nav__link:hover { color: #c9a84c; }
+  .pdp-nav__sep { color: #2a2218; font-size: 0.7rem; }
+  .pdp-nav__curr { color: #f5efe6; font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+
+  .pdp-main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  @media (min-width: 900px) {
+    .pdp-main { grid-template-columns: 1.2fr 1fr; }
+  }
+
+  /* Gallery */
+  .pdp-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .pdp-gallery__main {
+    position: relative;
+    aspect-ratio: 3/4;
+    background: #141414;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: zoom-in;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .pdp-gallery__badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 5;
+  }
+  .pdp-gallery__zoom-hint {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(10,10,10,0.6);
+    backdrop-filter: blur(8px);
+    padding: 8px 16px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #f5efe6;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+  }
+  .pdp-gallery__main:hover .pdp-gallery__zoom-hint {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .pdp-gallery__thumbs {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  .pdp-gallery__thumb {
+    width: 80px;
+    height: 100px;
+    flex-shrink: 0;
+    background: #141414;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 0;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pdp-gallery__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+  .pdp-gallery__thumb:hover img { opacity: 0.8; }
+  .pdp-gallery__thumb--active {
+    border-color: #c9a84c;
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.2);
+  }
+  .pdp-gallery__thumb--active img { opacity: 1; }
+
+  /* Info */
+  .pdp-info {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .pdp-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: #f5efe6;
+    margin: 0;
+    line-height: 1.1;
+  }
+  .pdp-rating {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .pdp-stars { display: flex; gap: 4px; }
+  .pdp-rating-text {
+    font-size: 0.75rem;
+    color: #4a3f35;
+    letter-spacing: 0.5px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .pdp-price {
+    padding: 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .pdp-desc {
+    color: #b0a090;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin: 0;
+  }
+  .pdp-divider { height: 1px; background: rgba(255,255,255,0.06); }
+
+  /* Options */
+  .pdp-option {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .pdp-option__label {
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #4a3f35;
+    font-weight: 700;
+  }
+  .pdp-option__label span { color: #f5efe6; margin-left: 8px; }
+  .pdp-option__req { color: #e87b7b !important; font-style: italic; opacity: 0.8; }
+
+  .pdp-swatches { display: flex; gap: 12px; }
+  .pdp-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #0a0a0a;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pdp-swatch--active {
+    box-shadow: 0 0 0 2px #c9a84c;
+    transform: scale(1.15);
+  }
+
+  .pdp-sizes { display: flex; gap: 10px; flex-wrap: wrap; }
+  .pdp-size-btn {
+    min-width: 52px;
+    height: 44px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #b0a090;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+  }
+  .pdp-size-btn:hover { border-color: rgba(201,168,76,0.5); color: #f5efe6; }
+  .pdp-size-btn--active {
+    background: #c9a84c;
+    color: #0a0a0a;
+    border-color: #c9a84c;
+    font-weight: 700;
+  }
+
+  /* Qty */
+  .pdp-qty {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .pdp-qty__btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: transparent;
+    color: #b0a090;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pdp-qty__btn:hover { background: rgba(255,255,255,0.05); color: #f5efe6; }
+  .pdp-qty__val {
+    width: 50px;
+    text-align: center;
+    color: #f5efe6;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Stock */
+  .pdp-stock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .pdp-stock--in { color: #4caf7d; }
+  .pdp-stock--out { color: #e87b7b; }
+
+  /* Actions */
+  .pdp-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 10px;
+  }
+  .pdp-cart-btn {
+    width: 100%;
+    padding: 20px;
+    background: #c9a84c;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pdp-cart-btn:hover:not(:disabled) {
+    background: #e0c06e;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(201,168,76,0.3);
+  }
+  .pdp-cart-btn--success {
+    background: #4caf7d !important;
+    color: #fff !important;
+  }
+  .pdp-cart-btn:disabled {
+    background: #1a1a1a;
+    color: #4a3f35;
+    cursor: not-allowed;
+  }
+
+  .pdp-wish-btn {
+    width: 100%;
+    padding: 18px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #b0a090;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pdp-wish-btn:hover {
+    border-color: rgba(255,255,255,0.3);
+    color: #f5efe6;
+    background: rgba(255,255,255,0.03);
+  }
+
+  .pdp-back {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    color: #4a3f35;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px 0;
+    transition: color 0.2s;
+    margin-top: 10px;
+  }
+  .pdp-back:hover { color: #c9a84c; }
+`;
 
 export default ProductDetailPage;

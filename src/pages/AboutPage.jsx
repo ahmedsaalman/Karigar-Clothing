@@ -7,25 +7,25 @@ function AboutPage() {
 
   const values = [
     {
-      icon: '🧵',
+      icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M2 12h20"/><path d="m19 9-7 7-7-7"/></svg>, // Mockup placeholder icons
       title: 'Master Craftsmanship',
       description:
         'Every shirt passes through the hands of craftsmen with decades of experience. 47 quality checks before it reaches you.',
     },
     {
-      icon: '🌿',
+      icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8a7 7 0 0 1-7 7c-1 0-2.2-.2-3-.7Z"/><path d="M7 21c0-2.5 2-3 2-3"/></svg>,
       title: 'Ethical Sourcing',
       description:
         'Our fabrics are sourced from certified mills that meet our strict standards for labor practices and environmental responsibility.',
     },
     {
-      icon: '📐',
+      icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 22 22 2"/><path d="M8 22V14"/><path d="M14 22V10"/><path d="M20 22V6"/></svg>,
       title: 'Perfect Fit',
       description:
         'We obsess over measurements. Our size guide is built from thousands of data points to ensure your shirt fits like it was made for you.',
     },
     {
-      icon: '🔄',
+      icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>,
       title: 'Lifetime Guarantee',
       description:
         'If a Karigar shirt ever fails due to craftsmanship, we replace it. No questions asked. That is our promise.',

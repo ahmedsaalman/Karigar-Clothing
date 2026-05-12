@@ -73,7 +73,11 @@ function CartPage() {
   if (cartItems.length === 0) {
     return (
       <div style={styles.emptyContainer}>
-        <div style={styles.emptyIcon}>🛒</div>
+        <div style={styles.emptyIconWrap}>
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ opacity: 0.2 }}>
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </div>
         <h2 style={styles.emptyTitle}>Your cart is empty</h2>
         <p style={styles.emptyText}>
           Browse our collection and find your perfect shirt.
@@ -144,7 +148,9 @@ function CartPage() {
                       item.id, item.size, item.quantity - 1
                     )}
                   >
-                    −
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
                   </button>
                   <span style={styles.qtyDisplay}>{item.quantity}</span>
                   <button
@@ -153,7 +159,9 @@ function CartPage() {
                       item.id, item.size, item.quantity + 1
                     )}
                   >
-                    +
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -228,7 +236,12 @@ function CartPage() {
               // Discount already applied
               <div style={styles.appliedDiscount}>
                 <div style={styles.appliedDiscountInfo}>
-                  <span style={styles.discountTag}>🏷️ {discountCode}</span>
+                  <div style={styles.discountTag}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+                      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+                    </svg>
+                    {discountCode}
+                  </div>
                   <span style={styles.discountSaving}>
                     Saving {formatPrice(discountAmount)}
                   </span>
@@ -285,7 +298,10 @@ function CartPage() {
             onClick={() => navigate('/products')}
             style={styles.continueBtn}
           >
-            ← Continue Shopping
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Continue Shopping
           </button>
 
         </div>

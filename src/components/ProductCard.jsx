@@ -49,14 +49,22 @@ function ProductCard({ product, animDelay = 0 }) {
   }
 
   function renderStars(r) {
-    const full = Math.floor(r);
-    const half = r % 1 >= 0.5;
     return (
-      <span className="pc-stars">
-        {'★'.repeat(full)}
-        {half ? '½' : ''}
-        {'☆'.repeat(5 - full - (half ? 1 : 0))}
-      </span>
+      <div className="pc-stars" style={{ display: 'flex', gap: '2px' }}>
+        {[...Array(5)].map((_, i) => (
+          <svg
+            key={i}
+            width="10"
+            height="10"
+            viewBox="0 0 24 24"
+            fill={i < Math.floor(r) ? '#c9a84c' : 'rgba(255,255,255,0.1)'}
+            stroke={i < Math.floor(r) ? '#c9a84c' : 'rgba(255,255,255,0.2)'}
+            style={{ flexShrink: 0 }}
+          >
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        ))}
+      </div>
     );
   }
 
@@ -173,7 +181,14 @@ function ProductCard({ product, animDelay = 0 }) {
               onClick={handleAddToCart}
               disabled={!inStock}
             >
-              {!inStock ? 'Out of Stock' : addedToCart ? '✓ Added!' : 'Add to Cart'}
+              {!inStock ? 'Out of Stock' : addedToCart ? (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Added!
+                </div>
+              ) : 'Add to Cart'}
             </button>
           </div>
 

@@ -163,7 +163,11 @@ function CheckoutPage() {
   if (cartItems.length === 0 && !orderPlaced) {
     return (
       <div style={styles.emptyContainer}>
-        <p style={styles.emptyIcon}>🛒</p>
+        <div style={styles.emptyIconWrap}>
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ opacity: 0.2 }}>
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </div>
         <h2 style={styles.emptyTitle}>Your cart is empty</h2>
         <button
           onClick={() => navigate('/products')}
@@ -178,7 +182,11 @@ function CheckoutPage() {
   if (orderPlaced) {
     return (
       <div style={styles.successContainer}>
-        <div style={styles.successIcon}>✓</div>
+        <div style={styles.successIcon}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
         <h1 style={styles.successTitle}>Order Placed!</h1>
         <p style={styles.successText}>
           Thank you for your order. Your order ID is{' '}
@@ -333,9 +341,21 @@ function CheckoutPage() {
             <h2 style={styles.sectionTitle}>Payment Method</h2>
             <div style={styles.paymentOptions}>
               {[
-                { value: 'cod', label: 'Cash on Delivery', icon: '💵' },
-                { value: 'bank', label: 'Bank Transfer', icon: '🏦' },
-                { value: 'easypaisa', label: 'EasyPaisa', icon: '📱' },
+                { 
+                  value: 'cod', 
+                  label: 'Cash on Delivery', 
+                  icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> 
+                },
+                { 
+                  value: 'bank', 
+                  label: 'Bank Transfer', 
+                  icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/><path d="M4 10v11"/><path d="M20 10v11"/><path d="M8 14v3"/><path d="M12 14v3"/><path d="M16 14v3"/></svg> 
+                },
+                { 
+                  value: 'easypaisa', 
+                  label: 'EasyPaisa', 
+                  icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> 
+                },
               ].map(method => (
                 <label key={method.value} style={{
                   ...styles.paymentOption,
