@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import useForm from '../hooks/useForm';
@@ -39,6 +40,9 @@ function SignUpPage() {
 
   const from = location.state?.from?.pathname || '/';
 
+  const [showAdminField, setShowAdminField] = useState(false);
+  const [roleSecret, setRoleSecret] = useState('');
+
   const {
     values,
     errors,
@@ -51,10 +55,9 @@ function SignUpPage() {
 
   const onSubmit = async (formValues) => {
     try {
-      await register(formValues.name, formValues.email, formValues.password);
+      await register(formValues.name, formValues.email, formValues.password, roleSecret);
       navigate(from, { replace: true });
     } catch (error) {
-      // Error is handled by context toast
       console.error('Registration failed', error);
     }
   };
@@ -69,51 +72,31 @@ function SignUpPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="signup-fields">
-              <FormField
-                label="Full Name"
-                name="name"
-                type="text"
-                value={values.name}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.name}
-                touched={touched.name}
-                placeholder="Jane Doe"
-                required
-              />
+              <FormField label="Full Name" name="name" type="text" value={values.name} onChange={handleChange} onBlur={handleBlur} error={errors.name} touched={touched.name} placeholder="Jane Doe" required />
+              <FormField label="Email Address" name="email" type="email" value={values.email} onChange={handleChange} onBlur={handleBlur} error={errors.email} touched={touched.email} placeholder="you@example.com" required />
+              <FormField label="Password" name="password" type="password" value={values.password} onChange={handleChange} onBlur={handleBlur} error={errors.password} touched={touched.password} placeholder="••••••••" required />
               
-              <FormField
-                label="Email Address"
-                name="email"
-                type="email"
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.email}
-                touched={touched.email}
-                placeholder="you@example.com"
-                required
-              />
-              
-              <FormField
-                label="Password"
-                name="password"
-                type="password"
-                value={values.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.password}
-                touched={touched.password}
-                placeholder="••••••••"
-                required
-              />
+              <div className="admin-toggle-wrap">
+                <button type="button" className="admin-toggle-btn" onClick={() => setShowAdminField(!showAdminField)}>
+                  {showAdminField ? 'Registering as Admin' : 'Register as Customer?'}
+                </button>
+              </div>
+
+              {showAdminField && (
+                <div className="admin-secret-field">
+                  <FormField 
+                    label="Admin Secret Key" 
+                    name="roleSecret" 
+                    value={roleSecret} 
+                    onChange={(e) => setRoleSecret(e.target.value)} 
+                    placeholder="Enter admin secret"
+                    hint="Required for admin accounts"
+                  />
+                </div>
+              )}
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="signup-submit-btn"
-            >
+            <button type="submit" disabled={isSubmitting} className="signup-submit-btn">
               {isSubmitting ? 'Signing up...' : 'Sign Up'}
             </button>
           </form>
@@ -200,7 +183,35 @@ const signupCSS = `
     display: flex;
     flex-direction: column;
     gap: 20px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
+  }
+  .admin-toggle-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+  }
+  .admin-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-gold);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: all 0.2s;
+  }
+  .admin-toggle-btn:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+  .admin-secret-field {
+    animation: fadeIn 0.3s ease;
+    padding: 15px;
+    background: rgba(255, 184, 0, 0.05);
+    border: 1px dashed var(--color-gold-dim);
+    border-radius: 8px;
   }
   .signup-submit-btn {
     width: 100%;

@@ -34,9 +34,9 @@ export function AuthProvider({ children }) {
     restoreSession();
   }, []);
 
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, roleSecret) => {
     try {
-      const newUser = await authService.register(name, email, password);
+      const newUser = await authService.register(name, email, password, roleSecret);
       setUser(newUser);
       setIsAuthenticated(true);
       showSuccess('Account created! Welcome to Karigar.');

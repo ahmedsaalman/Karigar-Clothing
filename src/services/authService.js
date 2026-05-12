@@ -6,8 +6,8 @@ import {
   registerUnauthorizedHandler,
 } from './apiClient';
 
-async function register(name, email, password) {
-  const data = await postRequest('/auth/register', { name, email, password });
+async function register(name, email, password, roleSecret) {
+  const data = await postRequest('/auth/register', { name, email, password, roleSecret });
   setAccessToken(data.token);
   return data.user;
 }

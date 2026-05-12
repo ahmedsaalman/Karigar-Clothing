@@ -68,7 +68,13 @@ const register = async (req, res, next) => {
       return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { name, email, password } = req.body;
+    const { name, email, password, roleSecret } = req.body;
+    let role = 'customer';
+
+    // Check if roleSecret matches system admin secret
+    if (roleSecret && env.adminSecret && roleSecret === env.adminSecret) {
+      role = 'admin';
+    }
 
     // Check if email already in use
     const existing = await User.findOne({ email });
@@ -76,7 +82,7 @@ const register = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Email already registered' });
     }
 
-    const user = new User({ name, email, password });
+    const user = new User({ name, email, password, role });
     const { accessToken } = issueAuthCookies(res, user);
     await user.save();
 

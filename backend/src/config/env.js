@@ -31,6 +31,7 @@ const loadEnv = () => {
     rateLimitMax: Number(process.env.RATE_LIMIT_MAX || 200),
     accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME || 'karigar_access',
     refreshTokenCookieName: process.env.REFRESH_TOKEN_COOKIE_NAME || 'karigar_refresh',
+    adminSecret: process.env.ADMIN_REGISTRATION_SECRET,
     isProd: (process.env.NODE_ENV || 'development') === 'production',
   };
 };
