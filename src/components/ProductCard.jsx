@@ -57,8 +57,8 @@ function ProductCard({ product, animDelay = 0 }) {
             width="10"
             height="10"
             viewBox="0 0 24 24"
-            fill={i < Math.floor(r) ? '#c9a84c' : 'rgba(255,255,255,0.1)'}
-            stroke={i < Math.floor(r) ? '#c9a84c' : 'rgba(255,255,255,0.2)'}
+            fill={i < Math.floor(r) ? 'var(--color-gold)' : 'rgba(255,255,255,0.1)'}
+            stroke={i < Math.floor(r) ? 'var(--color-gold)' : 'rgba(255,255,255,0.2)'}
             style={{ flexShrink: 0 }}
           >
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
@@ -215,8 +215,8 @@ const productCardCSS = `
   }
   .pc:hover, .pc--hovered {
     transform: translateY(-6px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(201,168,76,0.15);
-    border-color: rgba(201,168,76,0.2);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.55), 0 0 0 1px var(--color-gold-glow);
+    border-color: var(--color-gold-glow);
   }
   .pc--oos { opacity: 0.68; }
   .pc--oos:hover { opacity: 0.9; }
@@ -226,7 +226,7 @@ const productCardCSS = `
     position: relative;
     padding-bottom: 125%;
     overflow: hidden;
-    background: #1a1a1a;
+    background: #050505;
   }
   .pc__img {
     position: absolute !important;
@@ -249,7 +249,7 @@ const productCardCSS = `
   .pc__oos-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(10,10,10,0.65);
+    background: rgba(0,0,0,0.7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -260,13 +260,13 @@ const productCardCSS = `
     font-size: 0.7rem;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: #b0a090;
+    color: var(--color-text-secondary);
     background: rgba(20,20,20,0.9);
     padding: 8px 20px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid var(--color-border);
     border-radius: 2px;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
+    font-family: var(--font-body);
+    font-weight: 700;
   }
 
   /* Wishlist */
@@ -277,13 +277,13 @@ const productCardCSS = `
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: rgba(20,20,20,0.85);
+    background: rgba(10,10,10,0.85);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid var(--color-border);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #6b6055;
+    color: var(--color-text-muted);
     z-index: 4;
     opacity: 0;
     transform: scale(0.8);
@@ -296,13 +296,13 @@ const productCardCSS = `
   .pc__wish-btn--active {
     opacity: 1 !important;
     transform: scale(1) !important;
-    color: #e87b7b !important;
+    color: var(--color-error) !important;
     background: rgba(224,92,92,0.12) !important;
     border-color: rgba(224,92,92,0.3) !important;
     animation: heartBeat 0.5s ease;
   }
   .pc__wish-btn:hover {
-    color: #e87b7b;
+    color: var(--color-error);
     background: rgba(224,92,92,0.1);
     border-color: rgba(224,92,92,0.25);
     transform: scale(1.1) !important;
@@ -314,8 +314,7 @@ const productCardCSS = `
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(201,168,76,0.9);
-    backdrop-filter: blur(4px);
+    background: var(--color-gold);
     padding: 12px;
     text-align: center;
     transform: translateY(100%);
@@ -324,11 +323,11 @@ const productCardCSS = `
   }
   .pc__quick-view span {
     font-size: 0.72rem;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #0a0a0a;
-    font-family: 'Inter', sans-serif;
+    color: #000000;
+    font-family: var(--font-body);
   }
   .pc:hover .pc__quick-view { transform: translateY(0); }
 
@@ -342,17 +341,17 @@ const productCardCSS = `
   }
   .pc__meta { display: flex; flex-direction: column; gap: 6px; }
   .pc__name {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 1rem;
-    font-weight: 600;
-    color: #f5efe6;
+    font-weight: 700;
+    color: #ffffff;
     line-height: 1.3;
     transition: color 0.2s ease;
   }
-  .pc__name:hover { color: #c9a84c; }
+  .pc__name:hover { color: var(--color-gold); }
   .pc__rating { display: flex; align-items: center; gap: 6px; }
-  .pc-stars { color: #c9a84c; font-size: 0.78rem; letter-spacing: 1px; }
-  .pc__rev-count { color: #4a3f35; font-size: 0.74rem; }
+  .pc-stars { color: var(--color-gold); font-size: 0.78rem; letter-spacing: 1px; }
+  .pc__rev-count { color: var(--color-text-muted); font-size: 0.74rem; }
 
   /* Colors */
   .pc__colors { display: flex; gap: 6px; align-items: center; }
@@ -369,8 +368,8 @@ const productCardCSS = `
   .pc__sizes-wrap { display: flex; flex-direction: column; gap: 8px; }
   .pc__size-label {
     font-size: 0.74rem;
-    color: #4a3f35;
-    font-family: 'Inter', sans-serif;
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
   }
   .pc__sizes { display: flex; gap: 6px; flex-wrap: wrap; }
   .pc__size-btn {
@@ -378,24 +377,24 @@ const productCardCSS = `
     padding: 5px 10px;
     font-size: 0.7rem;
     font-weight: 600;
-    font-family: 'Inter', sans-serif;
-    color: #6b6055;
+    font-family: var(--font-body);
+    color: var(--color-text-muted);
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid var(--color-border);
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.18s ease;
   }
   .pc__size-btn:hover {
-    color: #c9a84c;
-    border-color: rgba(201,168,76,0.4);
-    background: rgba(201,168,76,0.06);
+    color: var(--color-gold);
+    border-color: var(--color-border-hover);
+    background: var(--color-gold-dim);
   }
   .pc__size-btn--active {
-    background: #c9a84c !important;
-    color: #0a0a0a !important;
-    border-color: #c9a84c !important;
-    font-weight: 700 !important;
+    background: var(--color-gold) !important;
+    color: #000000 !important;
+    border-color: var(--color-gold) !important;
+    font-weight: 800 !important;
   }
 
   /* Actions */
@@ -408,32 +407,32 @@ const productCardCSS = `
     flex: 1;
     padding: 11px 8px;
     background: transparent;
-    color: #b0a090;
-    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body);
     border-radius: 4px;
     transition: all 0.2s ease;
   }
   .pc__details-btn:hover {
-    color: #f5efe6;
+    color: #ffffff;
     border-color: rgba(255,255,255,0.25);
     background: rgba(255,255,255,0.04);
   }
   .pc__cart-btn {
     flex: 2;
     padding: 11px 12px;
-    background: #c9a84c;
-    color: #0a0a0a;
+    background: var(--color-gold);
+    color: #000000;
     border: none;
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body);
     border-radius: 4px;
     transition: all 0.25s ease;
   }

@@ -76,97 +76,119 @@ function AdminDashboardPage() {
   };
 
   return (
-    <div style={styles.page}>
-      <h1 style={styles.title}>Admin Dashboard</h1>
-      <p style={styles.subtitle}>{statusMessage}</p>
+    <>
+      <style>{dashboardCSS}</style>
+      <div className="admin-page">
+        <header className="admin-header">
+          <h1 className="admin-title">Admin Dashboard</h1>
+          <p className="admin-subtitle">{statusMessage || 'System operational'}</p>
+        </header>
 
-      <section style={styles.section}>
-        <h2>Metrics</h2>
-        <p>Total Orders: {orders.length}</p>
-        <p>Total Products: {products.length}</p>
-        <p>Total Discounts: {discounts.length}</p>
-      </section>
+        <div className="admin-grid-top">
+          <section className="admin-card admin-card--metrics">
+            <h2 className="admin-card__title">Metrics</h2>
+            <div className="admin-metrics">
+              <div className="admin-metric"><span>Orders</span><strong>{orders.length}</strong></div>
+              <div className="admin-metric"><span>Products</span><strong>{products.length}</strong></div>
+              <div className="admin-metric"><span>Discounts</span><strong>{discounts.length}</strong></div>
+            </div>
+          </section>
 
-      <section style={styles.section}>
-        <h2>Orders</h2>
-        {orders.slice(0, 8).map((order) => (
-          <div key={order._id} style={styles.row}>
-            <span>{order.orderId}</span>
-            <span>{order.status}</span>
-            <select
-              defaultValue={order.status}
-              onChange={(e) => updateOrderStatus(order._id, e.target.value)}
-            >
-              <option value="pending">pending</option>
-              <option value="confirmed">confirmed</option>
-              <option value="shipped">shipped</option>
-              <option value="delivered">delivered</option>
-              <option value="cancelled">cancelled</option>
-            </select>
+          <section className="admin-card">
+            <h2 className="admin-card__title">Discount Management</h2>
+            <div className="admin-form-row">
+              <input placeholder="Code" value={newDiscount.code} onChange={(e) => setNewDiscount((p) => ({ ...p, code: e.target.value.toUpperCase() }))} className="admin-input" />
+              <input type="number" min="1" max="100" value={newDiscount.discountPercent} onChange={(e) => setNewDiscount((p) => ({ ...p, discountPercent: Number(e.target.value) }))} className="admin-input" />
+              <button onClick={createDiscount} className="admin-btn">Add</button>
+            </div>
+          </section>
+        </div>
+
+        <section className="admin-card admin-card--table">
+          <h2 className="admin-card__title">Recent Orders</h2>
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.slice(0, 10).map((order) => (
+                  <tr key={order._id}>
+                    <td>{order.orderId}</td>
+                    <td><span className={`admin-badge admin-badge--${order.status}`}>{order.status}</span></td>
+                    <td>
+                      <select defaultValue={order.status} onChange={(e) => updateOrderStatus(order._id, e.target.value)} className="admin-select">
+                        {['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'].map(s => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ))}
-      </section>
+        </section>
 
-      <section style={styles.section}>
-        <h2>Discount Management</h2>
-        <div style={styles.formRow}>
-          <input
-            placeholder="Code"
-            value={newDiscount.code}
-            onChange={(e) => setNewDiscount((p) => ({ ...p, code: e.target.value.toUpperCase() }))}
-          />
-          <input
-            type="number"
-            min="1"
-            max="100"
-            value={newDiscount.discountPercent}
-            onChange={(e) =>
-              setNewDiscount((p) => ({ ...p, discountPercent: Number(e.target.value) }))
-            }
-          />
-          <button onClick={createDiscount}>Add Discount</button>
-        </div>
-      </section>
-
-      <section style={styles.section}>
-        <h2>Product CRUD (Create)</h2>
-        <div style={styles.grid}>
-          <input placeholder="Name" onChange={(e) => setNewProduct((p) => ({ ...p, name: e.target.value }))} />
-          <input placeholder="Slug" onChange={(e) => setNewProduct((p) => ({ ...p, slug: e.target.value }))} />
-          <input type="number" placeholder="Price" onChange={(e) => setNewProduct((p) => ({ ...p, price: Number(e.target.value) }))} />
-          <input type="number" placeholder="Original Price" onChange={(e) => setNewProduct((p) => ({ ...p, originalPrice: Number(e.target.value) }))} />
-          <input placeholder="Thumbnail URL" onChange={(e) => setNewProduct((p) => ({ ...p, thumbnail: e.target.value }))} />
-          <input placeholder="Description" onChange={(e) => setNewProduct((p) => ({ ...p, description: e.target.value }))} />
-        </div>
-        <button onClick={createProduct}>Create Product</button>
-      </section>
-    </div>
+        <section className="admin-card">
+          <h2 className="admin-card__title">Add New Product</h2>
+          <div className="admin-product-form">
+            <input placeholder="Name" onChange={(e) => setNewProduct((p) => ({ ...p, name: e.target.value }))} className="admin-input" />
+            <input placeholder="Slug" onChange={(e) => setNewProduct((p) => ({ ...p, slug: e.target.value }))} className="admin-input" />
+            <input type="number" placeholder="Price" onChange={(e) => setNewProduct((p) => ({ ...p, price: Number(e.target.value) }))} className="admin-input" />
+            <input type="number" placeholder="Original Price" onChange={(e) => setNewProduct((p) => ({ ...p, originalPrice: Number(e.target.value) }))} className="admin-input" />
+            <input placeholder="Thumbnail URL" onChange={(e) => setNewProduct((p) => ({ ...p, thumbnail: e.target.value }))} className="admin-input" />
+            <input placeholder="Description" onChange={(e) => setNewProduct((p) => ({ ...p, description: e.target.value }))} className="admin-input admin-input--full" />
+          </div>
+          <button onClick={createProduct} className="admin-btn admin-btn--primary">Create Product</button>
+        </section>
+      </div>
+    </>
   );
 }
 
-const styles = {
-  page: {
-    maxWidth: '1000px',
-    margin: '0 auto',
-    padding: '40px 20px',
-    backgroundImage: `linear-gradient(rgba(244, 234, 222, 0.92), rgba(244, 234, 222, 0.96)), url(${dashboardHero})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    borderRadius: 8,
-    animation: 'panelFadeUp 520ms ease',
-  },
-  title: { fontSize: '2rem', marginBottom: 8 },
-  subtitle: { color: '#666', marginBottom: 20 },
-  section: {
-    background: 'rgba(255, 255, 255, 0.92)',
-    padding: 20,
-    marginBottom: 20,
-    border: '1px solid #e8d7c1',
-    animation: 'panelFadeUp 420ms ease',
-  },
-  row: { display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8 },
-  formRow: { display: 'flex', gap: 8, alignItems: 'center' },
-  grid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 },
-};
+const dashboardCSS = `
+  .admin-page { max-width: var(--container-max); margin: 0 auto; padding: 100px 20px; }
+  .admin-header { margin-bottom: 40px; }
+  .admin-title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; color: #ffffff; margin: 0; }
+  .admin-subtitle { font-size: 0.9rem; color: var(--color-gold); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+  .admin-grid-top { display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
+  @media (min-width: 900px) { .admin-grid-top { grid-template-columns: 1fr 1fr; } }
+
+  .admin-card { background: var(--color-bg-elevated); padding: 32px; border-radius: 8px; border: 1px solid var(--color-border); margin-bottom: 24px; }
+  .admin-card__title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: #ffffff; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border); text-transform: uppercase; letter-spacing: 1px; }
+
+  .admin-metrics { display: flex; gap: 24px; }
+  .admin-metric { display: flex; flex-direction: column; gap: 4px; }
+  .admin-metric span { font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase; font-weight: 700; }
+  .admin-metric strong { font-family: var(--font-display); font-size: 2rem; color: var(--color-gold); }
+
+  .admin-input, .admin-select { background: rgba(255,255,255,0.03); border: 1px solid var(--color-border); padding: 12px 16px; border-radius: 6px; color: #ffffff; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+  .admin-input:focus { border-color: var(--color-gold); }
+  .admin-input--full { grid-column: 1 / -1; }
+
+  .admin-form-row { display: flex; gap: 12px; }
+  .admin-btn { padding: 12px 24px; background: var(--color-gold); color: #000000; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; transition: all 0.2s; text-transform: uppercase; font-size: 0.8rem; }
+  .admin-btn:hover { background: var(--color-gold-light); transform: translateY(-1px); }
+  .admin-btn--primary { width: 100%; margin-top: 16px; padding: 16px; font-size: 0.9rem; }
+
+  .admin-table-wrap { overflow-x: auto; }
+  .admin-table { width: 100%; border-collapse: collapse; text-align: left; }
+  .admin-table th { padding: 12px; font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase; font-weight: 800; border-bottom: 1px solid var(--color-border); }
+  .admin-table td { padding: 16px 12px; font-size: 0.9rem; color: #ffffff; border-bottom: 1px solid var(--color-border); }
+
+  .admin-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+  .admin-badge--pending { background: #6b4e00; color: #ffd700; }
+  .admin-badge--confirmed { background: #004d00; color: #00ff00; }
+  .admin-badge--shipped { background: #003366; color: #66ccff; }
+  .admin-badge--delivered { background: #2d5a27; color: #ffffff; }
+
+  .admin-product-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+`;
 
 export default withAuthGuard(AdminDashboardPage, { requiredRole: 'admin' });

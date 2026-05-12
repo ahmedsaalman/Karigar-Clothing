@@ -162,607 +162,190 @@ function CheckoutPage() {
 
   if (cartItems.length === 0 && !orderPlaced) {
     return (
-      <div style={styles.emptyContainer}>
-        <div style={styles.emptyIconWrap}>
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ opacity: 0.2 }}>
-            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-          </svg>
+      <>
+        <style>{checkoutCSS}</style>
+        <div className="checkout-empty">
+          <div className="checkout-empty__icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ opacity: 0.2 }}>
+              <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
+          </div>
+          <h2 className="checkout-empty__title">Your cart is empty</h2>
+          <button onClick={() => navigate('/products')} className="checkout-empty__btn">
+            Browse Collection
+          </button>
         </div>
-        <h2 style={styles.emptyTitle}>Your cart is empty</h2>
-        <button
-          onClick={() => navigate('/products')}
-          style={styles.shopBtn}
-        >
-          Browse Collection
-        </button>
-      </div>
+      </>
     );
   }
 
   if (orderPlaced) {
     return (
-      <div style={styles.successContainer}>
-        <div style={styles.successIcon}>
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
+      <>
+        <style>{checkoutCSS}</style>
+        <div className="checkout-success">
+          <div className="checkout-success__icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h1 className="checkout-success__title">Order Placed!</h1>
+          <p className="checkout-success__text">
+            Thank you for your order. Your order ID is <strong>{orderId}</strong>.
+          </p>
+          <p className="checkout-success__subtext">You will receive a confirmation shortly.</p>
+          <div className="checkout-success__actions">
+            <button onClick={() => navigate('/')} className="checkout-btn--primary">Return to Home</button>
+            <button onClick={() => navigate('/products')} className="checkout-btn--outline">Continue Shopping</button>
+          </div>
         </div>
-        <h1 style={styles.successTitle}>Order Placed!</h1>
-        <p style={styles.successText}>
-          Thank you for your order. Your order ID is{' '}
-          <strong>{orderId}</strong>.
-        </p>
-        <p style={styles.successSubtext}>
-          You will receive a confirmation shortly.
-        </p>
-        <div style={styles.successActions}>
-          <button
-            onClick={() => navigate('/')}
-            style={styles.homeBtn}
-          >
-            Return to Home
-          </button>
-          <button
-            onClick={() => navigate('/products')}
-            style={styles.shopMoreBtn}
-          >
-            Continue Shopping
-          </button>
-        </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div style={styles.page}>
+    <>
+      <style>{checkoutCSS}</style>
+      <div className="checkout-page">
+        <header className="checkout-header">
+          <h1 className="checkout-title">Checkout</h1>
+          <p className="checkout-subtitle">{cartCount} item{cartCount !== 1 ? 's' : ''} in your order</p>
+        </header>
 
-      <h1 style={styles.title}>Checkout</h1>
-      <p style={styles.subtitle}>
-        {cartCount} item{cartCount !== 1 ? 's' : ''} in your order
-      </p>
+        <form onSubmit={handleSubmit(onSubmit)} className="checkout-layout" noValidate>
+          <div className="checkout-main">
+            <section className="checkout-section">
+              <h2 className="checkout-section__title">Contact Information</h2>
+              <div className="checkout-row">
+                <FormField label="First Name" name="firstName" value={values.firstName} onChange={handleChange} onBlur={handleBlur} error={errors.firstName} touched={touched.firstName} placeholder="First Name" required />
+                <FormField label="Last Name" name="lastName" value={values.lastName} onChange={handleChange} onBlur={handleBlur} error={errors.lastName} touched={touched.lastName} placeholder="Last Name" required />
+              </div>
+              <FormField label="Email Address" name="email" type="email" value={values.email} onChange={handleChange} onBlur={handleBlur} error={errors.email} touched={touched.email} placeholder="email@example.com" required />
+              <FormField label="Phone Number" name="phone" type="tel" value={values.phone} onChange={handleChange} onBlur={handleBlur} error={errors.phone} touched={touched.phone} placeholder="03001234567" hint="For delivery updates" required />
+            </section>
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        style={styles.layout}
-        noValidate
-      >
+            <section className="checkout-section">
+              <h2 className="checkout-section__title">Shipping Address</h2>
+              <FormField label="Street Address" name="address" value={values.address} onChange={handleChange} onBlur={handleBlur} error={errors.address} touched={touched.address} placeholder="Street Address" required />
+              <div className="checkout-row">
+                <FormField label="City" name="city" value={values.city} onChange={handleChange} onBlur={handleBlur} error={errors.city} touched={touched.city} placeholder="City" required />
+                <FormField label="Postal Code" name="postalCode" value={values.postalCode} onChange={handleChange} onBlur={handleBlur} error={errors.postalCode} touched={touched.postalCode} placeholder="75400" required />
+              </div>
+              <FormField label="Province" name="province" type="select" value={values.province} onChange={handleChange} onBlur={handleBlur} error={errors.province} touched={touched.province} options={PROVINCES} required />
+            </section>
 
-        {/* LEFT: Form Fields */}
-        <div style={styles.formSections}>
+            <section className="checkout-section">
+              <h2 className="checkout-section__title">Payment Method</h2>
+              <div className="checkout-payments">
+                {[
+                  { value: 'cod', label: 'Cash on Delivery', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> },
+                  { value: 'bank', label: 'Bank Transfer', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg> },
+                  { value: 'easypaisa', label: 'EasyPaisa', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> },
+                ].map(method => (
+                  <label key={method.value} className={`checkout-pay-opt ${values.paymentMethod === method.value ? 'checkout-pay-opt--active' : ''}`}>
+                    <input type="radio" name="paymentMethod" value={method.value} checked={values.paymentMethod === method.value} onChange={handleChange} />
+                    <span className="checkout-pay-opt__icon">{method.icon}</span>
+                    <span className="checkout-pay-opt__label">{method.label}</span>
+                  </label>
+                ))}
+              </div>
+            </section>
 
-          {/* Contact Info */}
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Contact Information</h2>
-            <div style={styles.twoCol}>
-              <FormField
-                label="First Name"
-                name="firstName"
-                value={values.firstName}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.firstName}
-                touched={touched.firstName}
-                placeholder="Ahmad"
-                required
-              />
-              <FormField
-                label="Last Name"
-                name="lastName"
-                value={values.lastName}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.lastName}
-                touched={touched.lastName}
-                placeholder="Khan"
-                required
-              />
-            </div>
-            <FormField
-              label="Email Address"
-              name="email"
-              type="email"
-              value={values.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.email}
-              touched={touched.email}
-              placeholder="ahmad@example.com"
-              required
-            />
-            <FormField
-              label="Phone Number"
-              name="phone"
-              type="tel"
-              value={values.phone}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.phone}
-              touched={touched.phone}
-              placeholder="03001234567"
-              hint="We'll use this for delivery updates"
-              required
-            />
+            <section className="checkout-section">
+              <h2 className="checkout-section__title">Order Notes</h2>
+              <FormField label="Special Instructions (Optional)" name="orderNotes" type="textarea" value={values.orderNotes} onChange={handleChange} onBlur={handleBlur} error={errors.orderNotes} touched={touched.orderNotes} placeholder="Instructions for delivery..." rows={3} />
+            </section>
+
+            <section className="checkout-section">
+              <FormField label="" name="agreedToTerms" type="checkbox" value={values.agreedToTerms} onChange={handleChange} onBlur={handleBlur} error={errors.agreedToTerms} touched={touched.agreedToTerms} placeholder="I agree to the Terms & Conditions" required />
+            </section>
           </div>
 
-          {/* Shipping Address */}
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Shipping Address</h2>
-            <FormField
-              label="Street Address"
-              name="address"
-              value={values.address}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.address}
-              touched={touched.address}
-              placeholder="House 12, Street 5, Block A"
-              required
-            />
-            <div style={styles.twoCol}>
-              <FormField
-                label="City"
-                name="city"
-                value={values.city}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.city}
-                touched={touched.city}
-                placeholder="Karachi"
-                required
-              />
-              <FormField
-                label="Postal Code"
-                name="postalCode"
-                value={values.postalCode}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.postalCode}
-                touched={touched.postalCode}
-                placeholder="75400"
-                required
-              />
-            </div>
-            <FormField
-              label="Province"
-              name="province"
-              type="select"
-              value={values.province}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.province}
-              touched={touched.province}
-              options={PROVINCES}
-              required
-            />
-          </div>
-
-          {/* Payment */}
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Payment Method</h2>
-            <div style={styles.paymentOptions}>
-              {[
-                { 
-                  value: 'cod', 
-                  label: 'Cash on Delivery', 
-                  icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> 
-                },
-                { 
-                  value: 'bank', 
-                  label: 'Bank Transfer', 
-                  icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/><path d="M4 10v11"/><path d="M20 10v11"/><path d="M8 14v3"/><path d="M12 14v3"/><path d="M16 14v3"/></svg> 
-                },
-                { 
-                  value: 'easypaisa', 
-                  label: 'EasyPaisa', 
-                  icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> 
-                },
-              ].map(method => (
-                <label key={method.value} style={{
-                  ...styles.paymentOption,
-                  border: values.paymentMethod === method.value
-                    ? '2px solid #1a1a1a'
-                    : '2px solid #e0e0e0',
-                  backgroundColor: values.paymentMethod === method.value
-                    ? '#f8f8f8'
-                    : '#ffffff',
-                }}>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value={method.value}
-                    checked={values.paymentMethod === method.value}
-                    onChange={handleChange}
-                    style={styles.radioInput}
-                  />
-                  <span style={styles.paymentIcon}>{method.icon}</span>
-                  <span style={styles.paymentLabel}>{method.label}</span>
-                </label>
+          <aside className="checkout-summary">
+            <h2 className="checkout-summary__title">Order Summary</h2>
+            <div className="checkout-summary__items">
+              {cartItems.map(item => (
+                <div key={`${item.id}-${item.size}`} className="checkout-summary-item">
+                  <img src={item.image} alt={item.name} className="checkout-summary-item__img" onError={e => { e.target.src = 'https://via.placeholder.com/48x56'; }} />
+                  <div className="checkout-summary-item__info">
+                    <p className="checkout-summary-item__name">{item.name}</p>
+                    <p className="checkout-summary-item__meta">{item.size} × {item.quantity}</p>
+                  </div>
+                  <p className="checkout-summary-item__price">{formatPrice(item.price * item.quantity)}</p>
+                </div>
               ))}
             </div>
-          </div>
 
-          {/* Order Notes */}
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Order Notes</h2>
-            <FormField
-              label="Special Instructions (Optional)"
-              name="orderNotes"
-              type="textarea"
-              value={values.orderNotes}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.orderNotes}
-              touched={touched.orderNotes}
-              placeholder="Any special instructions for delivery..."
-              rows={3}
-            />
-          </div>
-
-          {/* Terms */}
-          <div style={styles.section}>
-            <FormField
-              label=""
-              name="agreedToTerms"
-              type="checkbox"
-              value={values.agreedToTerms}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.agreedToTerms}
-              touched={touched.agreedToTerms}
-              placeholder="I agree to the Terms & Conditions and Privacy Policy"
-              required
-            />
-          </div>
-
-        </div>
-
-        {/* RIGHT: Order Summary */}
-        <div style={styles.summary}>
-
-          <h2 style={styles.summaryTitle}>Order Summary</h2>
-
-          <div style={styles.summaryItems}>
-            {cartItems.map(item => (
-              <div key={`${item.id}-${item.size}`} style={styles.summaryItem}>
-                <div style={styles.summaryItemLeft}>
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    style={styles.summaryItemImage}
-                    onError={e => {
-                      e.target.src = 'https://via.placeholder.com/48x56';
-                    }}
-                  />
-                  <div>
-                    <p style={styles.summaryItemName}>{item.name}</p>
-                    <p style={styles.summaryItemMeta}>
-                      Size: {item.size} × {item.quantity}
-                    </p>
-                  </div>
-                </div>
-                <p style={styles.summaryItemPrice}>
-                  {formatPrice(item.price * item.quantity)}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div style={styles.summaryTotals}>
-            <div style={styles.summaryRow}>
-              <span>Subtotal</span>
-              <span>{formatPrice(grandTotal)}</span>
+            <div className="checkout-summary__totals">
+              <div className="checkout-row-val"><span>Subtotal</span><span>{formatPrice(subtotal)}</span></div>
+              <div className="checkout-row-val"><span>Shipping</span><span className="checkout-success-text">{shipping === 0 ? 'FREE' : formatPrice(shipping)}</span></div>
+              <div className="checkout-divider" />
+              <div className="checkout-row-val checkout-row-val--total"><span>Total</span><span>{formatPrice(grandTotal)}</span></div>
             </div>
-            <div style={styles.summaryRow}>
-              <span>Shipping</span>
-              <span style={{ color: '#27ae60' }}>
-                {grandTotal > 5000 ? 'FREE' : 'PKR 250'}
-              </span>
-            </div>
-            <div style={styles.divider} />
-            <div style={{ ...styles.summaryRow, ...styles.totalRow }}>
-              <span>Total</span>
-              <span>
-                {formatPrice(
-                  grandTotal > 5000 ? grandTotal : grandTotal + 250
-                )}
-              </span>
-            </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={{
-              ...styles.submitBtn,
-              opacity: isSubmitting ? 0.7 : 1,
-              cursor: isSubmitting ? 'not-allowed' : 'pointer',
-            }}
-          >
-            {isSubmitting ? 'Placing Order...' : 'Place Order'}
-          </button>
-
-        </div>
-
-      </form>
-    </div>
+            <button type="submit" disabled={isSubmitting} className="checkout-submit-btn">
+              {isSubmitting ? 'Placing Order...' : 'Place Order'}
+            </button>
+          </aside>
+        </form>
+      </div>
+    </>
   );
 }
 
-const styles = {
-  page: {
-    maxWidth: '1100px',
-    margin: '0 auto',
-    padding: '60px 20px 100px',
-    backgroundImage: `linear-gradient(rgba(244, 234, 222, 0.9), rgba(244, 234, 222, 0.9)), url(${checkoutHero})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    borderRadius: '8px',
-    animation: 'panelFadeUp 500ms ease',
-  },
-  title: {
-    fontSize: '2rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: '4px',
-  },
-  subtitle: {
-    color: '#888',
-    fontSize: '0.9rem',
-    marginBottom: '40px',
-  },
-  layout: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 380px',
-    gap: '48px',
-    alignItems: 'start',
-  },
-  formSections: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '32px',
-  },
-  section: {
-    backgroundColor: '#ffffff',
-    padding: '28px',
-    borderRadius: '4px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-  },
-  sectionTitle: {
-    fontSize: '1rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
-    paddingBottom: '12px',
-    borderBottom: '1px solid #f0f0f0',
-  },
-  twoCol: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '16px',
-  },
-  paymentOptions: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-  },
-  paymentOption: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    padding: '14px 16px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    transition: 'all 0.15s',
-  },
-  radioInput: {
-    width: '16px',
-    height: '16px',
-    cursor: 'pointer',
-  },
-  paymentIcon: {
-    fontSize: '1.2rem',
-  },
-  paymentLabel: {
-    fontSize: '0.9rem',
-    fontWeight: '600',
-    color: '#333',
-  },
-  summary: {
-    backgroundColor: '#ffffff',
-    padding: '28px',
-    borderRadius: '4px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-    position: 'sticky',
-    top: '100px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-  },
-  summaryTitle: {
-    fontSize: '1rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
-    paddingBottom: '16px',
-    borderBottom: '1px solid #f0f0f0',
-  },
-  summaryItems: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-    maxHeight: '280px',
-    overflowY: 'auto',
-  },
-  summaryItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: '12px',
-  },
-  summaryItemLeft: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    flex: 1,
-    minWidth: 0,
-  },
-  summaryItemImage: {
-    width: '44px',
-    height: '52px',
-    objectFit: 'cover',
-    borderRadius: '2px',
-    flexShrink: 0,
-    backgroundColor: '#f5f5f5',
-  },
-  summaryItemName: {
-    fontSize: '0.82rem',
-    fontWeight: '600',
-    color: '#1a1a1a',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    maxWidth: '140px',
-  },
-  summaryItemMeta: {
-    fontSize: '0.75rem',
-    color: '#888',
-    marginTop: '2px',
-  },
-  summaryItemPrice: {
-    fontSize: '0.85rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
-    flexShrink: 0,
-  },
-  summaryTotals: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-    paddingTop: '16px',
-    borderTop: '1px solid #f0f0f0',
-  },
-  summaryRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    fontSize: '0.88rem',
-    color: '#555',
-  },
-  divider: {
-    height: '1px',
-    backgroundColor: '#f0f0f0',
-  },
-  totalRow: {
-    fontWeight: '700',
-    color: '#1a1a1a',
-    fontSize: '1rem',
-  },
-  submitBtn: {
-    width: '100%',
-    padding: '16px',
-    backgroundColor: '#1a1a1a',
-    color: '#ffffff',
-    border: 'none',
-    fontSize: '0.9rem',
-    fontWeight: '700',
-    letterSpacing: '1px',
-    textTransform: 'uppercase',
-    borderRadius: '2px',
-    transition: 'opacity 0.2s',
-  },
-  emptyContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '120px 20px',
-    gap: '16px',
-    textAlign: 'center',
-  },
-  emptyIcon: {
-    fontSize: '4rem',
-    opacity: 0.3,
-  },
-  emptyTitle: {
-    fontSize: '1.5rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
-  },
-  shopBtn: {
-    padding: '14px 36px',
-    backgroundColor: '#1a1a1a',
-    color: '#ffffff',
-    border: 'none',
-    fontSize: '0.9rem',
-    fontWeight: '700',
-    letterSpacing: '1px',
-    textTransform: 'uppercase',
-    cursor: 'pointer',
-    borderRadius: '2px',
-  },
-  successContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '100px 20px',
-    gap: '20px',
-    textAlign: 'center',
-    maxWidth: '500px',
-    margin: '0 auto',
-  },
-  successIcon: {
-    width: '80px',
-    height: '80px',
-    borderRadius: '50%',
-    backgroundColor: '#27ae60',
-    color: '#ffffff',
-    fontSize: '2.5rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: '700',
-  },
-  successTitle: {
-    fontSize: '2rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
-  },
-  successText: {
-    color: '#555',
-    fontSize: '1rem',
-    lineHeight: '1.6',
-  },
-  successSubtext: {
-    color: '#888',
-    fontSize: '0.9rem',
-  },
-  successActions: {
-    display: 'flex',
-    gap: '16px',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginTop: '8px',
-  },
-  homeBtn: {
-    padding: '12px 28px',
-    backgroundColor: '#1a1a1a',
-    color: '#ffffff',
-    border: 'none',
-    fontSize: '0.9rem',
-    fontWeight: '700',
-    cursor: 'pointer',
-    borderRadius: '2px',
-  },
-  shopMoreBtn: {
-    padding: '12px 28px',
-    backgroundColor: 'transparent',
-    color: '#1a1a1a',
-    border: '1px solid #1a1a1a',
-    fontSize: '0.9rem',
-    cursor: 'pointer',
-    borderRadius: '2px',
-  },
-};
+const checkoutCSS = `
+  .checkout-page { max-width: var(--container-max); margin: 0 auto; padding: 100px 20px; }
+  .checkout-header { margin-bottom: 40px; }
+  .checkout-title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; color: #ffffff; margin: 0; }
+  .checkout-subtitle { font-size: 0.9rem; color: var(--color-text-muted); margin-top: 4px; }
+
+  .checkout-layout { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: start; }
+  @media (min-width: 1000px) { .checkout-layout { grid-template-columns: 1fr 400px; } }
+
+  .checkout-main { display: flex; flex-direction: column; gap: 24px; }
+  .checkout-section { background: var(--color-bg-elevated); padding: 32px; border-radius: 8px; border: 1px solid var(--color-border); }
+  .checkout-section__title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: #ffffff; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border); text-transform: uppercase; letter-spacing: 1px; }
+  .checkout-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .checkout-payments { display: flex; flex-direction: column; gap: 12px; }
+  .checkout-pay-opt { display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--color-border); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+  .checkout-pay-opt input { display: none; }
+  .checkout-pay-opt--active { border-color: var(--color-gold); background: var(--color-gold-dim); }
+  .checkout-pay-opt__icon { color: var(--color-gold); }
+  .checkout-pay-opt__label { font-size: 0.9rem; font-weight: 700; color: #ffffff; }
+
+  .checkout-summary { background: var(--color-bg-elevated); padding: 32px; border-radius: 8px; border: 1px solid var(--color-border); position: sticky; top: 100px; }
+  .checkout-summary__title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: #ffffff; margin-bottom: 24px; }
+  .checkout-summary__items { display: flex; flex-direction: column; gap: 16px; max-height: 300px; overflow-y: auto; margin-bottom: 24px; }
+  .checkout-summary-item { display: flex; gap: 12px; align-items: center; }
+  .checkout-summary-item__img { width: 50px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid var(--color-border); }
+  .checkout-summary-item__info { flex: 1; min-width: 0; }
+  .checkout-summary-item__name { font-size: 0.85rem; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .checkout-summary-item__meta { font-size: 0.75rem; color: var(--color-text-muted); }
+  .checkout-summary-item__price { font-size: 0.9rem; font-weight: 800; color: var(--color-gold); }
+
+  .checkout-summary__totals { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; padding-top: 20px; border-top: 1px solid var(--color-border); }
+  .checkout-row-val { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--color-text-secondary); }
+  .checkout-row-val--total { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; color: var(--color-gold); margin-top: 4px; }
+  .checkout-divider { height: 1px; background: var(--color-border); }
+  .checkout-success-text { color: var(--color-success); font-weight: 700; }
+
+  .checkout-submit-btn { width: 100%; padding: 18px; background: var(--color-gold); color: #000000; border: none; border-radius: 6px; font-family: var(--font-display); font-size: 1.1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.3s; }
+  .checkout-submit-btn:hover:not(:disabled) { background: var(--color-gold-light); transform: translateY(-2px); box-shadow: var(--shadow-gold); }
+  .checkout-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .checkout-empty, .checkout-success { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 120px 20px; text-align: center; max-width: 500px; margin: 0 auto; }
+  .checkout-empty__icon { margin-bottom: 24px; color: var(--color-gold); opacity: 0.4; }
+  .checkout-empty__title { font-family: var(--font-display); font-size: 2rem; font-weight: 900; color: #ffffff; margin-bottom: 24px; }
+  .checkout-empty__btn { padding: 16px 40px; background: var(--color-gold); color: #000000; border: none; border-radius: 6px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
+
+  .checkout-success__icon { width: 80px; height: 80px; background: var(--color-success); color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+  .checkout-success__title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; color: #ffffff; margin-bottom: 16px; }
+  .checkout-success__text { color: var(--color-text-secondary); font-size: 1.1rem; margin-bottom: 8px; }
+  .checkout-success__subtext { color: var(--color-text-muted); margin-bottom: 32px; }
+  .checkout-success__actions { display: flex; gap: 16px; }
+  .checkout-btn--primary { padding: 14px 28px; background: var(--color-gold); color: #000000; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; }
+  .checkout-btn--outline { padding: 14px 28px; background: transparent; border: 1px solid var(--color-border); color: #ffffff; border-radius: 6px; font-weight: 800; cursor: pointer; }
+`;
 
 export default withAuthGuard(CheckoutPage);

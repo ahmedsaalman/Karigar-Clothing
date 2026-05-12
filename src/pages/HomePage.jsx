@@ -113,7 +113,7 @@ function HomePage() {
 
 const homeCSS = `
   .home-featured {
-    background: #0a0a0a;
+    background: var(--color-bg);
   }
 
   /* ── Promise Banner ── */
@@ -139,8 +139,8 @@ const homeCSS = `
     inset: 0;
     background: linear-gradient(
       135deg,
-      rgba(10,10,10,0.92) 0%,
-      rgba(10,10,10,0.7) 100%
+      rgba(0,0,0,0.95) 0%,
+      rgba(0,0,0,0.7) 100%
     );
   }
   .promise-banner__content {
@@ -156,24 +156,24 @@ const homeCSS = `
   }
   .promise-banner__eyebrow {
     font-size: 0.68rem;
-    font-weight: 600;
+    font-weight: 800;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: #c9a84c;
+    color: var(--color-gold);
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body);
   }
   .promise-banner__title {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 700;
-    color: #f5efe6;
+    font-weight: 900;
+    color: #ffffff;
     line-height: 1.15;
     margin: 0;
   }
   .promise-banner__sub {
     font-size: 0.95rem;
-    color: rgba(245,239,230,0.65);
+    color: var(--color-text-secondary);
     line-height: 1.8;
     max-width: 480px;
     margin: 0;
@@ -181,11 +181,11 @@ const homeCSS = `
 
   /* ── Category Teasers ── */
   .cat-teasers {
-    background: #080808;
+    background: var(--color-bg-elevated);
     padding: 80px 0;
   }
   .cat-teasers__inner {
-    max-width: 1200px;
+    max-width: var(--container-max);
     margin: 0 auto;
     padding: 0 20px;
   }
@@ -195,18 +195,18 @@ const homeCSS = `
   }
   .cat-teasers__eyebrow {
     font-size: 0.68rem;
-    font-weight: 600;
+    font-weight: 800;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: #c9a84c;
+    color: var(--color-gold);
     margin-bottom: 12px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body);
   }
   .cat-teasers__title {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: clamp(1.6rem, 3vw, 2.4rem);
-    font-weight: 700;
-    color: #f5efe6;
+    font-weight: 800;
+    color: #ffffff;
     margin: 0;
   }
   .cat-teasers__grid {
@@ -224,15 +224,15 @@ const homeCSS = `
     overflow: hidden;
     cursor: pointer;
     aspect-ratio: 3 / 4;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid var(--color-border);
     transition: transform 0.4s cubic-bezier(0.4,0,0.2,1),
                 box-shadow 0.4s ease,
                 border-color 0.3s ease;
   }
   .cat-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.2);
-    border-color: rgba(201,168,76,0.2);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px var(--color-gold-glow);
+    border-color: var(--color-gold-glow);
   }
   .cat-card__img-wrap {
     position: absolute;
@@ -250,19 +250,11 @@ const homeCSS = `
     inset: 0;
     background: linear-gradient(
       to top,
-      rgba(10,10,10,0.9) 0%,
-      rgba(10,10,10,0.2) 60%,
+      rgba(0,0,0,0.9) 0%,
+      rgba(0,0,0,0.2) 60%,
       transparent 100%
     );
     transition: background 0.3s ease;
-  }
-  .cat-card:hover .cat-card__overlay {
-    background: linear-gradient(
-      to top,
-      rgba(10,10,10,0.95) 0%,
-      rgba(10,10,10,0.35) 60%,
-      rgba(10,10,10,0.1) 100%
-    );
   }
   .cat-card__content {
     position: absolute;
@@ -279,26 +271,27 @@ const homeCSS = `
     font-size: 0.72rem;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: rgba(201,168,76,0.8);
+    color: var(--color-gold);
+    opacity: 0.85;
     margin: 0;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
+    font-family: var(--font-body);
+    font-weight: 700;
   }
   .cat-card__label {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 1.6rem;
-    font-weight: 700;
-    color: #f5efe6;
+    font-weight: 900;
+    color: #ffffff;
     margin: 0;
     line-height: 1.1;
   }
   .cat-card__cta {
     font-size: 0.72rem;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #c9a84c;
-    font-family: 'Inter', sans-serif;
+    color: var(--color-gold);
+    font-family: var(--font-body);
     opacity: 0;
     transform: translateX(-6px);
     transition: opacity 0.25s ease, transform 0.25s ease;

@@ -2,67 +2,75 @@
 
 function ErrorMessage({ message, onRetry }) {
   return (
-    <div style={styles.container}>
+    <>
+      <style>{errorCSS}</style>
+      <div className="error-wrap">
+        <div className="error-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>
+          </svg>
+        </div>
 
-      <div style={styles.icon}>⚠️</div>
+        <h3 className="error-title">Something went wrong</h3>
+        <p className="error-message">
+          {message || "We couldn't load the products. Please try again."}
+        </p>
 
-      <h3 style={styles.title}>Something went wrong</h3>
-
-      <p style={styles.message}>
-        {/* Show the actual error, or a default message */}
-        {message || "We couldn't load the products. Please try again."}
-      </p>
-
-      {/* Only show retry button if onRetry function was passed */}
-      {onRetry && (
-        <button
-          onClick={onRetry}
-          style={styles.retryBtn}
-        >
-          Try Again
-        </button>
-      )}
-
-    </div>
+        {onRetry && (
+          <button onClick={onRetry} className="error-retry-btn">
+            Try Again
+          </button>
+        )}
+      </div>
+    </>
   );
 }
 
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '80px 20px',
-    gap: '16px',
-    textAlign: 'center',
-  },
-  icon: {
-    fontSize: '3rem',
-  },
-  title: {
-    fontSize: '1.2rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
-  },
-  message: {
-    color: '#666',
-    fontSize: '0.9rem',
-    maxWidth: '400px',
-    lineHeight: '1.6',
-  },
-  retryBtn: {
-    marginTop: '8px',
-    padding: '12px 32px',
-    backgroundColor: '#1a1a1a',
-    color: '#ffffff',
-    border: 'none',
-    fontSize: '0.85rem',
-    fontWeight: '700',
-    letterSpacing: '1px',
-    cursor: 'pointer',
-    textTransform: 'uppercase',
-  },
-};
+const errorCSS = `
+  .error-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px;
+    gap: 20px;
+    text-align: center;
+  }
+  .error-icon { color: var(--color-error); }
+  .error-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+  }
+  .error-message {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    max-width: 400px;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .error-retry-btn {
+    margin-top: 8px;
+    padding: 14px 36px;
+    background: var(--color-gold);
+    color: #000000;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .error-retry-btn:hover {
+    background: var(--color-gold-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-gold);
+  }
+`;
 
 export default ErrorMessage;

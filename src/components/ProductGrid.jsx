@@ -52,13 +52,13 @@ function ProductGrid({
 
 const gridCSS = `
   .pgrid-section {
-    max-width: 1200px;
+    max-width: var(--container-max);
     margin: 0 auto;
     padding: 80px 20px;
   }
   .pgrid {
     display: grid;
-    gap: 24px;
+    gap: 32px;
     grid-template-columns: 1fr;
   }
   @media (min-width: 480px) {
@@ -70,28 +70,29 @@ const gridCSS = `
   }
   .pgrid-count {
     text-align: center;
-    color: #3a3028;
+    color: var(--color-text-muted);
     font-size: 0.75rem;
+    font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    margin-top: 40px;
-    font-family: 'Inter', sans-serif;
+    margin-top: 48px;
+    font-family: var(--font-body);
   }
 
   /* Empty state */
   .pgrid-empty {
     text-align: center;
-    padding: 100px 20px;
+    padding: 120px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 20px;
   }
-  .pgrid-empty__icon { font-size: 2.5rem; opacity: 0.4; }
+  .pgrid-empty__icon { color: var(--color-gold); }
   .pgrid-empty__text {
-    color: #4a3f35;
-    font-size: 1rem;
-    letter-spacing: 0.5px;
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    font-weight: 600;
     margin: 0;
   }
 `;

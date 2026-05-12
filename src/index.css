@@ -2,38 +2,38 @@
    KARIGAR CO. — Premium Design System
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ============================================
    CSS CUSTOM PROPERTIES (DESIGN TOKENS)
    ============================================ */
 :root {
-  /* Colors */
-  --color-bg:           #0a0a0a;
-  --color-bg-elevated:  #141414;
-  --color-bg-card:      #1a1a1a;
-  --color-bg-muted:     #222222;
-  --color-bg-glass:     rgba(20, 20, 20, 0.72);
+  /* Colors — Crunchyroll Inspired (Black/Yellow) */
+  --color-bg:           #000000;
+  --color-bg-elevated:  #0a0a0a;
+  --color-bg-card:      #141414;
+  --color-bg-muted:     #1a1a1a;
+  --color-bg-glass:     rgba(0, 0, 0, 0.75);
 
-  --color-gold:         #c9a84c;
-  --color-gold-light:   #e0c06e;
-  --color-gold-dim:     rgba(201, 168, 76, 0.15);
-  --color-gold-glow:    rgba(201, 168, 76, 0.35);
+  --color-gold:         #FFB800; /* Vibrant Yellow/Orange */
+  --color-gold-light:   #FFD600;
+  --color-gold-dim:     rgba(255, 184, 0, 0.15);
+  --color-gold-glow:    rgba(255, 184, 0, 0.4);
 
-  --color-text-primary:   #f5efe6;
-  --color-text-secondary: #b0a090;
-  --color-text-muted:     #6b6055;
-  --color-text-dark:      #0a0a0a;
+  --color-text-primary:   #ffffff;
+  --color-text-secondary: #e0e0e0;
+  --color-text-muted:     #888888;
+  --color-text-dark:      #000000;
 
-  --color-border:         rgba(255, 255, 255, 0.07);
-  --color-border-hover:   rgba(201, 168, 76, 0.4);
+  --color-border:         rgba(255, 255, 255, 0.1);
+  --color-border-hover:   rgba(255, 184, 0, 0.5);
 
   --color-success:  #4caf7d;
   --color-error:    #e05c5c;
   --color-warning:  #e8a838;
 
   /* Typography */
-  --font-display: 'Playfair Display', Georgia, serif;
+  --font-display: 'Outfit', 'Inter', system-ui, sans-serif;
   --font-body:    'Inter', system-ui, sans-serif;
 
   --text-xs:   0.72rem;
@@ -72,7 +72,7 @@
   --shadow-md:  0 4px 24px rgba(0, 0, 0, 0.5);
   --shadow-lg:  0 8px 48px rgba(0, 0, 0, 0.6);
   --shadow-xl:  0 16px 64px rgba(0, 0, 0, 0.7);
-  --shadow-gold: 0 0 24px rgba(201, 168, 76, 0.25);
+  --shadow-gold: 0 0 24px rgba(255, 184, 0, 0.25);
 
   /* Transitions */
   --ease-out:   cubic-bezier(0.0, 0, 0.2, 1);
@@ -135,6 +135,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   line-height: 1.2;
   color: var(--color-text-primary);
+  font-weight: 800;
 }
 
 p {
@@ -315,7 +316,7 @@ img {
   background: var(--color-gold);
   color: var(--color-text-dark);
   font-size: var(--text-sm);
-  font-weight: 700;
+  font-weight: 800;
   font-family: var(--font-body);
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -340,12 +341,12 @@ img {
   background: transparent;
   color: var(--color-text-primary);
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: 700;
   font-family: var(--font-body);
   letter-spacing: 1.5px;
   text-transform: uppercase;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(245, 239, 230, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.4);
   cursor: pointer;
   transition: all var(--duration-base) var(--ease-out);
 }
@@ -360,7 +361,7 @@ img {
    SKELETON LOADER
    ============================================ */
 .skeleton {
-  background: linear-gradient(90deg, #1e1e1e 25%, #2a2a2a 50%, #1e1e1e 75%);
+  background: linear-gradient(90deg, #101010 25%, #1a1a1a 50%, #101010 75%);
   background-size: 600px 100%;
   animation: shimmer 1.4s ease infinite;
   border-radius: var(--radius-sm);

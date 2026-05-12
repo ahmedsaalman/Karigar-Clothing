@@ -82,11 +82,11 @@ function StatsBar({
 
 const statCSS = `
   .statsbar {
-    background: #0f0f0f;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    background: var(--color-bg-elevated);
+    border-bottom: 1px solid var(--color-border);
   }
   .statsbar__inner {
-    max-width: 1200px;
+    max-width: var(--container-max);
     margin: 0 auto;
     padding: 0 20px;
     display: grid;
@@ -98,7 +98,7 @@ const statCSS = `
   .stat-item {
     padding: 40px 20px;
     text-align: center;
-    border-right: 1px solid rgba(255,255,255,0.05);
+    border-right: 1px solid var(--color-border);
     animation: slideUp 0.6s ease both;
     position: relative;
   }
@@ -111,29 +111,30 @@ const statCSS = `
     transform: translateX(-50%);
     width: 0;
     height: 2px;
-    background: linear-gradient(to right, transparent, #c9a84c, transparent);
+    background: linear-gradient(to right, transparent, var(--color-gold), transparent);
     transition: width 0.6s ease;
   }
   .stat-item:hover::after { width: 60%; }
   .stat-value {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: clamp(2rem, 4vw, 2.8rem);
-    font-weight: 700;
-    color: #c9a84c;
+    font-weight: 800;
+    color: var(--color-gold);
     line-height: 1;
     margin-bottom: 10px;
   }
   .stat-suffix {
     font-size: 0.6em;
     vertical-align: super;
-    color: rgba(201,168,76,0.7);
+    color: var(--color-gold);
+    opacity: 0.8;
   }
   .stat-label {
     font-size: 0.68rem;
-    font-weight: 500;
+    font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #6b6055;
+    color: var(--color-text-muted);
     margin: 0;
   }
 `;

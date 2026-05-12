@@ -39,6 +39,7 @@ app.use(
         return callback(null, true);
       }
 
+      console.error(`🛑 CORS policy violation: Origin "${origin}" is not allowed. Allowed origins:`, env.corsOrigins);
       return callback(new Error('CORS policy violation'));
     },
     credentials: true,

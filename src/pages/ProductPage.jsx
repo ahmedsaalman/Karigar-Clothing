@@ -194,17 +194,17 @@ function ProductsPage() {
 const productsPageCSS = `
   .pp-page {
     min-height: 100vh;
-    background: #0a0a0a;
+    background: var(--color-bg);
   }
 
   /* Hero */
   .pp-hero {
-    background: linear-gradient(to bottom, #0f0f0f, #0a0a0a);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    background: linear-gradient(to bottom, var(--color-bg-elevated), var(--color-bg));
+    border-bottom: 1px solid var(--color-border);
     padding: 72px 20px 0;
   }
   .pp-hero__inner {
-    max-width: 1200px;
+    max-width: var(--container-max);
     margin: 0 auto;
   }
 
@@ -213,14 +213,14 @@ const productsPageCSS = `
     position: sticky;
     top: 72px;
     z-index: 50;
-    background: rgba(10,10,10,0.92);
+    background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid var(--color-border);
     padding: 16px 20px;
   }
   .pp-controls {
-    max-width: 1200px;
+    max-width: var(--container-max);
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -240,25 +240,25 @@ const productsPageCSS = `
     left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: #4a3f35;
+    color: var(--color-text-muted);
     pointer-events: none;
   }
   .pp-search__input {
     width: 100%;
     padding: 10px 40px 10px 40px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--color-bg-muted);
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     font-size: 0.88rem;
-    color: #b0a090;
-    font-family: 'Inter', sans-serif;
+    color: #ffffff;
+    font-family: var(--font-body);
     transition: border-color 0.2s ease, background 0.2s ease;
   }
   .pp-search__input:focus {
-    border-color: rgba(201,168,76,0.4);
-    background: rgba(201,168,76,0.04);
+    border-color: var(--color-gold);
+    background: var(--color-bg-elevated);
   }
-  .pp-search__input::placeholder { color: #3a3028; }
+  .pp-search__input::placeholder { color: var(--color-text-muted); }
   .pp-search__clear {
     position: absolute;
     right: 12px;
@@ -266,14 +266,14 @@ const productsPageCSS = `
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #4a3f35;
+    color: var(--color-text-muted);
     font-size: 0.8rem;
     cursor: pointer;
     padding: 4px;
     line-height: 1;
     transition: color 0.15s ease;
   }
-  .pp-search__clear:hover { color: #e87b7b; }
+  .pp-search__clear:hover { color: var(--color-error); }
 
   /* Filter group */
   .pp-filter-group {
@@ -285,38 +285,38 @@ const productsPageCSS = `
   .pp-filter-group--right { margin-left: auto; }
   .pp-filter-label {
     font-size: 0.68rem;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #3a3028;
+    color: var(--color-text-muted);
     white-space: nowrap;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body);
   }
   .pp-filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
   .pp-pill {
     padding: 6px 14px;
     font-size: 0.73rem;
-    font-weight: 500;
-    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-family: var(--font-body);
     text-transform: capitalize;
     letter-spacing: 0.5px;
-    color: #4a3f35;
+    color: var(--color-text-secondary);
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.07);
+    border: 1px solid var(--color-border);
     border-radius: 999px;
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
   }
   .pp-pill:hover {
-    color: #c9a84c;
-    border-color: rgba(201,168,76,0.35);
+    color: var(--color-gold);
+    border-color: var(--color-gold);
   }
   .pp-pill--active {
-    background: rgba(201,168,76,0.12) !important;
-    color: #c9a84c !important;
-    border-color: rgba(201,168,76,0.4) !important;
-    font-weight: 600 !important;
+    background: var(--color-gold) !important;
+    color: #000000 !important;
+    border-color: var(--color-gold) !important;
+    font-weight: 800 !important;
   }
 
   /* Sort */
@@ -329,37 +329,37 @@ const productsPageCSS = `
     appearance: none;
     -webkit-appearance: none;
     padding: 8px 36px 8px 14px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--color-bg-muted);
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     font-size: 0.82rem;
-    color: #b0a090;
-    font-family: 'Inter', sans-serif;
+    color: #ffffff;
+    font-family: var(--font-body);
     cursor: pointer;
     transition: border-color 0.2s ease;
   }
-  .pp-sort:focus { border-color: rgba(201,168,76,0.4); }
-  .pp-sort option { background: #1a1a1a; color: #b0a090; }
+  .pp-sort:focus { border-color: var(--color-gold); }
+  .pp-sort option { background: #111111; color: #ffffff; }
   .pp-sort__chevron {
     position: absolute;
     right: 12px;
-    color: #4a3f35;
+    color: var(--color-text-muted);
     pointer-events: none;
   }
 
   /* Results info */
   .pp-results-info {
-    max-width: 1200px;
+    max-width: var(--container-max);
     margin: 8px auto 0;
     font-size: 0.72rem;
     letter-spacing: 1px;
-    color: #3a3028;
-    font-family: 'Inter', sans-serif;
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
   }
 
   /* Grid area */
   .pp-grid-area {
-    max-width: 1200px;
+    max-width: var(--container-max);
     margin: 0 auto;
     padding: 48px 20px 80px;
   }
@@ -387,27 +387,27 @@ const productsPageCSS = `
   .pp-no-results__icon { font-size: 2.5rem; opacity: 0.3; }
   .pp-no-results__text {
     font-size: 0.95rem;
-    color: #4a3f35;
+    color: var(--color-text-secondary);
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body);
   }
   .pp-show-all-btn {
     padding: 11px 28px;
     background: transparent;
-    color: #c9a84c;
-    border: 1px solid rgba(201,168,76,0.35);
+    color: var(--color-gold);
+    border: 1px solid var(--color-gold);
     font-size: 0.8rem;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body);
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
   .pp-show-all-btn:hover {
-    background: rgba(201,168,76,0.08);
-    border-color: rgba(201,168,76,0.6);
+    background: var(--color-gold-dim);
+    transform: translateY(-2px);
   }
 
   @media (max-width: 640px) {
