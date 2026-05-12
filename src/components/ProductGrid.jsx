@@ -5,72 +5,95 @@ import SectionTitle from './SectionTitle';
 
 function ProductGrid({
   products,
-  title = "Our Collection",
+  title = 'Our Collection',
   subtitle = null,
+  eyebrow = null,
   columns = 3,
-  onAddToCart,          // receive from parent, pass to cards
 }) {
-
   if (!products || products.length === 0) {
     return (
-      <div style={styles.emptyState}>
-        <p style={styles.emptyText}>No products found.</p>
-      </div>
+      <>
+        <style>{gridCSS}</style>
+        <div className="pgrid-empty">
+          <div className="pgrid-empty__icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.3 }}>
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+          </div>
+          <p className="pgrid-empty__text">No products found.</p>
+        </div>
+      </>
     );
   }
 
   return (
-    <section style={styles.section}>
+    <>
+      <style>{gridCSS}</style>
+      <section className="pgrid-section">
+        <SectionTitle title={title} subtitle={subtitle} eyebrow={eyebrow} />
 
-      <SectionTitle title={title} subtitle={subtitle} />
+        <div className={`pgrid pgrid--cols-${columns}`}>
+          {products.map((product, i) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              animDelay={i * 60}
+            />
+          ))}
+        </div>
 
-      <div style={{
-        ...styles.grid,
-        gridTemplateColumns: `repeat(auto-fill, minmax(${
-          columns === 4 ? '240px' : '280px'
-        }, 1fr))`,
-      }}>
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onAddToCart={onAddToCart}   // pass handler to each card
-          />
-        ))}
-      </div>
-
-      <p style={styles.productCount}>
-        Showing {products.length} product{products.length !== 1 ? 's' : ''}
-      </p>
-
-    </section>
+        <p className="pgrid-count">
+          {products.length} product{products.length !== 1 ? 's' : ''}
+        </p>
+      </section>
+    </>
   );
 }
 
-const styles = {
-  section: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '80px 20px',
-  },
-  grid: {
-    display: 'grid',
-    gap: '24px',
-  },
-  emptyState: {
-    textAlign: 'center',
-    padding: '80px 20px',
-  },
-  emptyText: {
-    color: '#999',
-    fontSize: '1.1rem',
-  },
-  productCount: {
-    textAlign: 'center',
-    color: '#888',
-    fontSize: '0.85rem',
-    marginTop: '32px',
-  },
-};
+const gridCSS = `
+  .pgrid-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px;
+  }
+  .pgrid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 480px) {
+    .pgrid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 900px) {
+    .pgrid--cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .pgrid--cols-4 { grid-template-columns: repeat(4, 1fr); }
+  }
+  .pgrid-count {
+    text-align: center;
+    color: #3a3028;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 40px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Empty state */
+  .pgrid-empty {
+    text-align: center;
+    padding: 100px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .pgrid-empty__icon { font-size: 2.5rem; opacity: 0.4; }
+  .pgrid-empty__text {
+    color: #4a3f35;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+`;
 
 export default ProductGrid;

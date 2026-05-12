@@ -10,19 +10,12 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 function RootLayout() {
   const location = useLocation();
-
-  // Get cart count directly from context
-  // No props needed — context broadcasts it
   const { cartCount } = useCart();
 
   return (
     <div style={styles.wrapper}>
       <Header cartCount={cartCount} />
       <main style={styles.main}>
-        {/*
-          No more context prop needed on Outlet.
-          Pages get cart data from useCart() directly.
-        */}
         <ErrorBoundary>
           <Suspense fallback={<LoadingSpinner message="Loading page..." />}>
             <div key={location.pathname} style={styles.routeTransition}>
@@ -41,12 +34,13 @@ const styles = {
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
+    backgroundColor: '#0a0a0a',
   },
   main: {
     flex: 1,
   },
   routeTransition: {
-    animation: 'pageFadeIn 420ms ease',
+    animation: 'pageFadeIn 400ms ease both',
   },
 };
 

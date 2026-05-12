@@ -1,5 +1,12 @@
 // src/data/products.js
 
+import s1 from '../../photos/shirt_pics/sample1.jpg';
+import s2 from '../../photos/shirt_pics/sample2.jpg';
+import s3 from '../../photos/shirt_pics/sample3.jpg';
+import s4 from '../../photos/shirt_pics/sample4.jpg';
+import s5 from '../../photos/shirt_pics/sample5.jpg';
+import s6 from '../../photos/shirt_pics/sample6.jpg';
+
 const products = [
   {
     id: 1,
@@ -13,7 +20,7 @@ const products = [
     colorNames: ["White", "Navy Blue", "Silver Grey"],
     inStock: true,
     stockCount: 45,
-    image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400",
+    image: s1,
     rating: 4.8,
     reviewCount: 128,
     description: "The cornerstone of a professional wardrobe. Crafted from premium 100% Egyptian cotton with a classic oxford weave.",
@@ -32,7 +39,7 @@ const products = [
     colorNames: ["Cream", "Sage Green", "Tan"],
     inStock: true,
     stockCount: 28,
-    image: "https://images.unsplash.com/photo-1603252109303-2751441dd157?w=400",
+    image: s2,
     rating: 4.6,
     reviewCount: 89,
     description: "Breathable linen construction for the modern professional who values comfort without compromising style.",
@@ -51,7 +58,7 @@ const products = [
     colorNames: ["White", "Cream", "Light Blue"],
     inStock: true,
     stockCount: 62,
-    image: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400",
+    image: s3,
     rating: 4.5,
     reviewCount: 203,
     description: "Ultra-smooth poplin weave with a crisp finish that holds its shape all day.",
@@ -70,7 +77,7 @@ const products = [
     colorNames: ["Chambray Blue", "Slate", "Khaki"],
     inStock: false,
     stockCount: 0,
-    image: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=400",
+    image: s4,
     rating: 4.3,
     reviewCount: 67,
     description: "Relaxed chambray weave that transitions effortlessly from office to weekend.",
@@ -89,7 +96,7 @@ const products = [
     colorNames: ["Dark Slate", "Burgundy", "Charcoal"],
     inStock: true,
     stockCount: 15,
-    image: "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?w=400",
+    image: s5,
     rating: 4.9,
     reviewCount: 45,
     description: "Superfine merino wool with natural temperature regulation. The pinnacle of Karigar craftsmanship.",
@@ -108,7 +115,7 @@ const products = [
     colorNames: ["Red Check", "Green Check", "Brown Check"],
     inStock: true,
     stockCount: 33,
-    image: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400",
+    image: s6,
     rating: 4.4,
     reviewCount: 91,
     description: "Soft brushed flannel in classic check patterns. Perfect for cooler months.",

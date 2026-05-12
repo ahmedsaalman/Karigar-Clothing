@@ -8,4 +8,16 @@ export default defineConfig({
     react(),
     visualizer({ open: false, filename: 'stats.html' })
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/assets/photos': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
+  },
 })

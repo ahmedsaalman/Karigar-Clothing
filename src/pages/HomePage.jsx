@@ -1,3 +1,5 @@
+// src/pages/HomePage.jsx
+
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Welcome from '../components/Welcome';
@@ -8,88 +10,304 @@ import ErrorMessage from '../components/ErrorMessage';
 import useFetch from '../hooks/useFetch';
 import { getProducts } from '../services/productService';
 import promoModel from '../../photos/model_pics/model6.jpg';
+import article1 from '../../photos/article_01/blckwh1.png';
+import article2 from '../../photos/article_02/001.png';
+import article3 from '../../photos/article_02/002.png';
 
 function HomePage() {
   const navigate = useNavigate();
-  const fetchFeatured = useCallback(() => getProducts().then((products) => products.filter((p) => p.featured)), []);
+  const fetchFeatured = useCallback(
+    () => getProducts().then(p => p.filter(x => x.featured)),
+    []
+  );
   const { data: featuredProducts, isLoading, error, refetch } = useFetch(fetchFeatured);
 
   return (
-    <div>
+    <>
+      <style>{homeCSS}</style>
+
+      {/* ── Hero ── */}
       <Welcome />
+
+      {/* ── Stats ── */}
       <StatsBar products={150} happyCustomers={10000} yearsOfCraft={8} citiesDelivered={45} />
-      {isLoading && <LoadingSpinner message="Loading featured collection..." />}
-      {!isLoading && error && <ErrorMessage message={error} onRetry={refetch} />}
-      {!isLoading && !error && featuredProducts && (
-        <ProductGrid
-          products={featuredProducts}
-          title="Featured Collection"
-          subtitle="Hand-picked by our style experts."
-          columns={3}
+
+      {/* ── Featured Collection ── */}
+      <div className="home-featured">
+        {isLoading && <LoadingSpinner message="Loading featured collection..." />}
+        {!isLoading && error && <ErrorMessage message={error} onRetry={refetch} />}
+        {!isLoading && !error && featuredProducts && (
+          <ProductGrid
+            products={featuredProducts}
+            title="Featured Collection"
+            subtitle="Hand-picked by our style experts."
+            eyebrow="Curated for you"
+            columns={3}
+          />
+        )}
+      </div>
+
+      {/* ── Karigar Promise Banner ── */}
+      <section className="promise-banner">
+        <div
+          className="promise-banner__bg"
+          style={{ backgroundImage: `url(${promoModel})` }}
         />
-      )}
-      <div style={styles.banner}>
-        <div style={styles.bannerContent}>
-          <p style={styles.bannerEyebrow}>The Karigar Promise</p>
-          <h2 style={styles.bannerTitle}>Every Shirt. Perfectly Crafted.</h2>
-          <p style={styles.bannerSubtext}>
-            We use only the finest fabrics sourced from certified mills. Each shirt goes through 47 quality checks before it reaches you.
+        <div className="promise-banner__overlay" />
+        <div className="promise-banner__content">
+          <p className="promise-banner__eyebrow">The Karigar Promise</p>
+          <h2 className="promise-banner__title">Every Shirt.<br />Perfectly Crafted.</h2>
+          <p className="promise-banner__sub">
+            We use only the finest fabrics sourced from certified mills.
+            Each shirt goes through 47 quality checks before it reaches you.
           </p>
-          <button onClick={() => navigate('/products')} style={styles.bannerBtn}>
+          <button className="btn-primary" onClick={() => navigate('/products')}>
             Shop Full Collection
           </button>
         </div>
-      </div>
-    </div>
+      </section>
+
+      {/* ── Category Teasers ── */}
+      <section className="cat-teasers">
+        <div className="cat-teasers__inner">
+          <div className="cat-teasers__header">
+            <p className="cat-teasers__eyebrow">Browse By Style</p>
+            <h2 className="cat-teasers__title">Shop the Range</h2>
+          </div>
+          <div className="cat-teasers__grid">
+            {[
+              { img: article1, label: 'Formal', cat: 'formal', desc: 'Boardroom-ready.' },
+              { img: article2, label: 'Casual', cat: 'casual', desc: 'Relaxed perfection.' },
+              { img: article3, label: 'Premium', cat: 'premium', desc: 'Uncompromised quality.' },
+            ].map(({ img, label, cat, desc }) => (
+              <div
+                key={cat}
+                className="cat-card"
+                onClick={() => navigate(`/products?category=${cat}`)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={e => e.key === 'Enter' && navigate(`/products?category=${cat}`)}
+              >
+                <div className="cat-card__img-wrap">
+                  <img src={img} alt={label} className="cat-card__img" />
+                  <div className="cat-card__overlay" />
+                </div>
+                <div className="cat-card__content">
+                  <p className="cat-card__desc">{desc}</p>
+                  <h3 className="cat-card__label">{label}</h3>
+                  <span className="cat-card__cta">
+                    Shop Now 
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px' }}>
+                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 
-const styles = {
-  banner: {
-    backgroundImage: `linear-gradient(rgba(41, 26, 17, 0.84), rgba(41, 26, 17, 0.84)), url(${promoModel})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    padding: '80px 20px',
-  },
-  bannerContent: {
-    maxWidth: '600px',
-    margin: '0 auto',
-    textAlign: 'center',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-    alignItems: 'center',
-  },
-  bannerEyebrow: {
-    color: '#d7b17c',
-    fontSize: '0.8rem',
-    letterSpacing: '3px',
-    textTransform: 'uppercase',
-  },
-  bannerTitle: {
-    color: '#f8eee0',
-    fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
-    fontWeight: '700',
-    letterSpacing: '1px',
-  },
-  bannerSubtext: {
-    color: '#e6d4bd',
-    fontSize: '1rem',
-    lineHeight: '1.8',
-  },
-  bannerBtn: {
-    marginTop: '8px',
-    padding: '14px 36px',
-    backgroundColor: '#8b5e3c',
-    color: '#fff4e6',
-    border: 'none',
-    fontSize: '0.9rem',
-    fontWeight: '700',
-    letterSpacing: '1px',
-    textTransform: 'uppercase',
-    cursor: 'pointer',
-    borderRadius: '2px',
-  },
-};
+const homeCSS = `
+  .home-featured {
+    background: #0a0a0a;
+  }
+
+  /* ── Promise Banner ── */
+  .promise-banner {
+    position: relative;
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .promise-banner__bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.05);
+    transition: transform 8s ease;
+  }
+  .promise-banner:hover .promise-banner__bg { transform: scale(1); }
+  .promise-banner__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(10,10,10,0.92) 0%,
+      rgba(10,10,10,0.7) 100%
+    );
+  }
+  .promise-banner__content {
+    position: relative;
+    z-index: 2;
+    max-width: 640px;
+    text-align: center;
+    padding: 60px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .promise-banner__eyebrow {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #c9a84c;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+  }
+  .promise-banner__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    color: #f5efe6;
+    line-height: 1.15;
+    margin: 0;
+  }
+  .promise-banner__sub {
+    font-size: 0.95rem;
+    color: rgba(245,239,230,0.65);
+    line-height: 1.8;
+    max-width: 480px;
+    margin: 0;
+  }
+
+  /* ── Category Teasers ── */
+  .cat-teasers {
+    background: #080808;
+    padding: 80px 0;
+  }
+  .cat-teasers__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .cat-teasers__header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .cat-teasers__eyebrow {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #c9a84c;
+    margin-bottom: 12px;
+    font-family: 'Inter', sans-serif;
+  }
+  .cat-teasers__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    color: #f5efe6;
+    margin: 0;
+  }
+  .cat-teasers__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 640px) {
+    .cat-teasers__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .cat-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 3 / 4;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1),
+                box-shadow 0.4s ease,
+                border-color 0.3s ease;
+  }
+  .cat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.2);
+    border-color: rgba(201,168,76,0.2);
+  }
+  .cat-card__img-wrap {
+    position: absolute;
+    inset: 0;
+  }
+  .cat-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+  }
+  .cat-card:hover .cat-card__img { transform: scale(1.06); }
+  .cat-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(10,10,10,0.9) 0%,
+      rgba(10,10,10,0.2) 60%,
+      transparent 100%
+    );
+    transition: background 0.3s ease;
+  }
+  .cat-card:hover .cat-card__overlay {
+    background: linear-gradient(
+      to top,
+      rgba(10,10,10,0.95) 0%,
+      rgba(10,10,10,0.35) 60%,
+      rgba(10,10,10,0.1) 100%
+    );
+  }
+  .cat-card__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px 20px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .cat-card__desc {
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.8);
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+  .cat-card__label {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #f5efe6;
+    margin: 0;
+    line-height: 1.1;
+  }
+  .cat-card__cta {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #c9a84c;
+    font-family: 'Inter', sans-serif;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    margin-top: 4px;
+  }
+  .cat-card:hover .cat-card__cta {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
 
 export default HomePage;

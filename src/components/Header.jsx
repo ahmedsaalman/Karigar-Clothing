@@ -1,24 +1,35 @@
 // src/components/Header.jsx
 
-import { useState } from 'react';
-import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlistContext } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
 import SearchFocusButton from './SearchFocusButton';
-import { useWindowSize } from '../hooks/useWindowSize';
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlistContext();
   const { isAuthenticated, logout, user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   async function handleLogout() {
     await logout();
+    navigate('/');
   }
-
-  const navigate = useNavigate();
-  const { isMobile } = useWindowSize();
 
   const navLinks = [
     { label: 'Home', to: '/' },
@@ -26,37 +37,27 @@ function Header() {
     { label: 'About', to: '/about' },
   ];
 
-  function getNavLinkStyle({ isActive }) {
-    return {
-      ...styles.navLink,
-      color: isActive ? '#d4af37' : '#ffffff',
-      borderBottom: isActive
-        ? '2px solid #d4af37'
-        : '2px solid transparent',
-    };
-  }
-
   return (
-    <header style={styles.header}>
-      <div style={styles.container}>
+    <>
+      <style>{headerCSS}</style>
+      <header className={`kgr-header ${isScrolled ? 'scrolled' : ''}`}>
+        <div className="kgr-header__inner">
 
-        <Link to="/" style={styles.brandLink}>
-          <div style={styles.brand}>
-            <h1 style={styles.brandName}>Karigar Co.</h1>
-            {!isMobile && (
-              <p style={styles.tagline}>Crafted for Professionals</p>
-            )}
-          </div>
-        </Link>
+          {/* Brand */}
+          <Link to="/" className="kgr-brand">
+            <span className="kgr-brand__name">Karigar</span>
+            <span className="kgr-brand__co">Co.</span>
+            <span className="kgr-brand__tag">Crafted for Professionals</span>
+          </Link>
 
-        {!isMobile && (
-          <nav style={styles.nav}>
+          {/* Desktop Nav */}
+          <nav className="kgr-nav hide-mobile show-desktop">
             {navLinks.map(link => (
               <NavLink
                 key={link.label}
                 to={link.to}
-                style={getNavLinkStyle}
                 end={link.to === '/'}
+                className={({ isActive }) => `kgr-nav__link${isActive ? ' active' : ''}`}
               >
                 {link.label}
               </NavLink>
@@ -64,232 +65,353 @@ function Header() {
             {isAuthenticated ? (
               <>
                 {user?.role === 'admin' && (
-                  <NavLink to="/admin" style={getNavLinkStyle}>
+                  <NavLink to="/admin" className={({ isActive }) => `kgr-nav__link${isActive ? ' active' : ''}`}>
                     Admin
                   </NavLink>
                 )}
-                <button style={{ ...styles.navLink, background: 'none', border: 'none', cursor: 'pointer', borderBottom: '2px solid transparent' }} onClick={handleLogout}>
-                Logout
+                <button className="kgr-nav__link kgr-nav__link--btn" onClick={handleLogout}>
+                  Logout
                 </button>
               </>
             ) : (
-              <NavLink to="/login" style={getNavLinkStyle}>
+              <NavLink to="/login" className={({ isActive }) => `kgr-nav__link${isActive ? ' active' : ''}`}>
+                Login
+              </NavLink>
+            )}
+          </nav>
+
+          {/* Right side icons */}
+          <div className="kgr-header__actions">
+            <SearchFocusButton />
+
+            <button
+              className="kgr-icon-btn"
+              onClick={() => navigate('/wishlist')}
+              title="Wishlist"
+              aria-label="Wishlist"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              {wishlistCount > 0 && <span className="kgr-badge-dot">{wishlistCount}</span>}
+            </button>
+
+            <button
+              className="kgr-icon-btn"
+              onClick={() => navigate('/cart')}
+              title="Cart"
+              aria-label="Cart"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+              {cartCount > 0 && <span className="kgr-badge-dot">{cartCount}</span>}
+            </button>
+
+            {/* Hamburger — mobile only */}
+            <button
+              className={`kgr-hamburger show-mobile-only ${isMenuOpen ? 'open' : ''}`}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
+            >
+              <span /><span /><span />
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <nav className="kgr-mobile-nav">
+            {navLinks.map(link => (
+              <NavLink
+                key={link.label}
+                to={link.to}
+                end={link.to === '/'}
+                className={({ isActive }) => `kgr-mobile-nav__link${isActive ? ' active' : ''}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {link.label}
+              </NavLink>
+            ))}
+            <NavLink
+              to="/wishlist"
+              className={({ isActive }) => `kgr-mobile-nav__link${isActive ? ' active' : ''}`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
+            </NavLink>
+            <NavLink
+              to="/cart"
+              className={({ isActive }) => `kgr-mobile-nav__link${isActive ? ' active' : ''}`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Cart {cartCount > 0 && `(${cartCount})`}
+            </NavLink>
+            {isAuthenticated ? (
+              <>
+                {user?.role === 'admin' && (
+                  <NavLink
+                    to="/admin"
+                    className={({ isActive }) => `kgr-mobile-nav__link${isActive ? ' active' : ''}`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Admin
+                  </NavLink>
+                )}
+                <button
+                  className="kgr-mobile-nav__link kgr-mobile-nav__link--btn"
+                  onClick={async () => { await logout(); setIsMenuOpen(false); }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <NavLink
+                to="/login"
+                className={({ isActive }) => `kgr-mobile-nav__link${isActive ? ' active' : ''}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Login
               </NavLink>
             )}
           </nav>
         )}
-
-        <div style={styles.rightSide}>
-
-          <SearchFocusButton />
-
-          {/* Wishlist */}
-          <div
-            style={styles.iconArea}
-            onClick={() => navigate('/wishlist')}
-            title="Wishlist"
-          >
-            <span style={styles.icon}>♡</span>
-            {wishlistCount > 0 && (
-              <span style={styles.badge}>{wishlistCount}</span>
-            )}
-          </div>
-
-          {/* Cart */}
-          <div
-            style={styles.iconArea}
-            onClick={() => navigate('/cart')}
-            title="Cart"
-          >
-            <span style={styles.icon}>🛒</span>
-            {cartCount > 0 && (
-              <span style={styles.badge}>{cartCount}</span>
-            )}
-          </div>
-
-          <button
-            style={styles.hamburger}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? '✕' : '☰'}
-          </button>
-
-        </div>
-      </div>
-
-      {isMenuOpen && (
-        <nav style={styles.mobileMenu}>
-          {navLinks.map(link => (
-            <NavLink
-              key={link.label}
-              to={link.to}
-              end={link.to === '/'}
-              style={({ isActive }) => ({
-                ...styles.mobileNavLink,
-                color: isActive ? '#d4af37' : '#ffffff',
-              })}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {link.label}
-            </NavLink>
-          ))}
-          <NavLink
-            to="/wishlist"
-            style={({ isActive }) => ({
-              ...styles.mobileNavLink,
-              color: isActive ? '#d4af37' : '#ffffff',
-            })}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
-          </NavLink>
-          {isAuthenticated ? (
-            <>
-              {user?.role === 'admin' && (
-                <NavLink
-                  to="/admin"
-                  style={({ isActive }) => ({
-                    ...styles.mobileNavLink,
-                    color: isActive ? '#d4af37' : '#ffffff',
-                  })}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Admin
-                </NavLink>
-              )}
-              <button
-                style={{ ...styles.mobileNavLink, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: '#ffffff' }}
-                onClick={async () => {
-                  await logout();
-                  setIsMenuOpen(false);
-                }}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <NavLink
-              to="/login"
-              style={({ isActive }) => ({
-                ...styles.mobileNavLink,
-                color: isActive ? '#d4af37' : '#ffffff',
-              })}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Login
-            </NavLink>
-          )}
-        </nav>
-      )}
-
-    </header>
+      </header>
+    </>
   );
 }
 
-const styles = {
-  header: {
-    backgroundColor: '#1a1a1a',
-    position: 'sticky',
-    top: 0,
-    zIndex: 100,
-    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-  },
-  container: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '16px 20px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  brandLink: {
-    textDecoration: 'none',
-  },
-  brand: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  brandName: {
-    color: '#d4af37',
-    fontSize: '1.8rem',
-    fontWeight: '700',
-    letterSpacing: '2px',
-    textTransform: 'uppercase',
-  },
-  tagline: {
-    color: '#888',
-    fontSize: '0.7rem',
-    letterSpacing: '1px',
-    textTransform: 'uppercase',
-  },
-  nav: {
-    display: 'flex',
-    gap: '32px',
-  },
-  navLink: {
-    textDecoration: 'none',
-    fontSize: '0.9rem',
-    letterSpacing: '1px',
-    textTransform: 'uppercase',
-    padding: '4px 0',
-    transition: 'color 0.2s',
-  },
-  rightSide: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
-  },
-  iconArea: {
-    position: 'relative',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  icon: {
-    fontSize: '1.3rem',
-    color: '#ffffff',
-  },
-  badge: {
-    position: 'absolute',
-    top: '-8px',
-    right: '-8px',
-    backgroundColor: '#d4af37',
-    color: '#1a1a1a',
-    borderRadius: '50%',
-    width: '18px',
-    height: '18px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '0.65rem',
-    fontWeight: '800',
-  },
-  hamburger: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: '#ffffff',
-    fontSize: '1.4rem',
-    cursor: 'pointer',
-  },
-  mobileMenu: {
-    backgroundColor: '#2a2a2a',
-    padding: '16px 20px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-    borderTop: '1px solid #333',
-  },
-  mobileNavLink: {
-    textDecoration: 'none',
-    fontSize: '1rem',
-    padding: '12px 0',
-    borderBottom: '1px solid #333',
-    letterSpacing: '1px',
-    display: 'block',
-  },
-};
+const headerCSS = `
+  .kgr-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  .kgr-header.scrolled {
+    background: rgba(10, 10, 10, 0.92);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+  }
+  .kgr-header__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  /* Brand */
+  .kgr-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    text-decoration: none;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .kgr-brand__name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #f5efe6;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .kgr-brand__co {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #c9a84c;
+    line-height: 1;
+  }
+  .kgr-brand__tag {
+    display: none;
+    font-size: 0.6rem;
+    color: #6b6055;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-left: 8px;
+    white-space: nowrap;
+    align-self: center;
+  }
+  @media (min-width: 900px) {
+    .kgr-brand__tag { display: inline; }
+  }
+
+  /* Desktop Nav */
+  .kgr-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    justify-content: center;
+  }
+  .kgr-nav__link {
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #b0a090;
+    text-decoration: none;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border-radius: 4px;
+    transition: color 0.2s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .kgr-nav__link::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    width: 0;
+    height: 1.5px;
+    background: #c9a84c;
+    transform: translateX(-50%);
+    transition: width 0.25s ease;
+  }
+  .kgr-nav__link:hover { color: #f5efe6; }
+  .kgr-nav__link:hover::after { width: 60%; }
+  .kgr-nav__link.active { color: #c9a84c; }
+  .kgr-nav__link.active::after { width: 60%; }
+
+  /* Show/hide desktop nav */
+  .show-desktop { display: flex; }
+  @media (max-width: 768px) { .show-desktop { display: none !important; } }
+
+  /* Actions */
+  .kgr-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .kgr-icon-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: #b0a090;
+    transition: all 0.2s ease;
+  }
+  .kgr-icon-btn:hover {
+    color: #f5efe6;
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.08);
+  }
+  .kgr-badge-dot {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #c9a84c;
+    color: #0a0a0a;
+    font-size: 0.58rem;
+    font-weight: 800;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  /* Hamburger */
+  .kgr-hamburger {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 8px;
+    transition: all 0.2s ease;
+  }
+  .kgr-hamburger:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.08);
+  }
+  .kgr-hamburger span {
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    background: #b0a090;
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    transform-origin: center;
+  }
+  .kgr-hamburger.open span:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+    background: #c9a84c;
+  }
+  .kgr-hamburger.open span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  .kgr-hamburger.open span:nth-child(3) {
+    transform: translateY(-6.5px) rotate(-45deg);
+    background: #c9a84c;
+  }
+  @media (min-width: 769px) { .kgr-hamburger { display: none !important; } }
+
+  /* Mobile menu */
+  .kgr-mobile-nav {
+    background: rgba(14, 14, 14, 0.98);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 8px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    animation: menuSlideDown 0.25s ease both;
+  }
+  .kgr-mobile-nav__link {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #b0a090;
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 14px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: color 0.2s ease, padding-left 0.2s ease;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+  }
+  .kgr-mobile-nav__link:hover,
+  .kgr-mobile-nav__link.active {
+    color: #c9a84c;
+    padding-left: 8px;
+  }
+  .kgr-mobile-nav__link:last-child { border-bottom: none; }
+`;
 
 export default Header;

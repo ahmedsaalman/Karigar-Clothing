@@ -1,65 +1,389 @@
+/* ============================================
+   KARIGAR CO. — Premium Design System
+   ============================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ============================================
+   CSS CUSTOM PROPERTIES (DESIGN TOKENS)
+   ============================================ */
+:root {
+  /* Colors */
+  --color-bg:           #0a0a0a;
+  --color-bg-elevated:  #141414;
+  --color-bg-card:      #1a1a1a;
+  --color-bg-muted:     #222222;
+  --color-bg-glass:     rgba(20, 20, 20, 0.72);
+
+  --color-gold:         #c9a84c;
+  --color-gold-light:   #e0c06e;
+  --color-gold-dim:     rgba(201, 168, 76, 0.15);
+  --color-gold-glow:    rgba(201, 168, 76, 0.35);
+
+  --color-text-primary:   #f5efe6;
+  --color-text-secondary: #b0a090;
+  --color-text-muted:     #6b6055;
+  --color-text-dark:      #0a0a0a;
+
+  --color-border:         rgba(255, 255, 255, 0.07);
+  --color-border-hover:   rgba(201, 168, 76, 0.4);
+
+  --color-success:  #4caf7d;
+  --color-error:    #e05c5c;
+  --color-warning:  #e8a838;
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+
+  --text-xs:   0.72rem;
+  --text-sm:   0.85rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.35rem;
+  --text-2xl:  1.75rem;
+  --text-3xl:  2.25rem;
+  --text-4xl:  3rem;
+  --text-5xl:  4rem;
+
+  /* Spacing */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* Border Radius */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md:  0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lg:  0 8px 48px rgba(0, 0, 0, 0.6);
+  --shadow-xl:  0 16px 64px rgba(0, 0, 0, 0.7);
+  --shadow-gold: 0 0 24px rgba(201, 168, 76, 0.25);
+
+  /* Transitions */
+  --ease-out:   cubic-bezier(0.0, 0, 0.2, 1);
+  --ease-in:    cubic-bezier(0.4, 0, 1, 1);
+  --ease-inout: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast:   150ms;
+  --duration-base:   250ms;
+  --duration-slow:   400ms;
+  --duration-slower: 600ms;
+
+  /* Layout */
+  --container-max: 1200px;
+  --header-h:      72px;
+}
+
+/* ============================================
+   GLOBAL RESET & BASE
+   ============================================ */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
-  font-family: Georgia, 'Times New Roman', serif;
-  background-color: #f3eadf;
-  background-image:
-    radial-gradient(circle at 20% 20%, rgba(143, 94, 60, 0.06), transparent 40%),
-    radial-gradient(circle at 80% 0%, rgba(111, 72, 46, 0.08), transparent 30%);
-  color: #2b1f17;
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
   line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold-dim);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold);
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  color: var(--color-text-primary);
+}
+
+p {
+  color: var(--color-text-secondary);
 }
 
 a {
-  color: #6b4226;
+  color: var(--color-gold);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+a:hover {
+  color: var(--color-gold-light);
 }
 
+/* ============================================
+   INTERACTIVE ELEMENTS
+   ============================================ */
 button {
-  font-family: inherit;
-  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    background-color var(--duration-base) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
 }
 
-button:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.02);
+button:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
 }
 
-button:active {
-  transform: translateY(0);
+input, select, textarea {
+  font-family: var(--font-body);
+  outline: none;
 }
 
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ============================================
+   LAYOUT UTILITIES
+   ============================================ */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+}
+
+.section-pad {
+  padding: var(--space-20) var(--space-5);
+}
+
+/* ============================================
+   KEYFRAME ANIMATIONS
+   ============================================ */
+
+/* Page fade in */
 @keyframes pageFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes softZoom {
-  from {
-    transform: scale(1.02);
-  }
-  to {
-    transform: scale(1);
-  }
+/* Slide up */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes panelFadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Scale in */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Fade in simple */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Spin */
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Shimmer skeleton */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+/* Gold pulse */
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--color-gold-glow); }
+  50%       { box-shadow: 0 0 0 8px transparent; }
+}
+
+/* Expand line */
+@keyframes expandLine {
+  from { width: 0; }
+  to   { width: 48px; }
+}
+
+/* Heartbeat */
+@keyframes heartBeat {
+  0%   { transform: scale(1); }
+  14%  { transform: scale(1.3); }
+  28%  { transform: scale(1); }
+  42%  { transform: scale(1.15); }
+  70%  { transform: scale(1); }
+}
+
+/* Mobile menu slide */
+@keyframes menuSlideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Stagger children */
+@keyframes staggerFadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Cart success */
+@keyframes successPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* Float */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+/* ============================================
+   ANIMATION UTILITY CLASSES
+   ============================================ */
+.anim-fade-in  { animation: fadeIn var(--duration-slow) var(--ease-out) both; }
+.anim-slide-up { animation: slideUp var(--duration-slow) var(--ease-out) both; }
+.anim-scale-in { animation: scaleIn var(--duration-slow) var(--ease-out) both; }
+
+.anim-delay-1 { animation-delay: 80ms; }
+.anim-delay-2 { animation-delay: 160ms; }
+.anim-delay-3 { animation-delay: 240ms; }
+.anim-delay-4 { animation-delay: 320ms; }
+.anim-delay-5 { animation-delay: 400ms; }
+.anim-delay-6 { animation-delay: 480ms; }
+
+/* ============================================
+   GLASSMORPHISM BASE
+   ============================================ */
+.glass {
+  background: var(--color-bg-glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--color-border);
+}
+
+/* ============================================
+   COMMON BUTTON VARIANTS
+   ============================================ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 14px 32px;
+  background: var(--color-gold);
+  color: var(--color-text-dark);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  font-family: var(--font-body);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all var(--duration-base) var(--ease-out);
+}
+.btn-primary:hover {
+  background: var(--color-gold-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-gold);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 14px 32px;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-family: var(--font-body);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(245, 239, 230, 0.35);
+  cursor: pointer;
+  transition: all var(--duration-base) var(--ease-out);
+}
+.btn-outline:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  transform: translateY(-2px);
+}
+.btn-outline:active { transform: translateY(0); }
+
+/* ============================================
+   SKELETON LOADER
+   ============================================ */
+.skeleton {
+  background: linear-gradient(90deg, #1e1e1e 25%, #2a2a2a 50%, #1e1e1e 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================
+   RESPONSIVE HELPERS
+   ============================================ */
+@media (max-width: 480px) {
+  .hide-mobile { display: none !important; }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+  .hide-tablet { display: none !important; }
+}
+@media (min-width: 769px) {
+  .hide-desktop { display: none !important; }
+  .show-mobile-only { display: none !important; }
+}
+
+/* ============================================
+   SELECTION STYLE
+   ============================================ */
+::selection {
+  background: var(--color-gold-dim);
+  color: var(--color-gold-light);
 }
