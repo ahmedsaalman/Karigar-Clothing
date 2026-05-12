@@ -322,11 +322,11 @@ const checkoutCSS = `
   .checkout-summary-item__info { flex: 1; min-width: 0; }
   .checkout-summary-item__name { font-size: 0.85rem; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .checkout-summary-item__meta { font-size: 0.75rem; color: var(--color-text-muted); }
-  .checkout-summary-item__price { font-size: 0.9rem; font-weight: 800; color: var(--color-gold); }
+  .checkout-summary-item__price { font-size: 0.9rem; font-weight: 800; color: var(--color-price); }
 
   .checkout-summary__totals { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; padding-top: 20px; border-top: 1px solid var(--color-border); }
   .checkout-row-val { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--color-text-secondary); }
-  .checkout-row-val--total { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; color: var(--color-gold); margin-top: 4px; }
+  .checkout-row-val--total { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; color: var(--color-price); margin-top: 4px; }
   .checkout-divider { height: 1px; background: var(--color-border); }
   .checkout-success-text { color: var(--color-success); font-weight: 700; }
 

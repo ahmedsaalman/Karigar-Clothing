@@ -2,7 +2,8 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import useForm from '../hooks/useForm';
 import FormField from '../components/FormField';
-import heroImage from '../../photos/shirt_pics/sample1.jpg';
+import bgLogin from '../../photos/background login.jfif';
+import cardImg from '../../photos/shirt_pics/sample1.jpg';
 
 const VALIDATION_RULES = {
   email: {
@@ -114,36 +115,67 @@ function LoginPage() {
 
 const loginCSS = `
   .login-page {
-    min-height: 80vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 60px 20px;
-    background: var(--color-bg);
+    background-image: url(${bgLogin});
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  .login-page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
   }
   .login-card {
-    background: var(--color-bg-elevated);
-    padding: 48px;
-    border-radius: 12px;
-    border: 1px solid var(--color-border);
+    position: relative;
+    background-image: url(${cardImg});
+    background-size: cover;
+    background-position: center;
+    padding: 60px 50px;
+    border-radius: 20px;
     width: 100%;
-    maxWidth: 480px;
-    box-shadow: 0 32px 64px rgba(0,0,0,0.4);
-    animation: panelFadeUp 0.5s ease;
+    max-width: 500px;
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    animation: scaleIn 0.6s var(--ease-out);
+    border: 2px solid var(--color-gold);
+    z-index: 2;
+  }
+  .login-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95));
+    z-index: 1;
+  }
+  .login-card > * {
+    position: relative;
+    z-index: 2;
   }
   .login-title {
     font-family: var(--font-display);
-    font-size: 2.2rem;
+    font-size: 2rem;
     font-weight: 900;
     color: #ffffff;
     margin-bottom: 8px;
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
   }
   .login-subtitle {
-    color: var(--color-text-muted);
+    color: var(--color-gold);
     text-align: center;
-    margin-bottom: 32px;
-    font-size: 0.95rem;
+    margin-bottom: 40px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
   .login-fields {
     display: flex;

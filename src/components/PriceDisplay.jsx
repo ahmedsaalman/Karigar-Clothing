@@ -34,43 +34,51 @@ function PriceDisplay({ price, originalPrice }) {
   const hasDiscount = discountPercent > 0;
 
   return (
-    <div style={styles.container}>
-      <span style={styles.currentPrice}>{formattedPrice}</span>
-      {hasDiscount && (
-        <>
-          <span style={styles.originalPrice}>{formattedOriginal}</span>
-          <span style={styles.discountBadge}>-{discountPercent}%</span>
-        </>
-      )}
-    </div>
+    <>
+      <style>{priceCSS}</style>
+      <div className="price-container">
+        <span className="price-current">{formattedPrice}</span>
+        {hasDiscount && (
+          <>
+            <span className="price-original">{formattedOriginal}</span>
+            <span className="price-badge">-{discountPercent}% OFF</span>
+          </>
+        )}
+      </div>
+    </>
   );
 }
 
-const styles = {
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    flexWrap: 'wrap',
-  },
-  currentPrice: {
-    fontSize: '1.2rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
-  },
-  originalPrice: {
-    fontSize: '0.9rem',
-    color: '#999',
-    textDecoration: 'line-through',
-  },
-  discountBadge: {
-    fontSize: '0.75rem',
-    fontWeight: '700',
-    color: '#e74c3c',
-    backgroundColor: '#fde8e8',
-    padding: '2px 6px',
-    borderRadius: '4px',
-  },
-};
+const priceCSS = `
+  .price-container {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .price-current {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-price);
+    font-family: var(--font-display);
+    letter-spacing: -0.5px;
+  }
+  .price-original {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    text-decoration: line-through;
+    font-weight: 500;
+  }
+  .price-badge {
+    font-size: 0.7rem;
+    font-weight: 900;
+    color: #000000;
+    background: var(--color-gold);
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+`;
 
 export default PriceDisplay;

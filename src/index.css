@@ -17,8 +17,12 @@
 
   --color-gold:         #FFB800; /* Vibrant Yellow/Orange */
   --color-gold-light:   #FFD600;
+  --color-gold-vibrant: #FFD700;
+  --color-gold-muted:   #D4AF37;
   --color-gold-dim:     rgba(255, 184, 0, 0.15);
   --color-gold-glow:    rgba(255, 184, 0, 0.4);
+
+  --color-price:        var(--color-gold-vibrant);
 
   --color-text-primary:   #ffffff;
   --color-text-secondary: #e0e0e0;
