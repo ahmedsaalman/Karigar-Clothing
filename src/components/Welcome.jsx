@@ -6,7 +6,7 @@ import apiClient from '../services/apiClient';
 function Welcome() {
   const navigate = useNavigate();
 
-  const heroUrl = apiClient.getAssetUrl('/model_pics/model4.png');
+  const heroUrl = apiClient.getAssetUrl('/assets/photos/model_pics/model4.png');
 
   return (
     <>
@@ -14,9 +14,11 @@ function Welcome() {
 
       {/* ── Full-Viewport Hero ── */}
       <section className="hero" id="hero">
-        <div
-          className="hero__bg"
-          style={{ backgroundImage: `url(${heroUrl})` }}
+        <img
+          src={heroUrl}
+          alt="Karigar Collection Hero"
+          className="hero__img"
+          fetchpriority="high"
         />
         <div className="hero__overlay" />
 
@@ -72,16 +74,19 @@ const welcomeCSS = `
     justify-content: center;
     overflow: hidden;
   }
-  .hero__bg {
+  .hero__img {
     position: absolute;
     inset: 0;
-    background-size: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     background-position: center;
     transform: scale(1.04);
     animation: softHeroScale 8s ease-out forwards;
+    z-index: 0;
   }
   @media (max-width: 600px) {
-    .hero__bg { background-position: 75% center; } /* Adjust for better framing of the person */
+    .hero__img { object-position: 75% center; } /* Adjust for better framing of the person */
   }
   @keyframes softHeroScale {
     from { transform: scale(1.04); }

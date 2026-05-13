@@ -14,10 +14,10 @@ import apiClient from '../services/apiClient';
 function HomePage() {
   const navigate = useNavigate();
 
-  const promoUrl = apiClient.getAssetUrl('/model_pics/model6.jpg');
-  const article1 = apiClient.getAssetUrl('/article_01/blckwh1.png');
-  const article2 = apiClient.getAssetUrl('/article_02/001.png');
-  const article3 = apiClient.getAssetUrl('/article_02/002.png');
+  const promoUrl = apiClient.getAssetUrl('/assets/photos/model_pics/model6.jpg');
+  const article1 = apiClient.getAssetUrl('/assets/photos/article_01/blckwh1.png');
+  const article2 = apiClient.getAssetUrl('/assets/photos/article_02/001.png');
+  const article3 = apiClient.getAssetUrl('/assets/photos/article_02/002.png');
 
   const fetchFeatured = useCallback(
     () => getProducts().then(p => p.filter(x => x.featured)),
