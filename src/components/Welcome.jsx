@@ -1,11 +1,12 @@
 // src/components/Welcome.jsx
 
 import { useNavigate } from 'react-router-dom';
-import modelHero from '../../photos/model_pics/model4.png';
-import articleImg from '../../photos/article_01/blckwh2.png';
+import apiClient from '../services/apiClient';
 
 function Welcome() {
   const navigate = useNavigate();
+
+  const heroUrl = apiClient.getAssetUrl('/model_pics/model4.png');
 
   return (
     <>
@@ -15,7 +16,7 @@ function Welcome() {
       <section className="hero" id="hero">
         <div
           className="hero__bg"
-          style={{ backgroundImage: `url(${modelHero})` }}
+          style={{ backgroundImage: `url(${heroUrl})` }}
         />
         <div className="hero__overlay" />
 

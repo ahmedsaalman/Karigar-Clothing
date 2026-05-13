@@ -9,13 +9,16 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import useFetch from '../hooks/useFetch';
 import { getProducts } from '../services/productService';
-import promoModel from '../../photos/model_pics/model6.jpg';
-import article1 from '../../photos/article_01/blckwh1.png';
-import article2 from '../../photos/article_02/001.png';
-import article3 from '../../photos/article_02/002.png';
+import apiClient from '../services/apiClient';
 
 function HomePage() {
   const navigate = useNavigate();
+
+  const promoUrl = apiClient.getAssetUrl('/model_pics/model6.jpg');
+  const article1 = apiClient.getAssetUrl('/article_01/blckwh1.png');
+  const article2 = apiClient.getAssetUrl('/article_02/001.png');
+  const article3 = apiClient.getAssetUrl('/article_02/002.png');
+
   const fetchFeatured = useCallback(
     () => getProducts().then(p => p.filter(x => x.featured)),
     []
@@ -51,7 +54,7 @@ function HomePage() {
       <section className="promise-banner">
         <div
           className="promise-banner__bg"
-          style={{ backgroundImage: `url(${promoModel})` }}
+          style={{ backgroundImage: `url(${promoUrl})` }}
         />
         <div className="promise-banner__overlay" />
         <div className="promise-banner__content">
