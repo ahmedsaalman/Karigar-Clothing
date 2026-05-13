@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
-import { postRequest } from '../services/apiClient';
+import { postRequest, getAssetUrl } from '../services/apiClient';
 import cartHero from '../../photos/shirt_pics/sample6.jpg';
 
 function CartPage() {
@@ -116,10 +116,10 @@ function CartPage() {
             {cartItems.map(item => (
               <div key={`${item.id}-${item.size}`} className="cart-item">
                 <img
-                  src={item.image}
+                  src={getAssetUrl(item.image)}
                   alt={item.name}
                   className="cart-item__img"
-                  onError={(e) => { e.target.src = 'https://via.placeholder.com/90x110'; }}
+                  onError={(e) => { e.target.src = 'https://placehold.co/90x110/141414/ffffff?text=Err'; }}
                 />
                 <div className="cart-item__info">
                   <h3 className="cart-item__name" onClick={() => navigate(`/products/${item.id}`)}>

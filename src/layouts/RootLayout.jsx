@@ -3,6 +3,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import BackToTop from '../components/BackToTop';
 import { useCart } from '../context/CartContext';
 import { Suspense } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -25,6 +26,7 @@ function RootLayout() {
         </ErrorBoundary>
       </main>
       <Footer />
+      <BackToTop />
     </div>
   );
 }

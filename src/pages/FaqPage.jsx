@@ -69,25 +69,27 @@ const styles = {
   page: {
     maxWidth: '1000px',
     margin: '0 auto',
-    padding: '80px 20px 120px',
+    padding: '120px 24px 160px',
   },
   header: {
     textAlign: 'center',
-    marginBottom: '60px',
+    marginBottom: '80px',
   },
   title: {
-    fontSize: 'clamp(2rem, 4vw, 2.5rem)',
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: '16px',
-    letterSpacing: '-0.5px',
+    fontSize: 'clamp(2.5rem, 6vw, 3.5rem)',
+    fontWeight: '900',
+    color: '#ffffff',
+    marginBottom: '20px',
+    letterSpacing: '-1px',
+    fontFamily: 'var(--font-display)',
   },
   subtitle: {
     fontSize: '1.1rem',
-    color: '#666',
-    maxWidth: '600px',
+    color: '#888',
+    maxWidth: '500px',
     margin: '0 auto',
     lineHeight: '1.6',
+    fontFamily: 'var(--font-body)',
   },
 };
 

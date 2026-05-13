@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useWishlistContext } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import { getAssetUrl } from '../services/apiClient';
 import { useState } from 'react';
 
 function WishlistPage() {
@@ -91,12 +92,12 @@ function WishlistPage() {
 
             <div style={styles.imageContainer}>
               <img
-                src={product.image}
+                src={getAssetUrl(product.image)}
                 alt={product.name}
                 style={styles.image}
                 onError={e => {
                   e.target.src =
-                    'https://via.placeholder.com/300x360?text=Karigar';
+                    'https://placehold.co/300x360/141414/ffffff?text=Karigar';
                 }}
               />
               <button
@@ -125,7 +126,7 @@ function WishlistPage() {
                 <p style={styles.sizeLabel}>
                   Size:
                   {selectedSizes[product.id]
-                    ? <strong> {selectedSizes[product.id]}</strong>
+                    ? <strong style={{ color: 'var(--color-gold)' }}> {selectedSizes[product.id]}</strong>
                     : <span style={styles.selectPrompt}> Select</span>
                   }
                 </p>
@@ -138,16 +139,16 @@ function WishlistPage() {
                         ...styles.sizeBtn,
                         backgroundColor:
                           selectedSizes[product.id] === size
-                            ? '#1a1a1a'
-                            : '#ffffff',
+                            ? 'var(--color-gold)'
+                            : 'transparent',
                         color:
                           selectedSizes[product.id] === size
-                            ? '#ffffff'
-                            : '#555',
+                            ? '#000000'
+                            : 'var(--color-text-secondary)',
                         borderColor:
                           selectedSizes[product.id] === size
-                            ? '#1a1a1a'
-                            : '#ddd',
+                            ? 'var(--color-gold)'
+                            : 'var(--color-border)',
                       }}
                     >
                       {size}
@@ -184,49 +185,55 @@ const styles = {
   page: {
     maxWidth: '1200px',
     margin: '0 auto',
-    padding: '60px 20px 100px',
+    padding: '100px 24px 140px',
   },
   pageHeader: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: '40px',
+    marginBottom: '48px',
   },
   title: {
-    fontSize: '2rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
+    fontSize: '2.5rem',
+    fontWeight: '900',
+    color: '#ffffff',
     marginBottom: '4px',
+    fontFamily: 'var(--font-display)',
   },
   subtitle: {
-    color: '#888',
+    color: 'var(--color-text-muted)',
     fontSize: '0.9rem',
+    fontFamily: 'var(--font-body)',
   },
   clearBtn: {
     background: 'none',
     border: 'none',
-    color: '#e74c3c',
-    fontSize: '0.85rem',
+    color: 'var(--color-error)',
+    fontSize: '0.8rem',
+    fontWeight: '700',
     cursor: 'pointer',
-    textDecoration: 'underline',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    opacity: 0.8,
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-    gap: '24px',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+    gap: '32px',
   },
   card: {
-    backgroundColor: '#ffffff',
-    borderRadius: '4px',
+    backgroundColor: 'var(--color-bg-elevated)',
+    borderRadius: '8px',
     overflow: 'hidden',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+    border: '1px solid var(--color-border)',
     display: 'flex',
     flexDirection: 'column',
+    transition: 'transform 0.3s ease',
   },
   imageContainer: {
     position: 'relative',
-    paddingBottom: '120%',
-    backgroundColor: '#f5f5f5',
+    paddingBottom: '125%',
+    backgroundColor: '#050505',
     overflow: 'hidden',
   },
   image: {
@@ -239,94 +246,99 @@ const styles = {
   },
   removeBtn: {
     position: 'absolute',
-    top: '10px',
-    right: '10px',
-    width: '28px',
-    height: '28px',
+    top: '12px',
+    right: '12px',
+    width: '32px',
+    height: '32px',
     borderRadius: '50%',
     border: 'none',
-    backgroundColor: '#ffffff',
-    color: '#888',
-    fontSize: '0.75rem',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    backdropFilter: 'blur(8px)',
+    color: '#ffffff',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
     zIndex: 2,
   },
   cardContent: {
-    padding: '16px',
+    padding: '24px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '10px',
+    gap: '16px',
     flex: 1,
   },
   productName: {
-    fontSize: '0.95rem',
-    fontWeight: '600',
-    color: '#1a1a1a',
+    fontSize: '1.1rem',
+    fontWeight: '800',
+    color: '#ffffff',
     cursor: 'pointer',
+    fontFamily: 'var(--font-display)',
   },
   price: {
-    fontSize: '1.1rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
+    fontSize: '1.2rem',
+    fontWeight: '800',
+    color: 'var(--color-price)',
   },
   sizeSection: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '8px',
+    gap: '10px',
   },
   sizeLabel: {
-    fontSize: '0.8rem',
-    color: '#555',
+    fontSize: '0.75rem',
+    color: 'var(--color-text-muted)',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
   },
   selectPrompt: {
-    color: '#e74c3c',
+    color: 'var(--color-error)',
     fontStyle: 'italic',
   },
   sizes: {
     display: 'flex',
-    gap: '6px',
+    gap: '8px',
     flexWrap: 'wrap',
   },
   sizeBtn: {
-    padding: '5px 10px',
-    border: '1px solid #ddd',
-    fontSize: '0.72rem',
+    minWidth: '40px',
+    padding: '6px 12px',
+    border: '1px solid var(--color-border)',
+    fontSize: '0.75rem',
+    fontWeight: '700',
     cursor: 'pointer',
-    borderRadius: '2px',
-    transition: 'all 0.15s',
+    borderRadius: '4px',
+    transition: 'all 0.2s',
   },
   cardActions: {
     display: 'flex',
-    gap: '8px',
+    gap: '10px',
     marginTop: 'auto',
   },
   cartBtn: {
     flex: 2,
-    padding: '10px',
-    backgroundColor: '#1a1a1a',
-    color: '#ffffff',
+    padding: '12px',
+    backgroundColor: 'var(--color-gold)',
+    color: '#000000',
     border: 'none',
     fontSize: '0.75rem',
-    fontWeight: '700',
-    letterSpacing: '0.5px',
+    fontWeight: '800',
+    letterSpacing: '1px',
     cursor: 'pointer',
-    borderRadius: '2px',
+    borderRadius: '4px',
     textTransform: 'uppercase',
   },
   viewBtn: {
     flex: 1,
-    padding: '10px',
+    padding: '12px',
     backgroundColor: 'transparent',
-    color: '#1a1a1a',
-    border: '1px solid #1a1a1a',
+    color: 'var(--color-text-secondary)',
+    border: '1px solid var(--color-border)',
     fontSize: '0.75rem',
     fontWeight: '700',
     cursor: 'pointer',
-    borderRadius: '2px',
+    borderRadius: '4px',
     textTransform: 'uppercase',
   },
   emptyContainer: {
@@ -334,37 +346,39 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '120px 20px',
-    gap: '16px',
+    padding: '160px 24px',
+    gap: '20px',
     textAlign: 'center',
   },
-  emptyIcon: {
-    fontSize: '4rem',
-    color: '#e0e0e0',
-    lineHeight: 1,
+  emptyIconWrap: {
+    marginBottom: '10px',
+    color: 'var(--color-gold)',
   },
   emptyTitle: {
-    fontSize: '1.5rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
+    fontSize: '2rem',
+    fontWeight: '900',
+    color: '#ffffff',
+    fontFamily: 'var(--font-display)',
   },
   emptyText: {
-    color: '#888',
-    fontSize: '0.95rem',
-    maxWidth: '300px',
+    color: 'var(--color-text-muted)',
+    fontSize: '1.05rem',
+    maxWidth: '350px',
+    lineHeight: '1.6',
   },
   shopBtn: {
-    marginTop: '8px',
-    padding: '14px 36px',
-    backgroundColor: '#1a1a1a',
-    color: '#ffffff',
+    marginTop: '12px',
+    padding: '16px 44px',
+    backgroundColor: 'var(--color-gold)',
+    color: '#000000',
     border: 'none',
     fontSize: '0.9rem',
-    fontWeight: '700',
-    letterSpacing: '1px',
+    fontWeight: '800',
+    letterSpacing: '1.5px',
     textTransform: 'uppercase',
     cursor: 'pointer',
-    borderRadius: '2px',
+    borderRadius: '6px',
+    transition: 'all 0.3s',
   },
 };
 
