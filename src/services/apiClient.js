@@ -101,3 +101,15 @@ export function patchRequest(path, data) {
 export function deleteRequest(path) {
   return request(path, { method: 'DELETE' });
 }
+
+export default {
+  getAssetUrl,
+  setAccessToken,
+  registerUnauthorizedHandler,
+  refreshAccessToken,
+  getRequest,
+  postRequest,
+  putRequest,
+  patchRequest,
+  deleteRequest
+};
