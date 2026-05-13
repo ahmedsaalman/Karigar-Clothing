@@ -45,7 +45,7 @@ function ProductCard({ product, animDelay = 0 }) {
     addToCart(product, selectedSize);
     showSuccess(`${name} (${selectedSize}) added to cart!`);
     setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2200);
+    setTimeout(() => setAddedToCart(false), 1000);
   }
 
   function renderStars(r) {

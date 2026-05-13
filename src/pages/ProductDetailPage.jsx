@@ -58,7 +58,7 @@ function ProductDetailPage() {
     }
     showSuccess(`${quantity} × ${product.name} (${selectedSize}) added to cart!`);
     setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2200);
+    setTimeout(() => setAddedToCart(false), 1000);
   }
 
   if (isLoading) return <LoadingSpinner message="Refining product details..." />;

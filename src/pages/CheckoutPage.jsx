@@ -125,36 +125,14 @@ function CheckoutPage() {
 
   async function onSubmit(formValues) {
     try {
-      const payload = {
-        items: cartItems.map((item) => ({
-          productId: item.id,
-          size: item.size,
-          quantity: item.quantity,
-        })),
-        shippingAddress: {
-          firstName: formValues.firstName,
-          lastName: formValues.lastName,
-          email: formValues.email,
-          phone: formValues.phone,
-          address: formValues.address,
-          city: formValues.city,
-          province: formValues.province,
-          postalCode: formValues.postalCode,
-        },
-        paymentMethod: formValues.paymentMethod,
-        orderNotes: formValues.orderNotes,
-        discountCode,
-        discountPercent,
-        subtotal,
-        shipping,
-        grandTotal,
-      };
-
-      const response = await postRequest('/orders', payload);
-      setOrderId(response.order.orderId);
-      setOrderPlaced(true);
-      clearCart();
-      showSuccess('Order placed successfully!');
+      // Logic for actual order placement is skipped as per request
+      showSuccess('order placing yet to be implemented thankyou for ordering');
+      
+      // Optionally clear cart and redirect to home after a delay
+      setTimeout(() => {
+        clearCart();
+        navigate('/');
+      }, 3000);
     } catch (error) {
       showError(error.message || 'Could not place order');
     }
