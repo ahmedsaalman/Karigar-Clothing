@@ -6,7 +6,7 @@ import apiClient from '../services/apiClient';
 function Welcome() {
   const navigate = useNavigate();
 
-  const heroUrl = apiClient.getAssetUrl('/assets/photos/model_pics/model4.png');
+  const heroUrl = 'https://i0.wp.com/zaloramalaysiablog.wpcomstaging.com/wp-content/uploads/2024/10/2f2498c03756b756eebcee269b811e5a.jpg?resize=736%2C768&ssl=1';
 
   return (
     <>
@@ -80,13 +80,10 @@ const welcomeCSS = `
     width: 100%;
     height: 100%;
     object-fit: cover;
-    background-position: center;
+    object-position: center;
     transform: scale(1.04);
     animation: softHeroScale 8s ease-out forwards;
     z-index: 0;
-  }
-  @media (max-width: 600px) {
-    .hero__img { object-position: 75% center; } /* Adjust for better framing of the person */
   }
   @keyframes softHeroScale {
     from { transform: scale(1.04); }
