@@ -1,4 +1,13 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const BACKEND_URL = API_BASE_URL.replace(/\/api$/, '');
+
+export const getAssetUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  // Ensure path starts with / if it's relative
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${BACKEND_URL}${normalizedPath}`;
+};
 
 let accessToken = localStorage.getItem('karigar_access_token') || null;
 let onUnauthorized = null;

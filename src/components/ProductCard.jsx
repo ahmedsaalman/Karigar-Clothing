@@ -8,7 +8,7 @@ import { useWishlistContext } from '../context/WishlistContext';
 import Badge from './Badge';
 import PriceDisplay from './PriceDisplay';
 import LazyImage from './LazyImage';
-import { memo } from 'react';
+import { getAssetUrl } from '../services/apiClient';
 
 function ProductCard({ product, animDelay = 0 }) {
   const { addToCart } = useCart();
@@ -81,10 +81,10 @@ function ProductCard({ product, animDelay = 0 }) {
         {/* Image */}
         <div className="pc__img-wrap">
           <LazyImage
-            src={image}
+            src={getAssetUrl(image)}
             alt={name}
             className="pc__img"
-            onError={e => { e.target.src = 'https://via.placeholder.com/400x500?text=Karigar'; }}
+            onError={e => { e.target.src = 'https://placehold.co/400x500/141414/ffffff?text=Karigar'; }}
           />
 
           {/* Overlays */}

@@ -10,6 +10,7 @@ import LazyImage from '../components/LazyImage';
 import { getProductById } from '../services/productService';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import { getAssetUrl } from '../services/apiClient';
 import ImageZoomPortal from '../components/ImageZoomPortal';
 
 function ProductDetailPage() {
@@ -84,9 +85,10 @@ function ProductDetailPage() {
           <div className="pdp-gallery">
             <div className="pdp-gallery__main" onClick={() => setIsZoomOpen(true)}>
               <LazyImage
-                src={images[selectedImage]}
+                src={getAssetUrl(images[selectedImage])}
                 alt={product.name}
                 className="pdp-gallery__img"
+                onError={e => { e.target.src = 'https://placehold.co/400x500/141414/ffffff?text=Karigar'; }}
               />
               {product.badge && (
                 <div className="pdp-gallery__badge">
@@ -106,7 +108,7 @@ function ProductDetailPage() {
                   className={`pdp-gallery__thumb ${selectedImage === i ? 'pdp-gallery__thumb--active' : ''}`}
                   onClick={() => setSelectedImage(i)}
                 >
-                  <img src={img} alt="" />
+                  <img src={getAssetUrl(img)} alt="" onError={e => { e.target.src = 'https://placehold.co/100x100/141414/ffffff?text=Err'; }} />
                 </button>
               ))}
             </div>
