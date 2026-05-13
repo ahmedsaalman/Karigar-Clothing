@@ -17,13 +17,8 @@ function ProductsPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const searchInputRef = useRef(null);
-
   const { data: allProducts, isLoading, error, refetch } = useFetch(getProducts);
 
-  useEffect(() => {
-    if (searchInputRef.current) searchInputRef.current.focus();
-  }, []);
 
   useEffect(() => {
     if (!filterQuery.trim()) { setSearchResults(null); return; }
@@ -60,7 +55,6 @@ function ProductsPage() {
   const handleClearSearch = useCallback(() => {
     setSearchQuery('');
     startTransition(() => { setFilterQuery(''); setSearchResults(null); });
-    if (searchInputRef.current) searchInputRef.current.focus();
   }, []);
 
   return (
@@ -89,7 +83,6 @@ function ProductsPage() {
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
               </svg>
               <input
-                ref={searchInputRef}
                 type="text"
                 placeholder="Search shirts..."
                 value={searchQuery}

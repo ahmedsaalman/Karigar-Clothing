@@ -105,6 +105,11 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, .pc {
+  user-select: none;
 }
 
 body {

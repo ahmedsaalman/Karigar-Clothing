@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
@@ -27,6 +28,7 @@ const app = express();
 app.set('trust proxy', 1);
 
 // ── Core Middleware ───────────────────────────────────────────
+app.use(compression());
 app.use(
   helmet({
     crossOriginResourcePolicy: false,
@@ -63,7 +65,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(
   '/assets/photos',
   express.static(path.resolve(__dirname, '../../photos'), {
-    maxAge: env.isProd ? '7d' : 0,
+    maxAge: env.isProd ? '30d' : 0,
+    immutable: env.isProd,
   })
 );
 

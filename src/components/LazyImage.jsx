@@ -40,10 +40,11 @@ function LazyImage({ src, alt, className, style, containerStyle, ...props }) {
             alt={alt}
             className={className}
             onLoad={() => setIsLoaded(true)}
+            decoding="async"
             style={{
               ...style,
               opacity: isLoaded ? 1 : 0,
-              transition: 'opacity 0.45s ease',
+              transition: 'opacity 0.4s ease-out',
             }}
             {...props}
           />
