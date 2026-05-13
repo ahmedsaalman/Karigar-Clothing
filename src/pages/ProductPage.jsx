@@ -17,8 +17,8 @@ function ProductsPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+  const [showControls, setShowControls] = useState(false);
   const { data: allProducts, isLoading, error, refetch } = useFetch(getProducts);
-
 
   useEffect(() => {
     if (!filterQuery.trim()) { setSearchResults(null); return; }
@@ -75,64 +75,82 @@ function ProductsPage() {
 
         {/* Controls bar */}
         <div className="pp-controls-wrap">
-          <div className="pp-controls">
-
-            {/* Search */}
-            <div className="pp-search">
-              <svg className="pp-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          <div className="pp-controls-container">
+            
+            {/* Mobile Toggle Button */}
+            <button 
+              className="pp-mobile-toggle"
+              onClick={() => setShowControls(!showControls)}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                {showControls ? (
+                  <path d="M18 6L6 18M6 6l12 12" />
+                ) : (
+                  <><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></>
+                )}
               </svg>
-              <input
-                type="text"
-                placeholder="Search shirts..."
-                value={searchQuery}
-                onChange={e => {
-                  setSearchQuery(e.target.value);
-                  startTransition(() => setFilterQuery(e.target.value));
-                }}
-                className="pp-search__input"
-                aria-label="Search products"
-              />
-              {searchQuery && (
-                <button onClick={handleClearSearch} className="pp-search__clear" aria-label="Clear search">✕</button>
-              )}
-            </div>
+              <span>{showControls ? 'Close Filters' : 'Filter & Search'}</span>
+            </button>
 
-            {/* Category filter */}
-            <div className="pp-filter-group">
-              <span className="pp-filter-label">Category:</span>
-              <div className="pp-filter-pills">
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setFilterCategory(cat)}
-                    className={`pp-pill ${filterCategory === cat ? 'pp-pill--active' : ''}`}
-                  >
-                    {cat === 'all' ? 'All' : cat}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <div className={`pp-controls ${showControls ? 'pp-controls--show' : ''}`}>
 
-            {/* Sort */}
-            <div className="pp-filter-group pp-filter-group--right">
-              <span className="pp-filter-label">Sort:</span>
-              <div className="pp-sort-wrap">
-                <select
-                  value={sortBy}
-                  onChange={e => setSortBy(e.target.value)}
-                  className="pp-sort"
-                  aria-label="Sort products"
-                >
-                  <option value="default">Default</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="rating">Top Rated</option>
-                  <option value="name">Name: A–Z</option>
-                </select>
-                <svg className="pp-sort__chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <polyline points="6 9 12 15 18 9"/>
+              {/* Search */}
+              <div className="pp-search">
+                <svg className="pp-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
+                <input
+                  type="text"
+                  placeholder="Search shirts..."
+                  value={searchQuery}
+                  onChange={e => {
+                    setSearchQuery(e.target.value);
+                    startTransition(() => setFilterQuery(e.target.value));
+                  }}
+                  className="pp-search__input"
+                  aria-label="Search products"
+                />
+                {searchQuery && (
+                  <button onClick={handleClearSearch} className="pp-search__clear" aria-label="Clear search">✕</button>
+                )}
+              </div>
+
+              {/* Category filter */}
+              <div className="pp-filter-group">
+                <span className="pp-filter-label">Category:</span>
+                <div className="pp-filter-pills">
+                  {categories.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setFilterCategory(cat)}
+                      className={`pp-pill ${filterCategory === cat ? 'pp-pill--active' : ''}`}
+                    >
+                      {cat === 'all' ? 'All' : cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sort */}
+              <div className="pp-filter-group pp-filter-group--right">
+                <span className="pp-filter-label">Sort:</span>
+                <div className="pp-sort-wrap">
+                  <select
+                    value={sortBy}
+                    onChange={e => setSortBy(e.target.value)}
+                    className="pp-sort"
+                    aria-label="Sort products"
+                  >
+                    <option value="default">Default</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Top Rated</option>
+                    <option value="name">Name: A–Z</option>
+                  </select>
+                  <svg className="pp-sort__chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
@@ -207,18 +225,58 @@ const productsPageCSS = `
     top: 72px;
     z-index: 50;
     background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid var(--color-border);
-    padding: 16px 20px;
+    padding: 0;
   }
-  .pp-controls {
+  .pp-controls-container {
     max-width: var(--container-max);
     margin: 0 auto;
+  }
+  .pp-controls {
     display: flex;
     align-items: center;
     gap: 20px;
     flex-wrap: wrap;
+    padding: 16px 20px;
+    transition: all 0.3s ease;
+  }
+
+  /* Mobile Toggle */
+  .pp-mobile-toggle {
+    display: none;
+    width: 100%;
+    padding: 14px 20px;
+    background: transparent;
+    border: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--color-gold);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: var(--font-body);
+    cursor: pointer;
+  }
+
+  @media (max-width: 900px) {
+    .pp-mobile-toggle { display: flex; }
+    .pp-controls {
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 24px;
+      padding: 24px 20px;
+      background: var(--color-bg-elevated);
+      border-top: 1px solid var(--color-border);
+    }
+    .pp-controls--show {
+      display: flex;
+    }
+    .pp-filter-group--right { margin-left: 0; }
   }
 
   /* Search */
@@ -227,6 +285,9 @@ const productsPageCSS = `
     flex: 1;
     min-width: 200px;
     max-width: 360px;
+  }
+  @media (max-width: 900px) {
+    .pp-search { max-width: 100%; width: 100%; }
   }
   .pp-search__icon {
     position: absolute;
@@ -272,29 +333,29 @@ const productsPageCSS = `
   .pp-filter-group {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
   }
   .pp-filter-group--right { margin-left: auto; }
   .pp-filter-label {
-    font-size: 0.68rem;
-    font-weight: 700;
+    font-size: 0.65rem;
+    font-weight: 800;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--color-text-muted);
     white-space: nowrap;
     font-family: var(--font-body);
   }
-  .pp-filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pp-filter-pills { display: flex; gap: 8px; flex-wrap: wrap; }
   .pp-pill {
-    padding: 6px 14px;
-    font-size: 0.73rem;
-    font-weight: 600;
+    padding: 6px 16px;
+    font-size: 0.72rem;
+    font-weight: 700;
     font-family: var(--font-body);
     text-transform: capitalize;
     letter-spacing: 0.5px;
     color: var(--color-text-secondary);
-    background: transparent;
+    background: #111;
     border: 1px solid var(--color-border);
     border-radius: 999px;
     cursor: pointer;
@@ -322,7 +383,7 @@ const productsPageCSS = `
     appearance: none;
     -webkit-appearance: none;
     padding: 8px 36px 8px 14px;
-    background: var(--color-bg-muted);
+    background: #111;
     border: 1px solid var(--color-border);
     border-radius: 6px;
     font-size: 0.82rem;
@@ -343,12 +404,15 @@ const productsPageCSS = `
   /* Results info */
   .pp-results-info {
     max-width: var(--container-max);
-    margin: 8px auto 0;
-    font-size: 0.72rem;
+    margin: 0 auto;
+    padding: 8px 20px 12px;
+    font-size: 0.7rem;
     letter-spacing: 1px;
     color: var(--color-text-muted);
     font-family: var(--font-body);
+    font-weight: 600;
   }
+
 
   /* Grid area */
   .pp-grid-area {

@@ -88,21 +88,29 @@ const statCSS = `
   .statsbar__inner {
     max-width: var(--container-max);
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
-  @media (min-width: 640px) {
+  @media (min-width: 900px) {
     .statsbar__inner { grid-template-columns: repeat(4, 1fr); }
   }
   .stat-item {
-    padding: 40px 20px;
+    padding: 32px 16px;
     text-align: center;
     border-right: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
     animation: slideUp 0.6s ease both;
     position: relative;
   }
-  .stat-item:last-child { border-right: none; }
+  @media (min-width: 900px) {
+    .stat-item { border-bottom: none; padding: 48px 20px; }
+  }
+  .stat-item:nth-child(2n) { border-right: none; }
+  @media (min-width: 900px) {
+    .stat-item:nth-child(2n) { border-right: 1px solid var(--color-border); }
+    .stat-item:last-child { border-right: none; }
+  }
   .stat-item::after {
     content: '';
     position: absolute;
@@ -111,17 +119,17 @@ const statCSS = `
     transform: translateX(-50%);
     width: 0;
     height: 2px;
-    background: linear-gradient(to right, transparent, var(--color-gold), transparent);
+    background: var(--color-gold);
     transition: width 0.6s ease;
   }
-  .stat-item:hover::after { width: 60%; }
+  .stat-item:hover::after { width: 40%; }
   .stat-value {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-size: clamp(1.8rem, 6vw, 2.8rem);
     font-weight: 800;
     color: var(--color-gold);
     line-height: 1;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
   .stat-suffix {
     font-size: 0.6em;
@@ -130,13 +138,15 @@ const statCSS = `
     opacity: 0.8;
   }
   .stat-label {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--color-text-muted);
     margin: 0;
+    line-height: 1.4;
   }
+
 `;
 
 export default StatsBar;

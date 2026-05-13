@@ -64,7 +64,8 @@ const welcomeCSS = `
   .hero {
     position: relative;
     height: 100vh;
-    min-height: 600px;
+    height: 100svh; /* Small Viewport Height for mobile */
+    min-height: 500px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -74,9 +75,12 @@ const welcomeCSS = `
     position: absolute;
     inset: 0;
     background-size: cover;
-    background-position: center 20%;
+    background-position: center;
     transform: scale(1.04);
     animation: softHeroScale 8s ease-out forwards;
+  }
+  @media (max-width: 600px) {
+    .hero__bg { background-position: 75% center; } /* Adjust for better framing of the person */
   }
   @keyframes softHeroScale {
     from { transform: scale(1.04); }
@@ -87,9 +91,9 @@ const welcomeCSS = `
     inset: 0;
     background: linear-gradient(
       160deg,
-      rgba(10,10,10,0.82) 0%,
-      rgba(10,10,10,0.55) 50%,
-      rgba(10,10,10,0.78) 100%
+      rgba(10,10,10,0.85) 0%,
+      rgba(10,10,10,0.5) 50%,
+      rgba(10,10,10,0.8) 100%
     );
   }
   .hero__content {
@@ -97,14 +101,15 @@ const welcomeCSS = `
     z-index: 2;
     text-align: center;
     max-width: 780px;
-    padding: 20px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    margin-top: -40px; /* Slight offset for visual balance */
   }
   .hero__eyebrow {
-    font-size: 0.72rem;
+    font-size: 0.65rem;
     font-weight: 800;
     letter-spacing: 4px;
     text-transform: uppercase;
@@ -114,10 +119,10 @@ const welcomeCSS = `
   }
   .hero__heading {
     font-family: var(--font-display);
-    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-size: clamp(2.4rem, 9vw, 5.5rem);
     font-weight: 900;
     color: #ffffff;
-    line-height: 1.1;
+    line-height: 1;
     margin: 0;
     text-shadow: 0 4px 32px rgba(0,0,0,0.5);
     text-transform: uppercase;
@@ -128,26 +133,30 @@ const welcomeCSS = `
     display: block;
   }
   .hero__sub {
-    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    font-size: clamp(0.9rem, 2vw, 1.15rem);
     color: var(--color-text-secondary);
-    max-width: 480px;
+    max-width: 440px;
     margin: 0;
-    line-height: 1.7;
+    line-height: 1.6;
     font-family: var(--font-body);
     font-weight: 500;
   }
   .hero__actions {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     justify-content: center;
     flex-wrap: wrap;
-    margin-top: 8px;
+    margin-top: 10px;
+    width: 100%;
+  }
+  @media (max-width: 480px) {
+    .hero__actions > button { width: 100%; }
   }
 
   /* Scroll hint */
   .hero__scroll-hint {
     position: absolute;
-    bottom: 36px;
+    bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -159,11 +168,11 @@ const welcomeCSS = `
   }
   .hero__scroll-line {
     width: 1px;
-    height: 40px;
+    height: 30px;
     background: linear-gradient(to bottom, var(--color-gold), transparent);
   }
   .hero__scroll-hint span {
-    font-size: 0.62rem;
+    font-size: 0.58rem;
     letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--color-gold);
@@ -182,34 +191,43 @@ const welcomeCSS = `
   .editorial-strip__inner {
     max-width: var(--container-max);
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
-  @media (min-width: 640px) {
+  @media (min-width: 900px) {
     .editorial-strip__inner {
       grid-template-columns: repeat(4, 1fr);
     }
   }
   .editorial-strip__item {
-    padding: 24px 20px;
+    padding: 24px 12px;
     text-align: center;
     border-right: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
   }
-  .editorial-strip__item:last-child { border-right: none; }
+  @media (min-width: 900px) {
+    .editorial-strip__item { border-bottom: none; }
+  }
+  .editorial-strip__item:nth-child(2n) { border-right: none; }
+  @media (min-width: 900px) {
+    .editorial-strip__item:nth-child(2n) { border-right: 1px solid var(--color-border); }
+    .editorial-strip__item:last-child { border-right: none; }
+  }
   .editorial-strip__item span {
-    font-size: 0.72rem;
-    letter-spacing: 1.5px;
+    font-size: 0.65rem;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     color: var(--color-text-muted);
     font-weight: 700;
     font-family: var(--font-body);
-    white-space: nowrap;
+    display: block;
     transition: color 0.3s ease;
   }
   .editorial-strip__item:hover span {
     color: var(--color-gold);
   }
+
 `;
 
 export default Welcome;

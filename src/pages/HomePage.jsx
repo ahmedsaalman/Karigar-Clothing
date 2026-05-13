@@ -119,11 +119,14 @@ const homeCSS = `
   /* ── Promise Banner ── */
   .promise-banner {
     position: relative;
-    min-height: 520px;
+    min-height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+  }
+  @media (min-width: 768px) {
+    .promise-banner { min-height: 520px; }
   }
   .promise-banner__bg {
     position: absolute;
@@ -152,10 +155,10 @@ const homeCSS = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
   }
   .promise-banner__eyebrow {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     font-weight: 800;
     letter-spacing: 4px;
     text-transform: uppercase;
@@ -165,17 +168,17 @@ const homeCSS = `
   }
   .promise-banner__title {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-size: clamp(1.8rem, 8vw, 3.2rem);
     font-weight: 900;
     color: #ffffff;
-    line-height: 1.15;
+    line-height: 1.1;
     margin: 0;
   }
   .promise-banner__sub {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: var(--color-text-secondary);
-    line-height: 1.8;
-    max-width: 480px;
+    line-height: 1.6;
+    max-width: 440px;
     margin: 0;
   }
 
