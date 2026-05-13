@@ -80,9 +80,7 @@ const welcomeCSS = `
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 5%; /* Shifted higher to ensure head is visible on desktop */
-    transform: scale(1.04);
-    animation: softHeroScale 8s ease-out forwards;
+    object-position: center top; /* Locked to the top to ensure head is never cut */
     z-index: 0;
   }
   @media (max-width: 900px) {
