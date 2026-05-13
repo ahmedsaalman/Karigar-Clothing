@@ -4,6 +4,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import RootLayout from './layouts/RootLayout';
 import Toast from './components/Toast';
+import Preloader from './components/Preloader';
 
 const HomePage = React.lazy(() => import('./pages/HomePage'));
 const ProductsPage = React.lazy(() => import('./pages/ProductsPage'));
@@ -21,6 +22,7 @@ const AdminDashboardPage = React.lazy(() => import('./pages/AdminDashboardPage')
 function App() {
   return (
     <>
+      <Preloader />
       <Routes>
         <Route element={<RootLayout />}>
           <Route index element={<HomePage />} />

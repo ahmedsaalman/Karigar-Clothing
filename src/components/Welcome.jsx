@@ -6,7 +6,7 @@ import apiClient from '../services/apiClient';
 function Welcome() {
   const navigate = useNavigate();
 
-  const heroUrl = 'https://i0.wp.com/zaloramalaysiablog.wpcomstaging.com/wp-content/uploads/2024/10/2f2498c03756b756eebcee269b811e5a.jpg?resize=736%2C768&ssl=1';
+  const heroUrl = 'https://images.augustman.com/wp-content/uploads/sites/2/2023/09/22195652/Untitled-2023-09-22T140903.658.png';
 
   return (
     <>
