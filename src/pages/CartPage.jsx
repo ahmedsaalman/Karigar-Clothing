@@ -262,6 +262,25 @@ const cartCSS = `
   .cart-empty__text { color: var(--color-text-muted); margin-bottom: 32px; font-size: 1.1rem; }
   .cart-empty__btn { padding: 16px 40px; background: var(--color-gold); color: #000000; border: none; border-radius: 6px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; transition: all 0.3s; }
   .cart-empty__btn:hover { background: var(--color-gold-light); transform: translateY(-2px); box-shadow: var(--shadow-gold); }
+
+  @media (max-width: 600px) {
+    .cart-page { padding: 80px 16px 40px; }
+    .cart-header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 30px; }
+    .cart-title { font-size: 2rem; }
+    
+    .cart-item { flex-direction: column; gap: 16px; padding: 16px; }
+    .cart-item__img { width: 80px; height: 100px; }
+    .cart-item__info { gap: 4px; }
+    .cart-item__right { flex-direction: row; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 4px; }
+    .cart-item__total { font-size: 1.1rem; }
+    
+    .cart-summary { padding: 24px 20px; position: static; }
+    .cart-summary__title { font-size: 1.2rem; }
+    .cart-row--total { font-size: 1.3rem; }
+    
+    .cart-discount { padding: 16px; }
+    .cart-checkout-btn { padding: 16px; font-size: 1rem; }
+  }
 `;
 
 export default CartPage;

@@ -7,7 +7,7 @@ import { useToast } from '../context/ToastContext';
 import useForm from '../hooks/useForm';
 import FormField from '../components/FormField';
 import withAuthGuard from '../components/withAuthGuard';
-import { postRequest } from '../services/apiClient';
+import { postRequest, getAssetUrl } from '../services/apiClient';
 import checkoutHero from '../../photos/shirt_pics/sample5.jpg';
 
 const VALIDATION_RULES = {
@@ -244,7 +244,7 @@ function CheckoutPage() {
             <div className="checkout-summary__items">
               {cartItems.map(item => (
                 <div key={`${item.id}-${item.size}`} className="checkout-summary-item">
-                  <img src={item.image} alt={item.name} className="checkout-summary-item__img" onError={e => { e.target.src = 'https://via.placeholder.com/48x56'; }} />
+                  <img src={getAssetUrl(item.image)} alt={item.name} className="checkout-summary-item__img" onError={e => { e.target.src = 'https://via.placeholder.com/48x56'; }} />
                   <div className="checkout-summary-item__info">
                     <p className="checkout-summary-item__name">{item.name}</p>
                     <p className="checkout-summary-item__meta">{item.size} × {item.quantity}</p>
