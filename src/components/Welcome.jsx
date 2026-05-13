@@ -80,10 +80,13 @@ const welcomeCSS = `
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: center 15%; /* Higher vertical focus for desktop faces */
     transform: scale(1.04);
     animation: softHeroScale 8s ease-out forwards;
     z-index: 0;
+  }
+  @media (max-width: 900px) {
+    .hero__img { object-position: center; } /* Revert to center for mobile vertical crops */
   }
   @keyframes softHeroScale {
     from { transform: scale(1.04); }
