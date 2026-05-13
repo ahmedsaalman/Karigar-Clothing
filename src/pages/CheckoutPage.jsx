@@ -324,6 +324,18 @@ const checkoutCSS = `
   .checkout-success__actions { display: flex; gap: 16px; }
   .checkout-btn--primary { padding: 14px 28px; background: var(--color-gold); color: #000000; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; }
   .checkout-btn--outline { padding: 14px 28px; background: transparent; border: 1px solid var(--color-border); color: #ffffff; border-radius: 6px; font-weight: 800; cursor: pointer; }
+
+  @media (max-width: 768px) {
+    .checkout-page { padding: 80px 16px 40px; }
+    .checkout-title { font-size: 2rem; }
+    .checkout-section { padding: 24px 20px; }
+    .checkout-row { grid-template-columns: 1fr; gap: 0; }
+    .checkout-summary { padding: 24px 20px; position: static; }
+    .checkout-success__title { font-size: 2rem; }
+    .checkout-success__actions { flex-direction: column; width: 100%; }
+    .checkout-success__actions button { width: 100%; }
+    .checkout-header { text-align: center; }
+  }
 `;
 
 export default withAuthGuard(CheckoutPage);
