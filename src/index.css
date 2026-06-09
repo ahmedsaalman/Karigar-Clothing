@@ -1,5 +1,5 @@
 /* ============================================
-   KARIGAR CO. — Premium Design System
+   AAM ADMII — Premium Design System
    ============================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -355,7 +355,7 @@ img {
   letter-spacing: 1.5px;
   text-transform: uppercase;
   border-radius: var(--radius-sm);
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid var(--color-border);
   cursor: pointer;
   transition: all var(--duration-base) var(--ease-out);
 }
@@ -370,7 +370,7 @@ img {
    SKELETON LOADER
    ============================================ */
 .skeleton {
-  background: linear-gradient(90deg, #101010 25%, #1a1a1a 50%, #101010 75%);
+  background: linear-gradient(90deg, #f1f3f5 25%, #e2e8f0 50%, #f1f3f5 75%);
   background-size: 600px 100%;
   animation: shimmer 1.4s ease infinite;
   border-radius: var(--radius-sm);

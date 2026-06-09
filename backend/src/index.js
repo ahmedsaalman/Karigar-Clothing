@@ -72,7 +72,7 @@ app.use(
 
 // ── Health Check ──────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
-  res.json({ success: true, message: 'Karigar API is running 🚀', env: process.env.NODE_ENV });
+  res.json({ success: true, message: 'Aam Admii API is running 🚀', env: process.env.NODE_ENV });
 });
 
 // ── API Routes ────────────────────────────────────────────────
@@ -90,6 +90,6 @@ app.use(errorHandler);
 // ── Start Server ──────────────────────────────────────────────
 const PORT = env.port;
 app.listen(PORT, () => {
-  console.log(`Karigar API running on http://localhost:${PORT}`);
+  console.log(`Aam Admii API running on http://localhost:${PORT}`);
   console.log(`Environment: ${env.nodeEnv}`);
 });

@@ -97,7 +97,7 @@ function WishlistPage() {
                 style={styles.image}
                 onError={e => {
                   e.target.src =
-                    'https://placehold.co/300x360/141414/ffffff?text=Karigar';
+                    'https://placehold.co/300x360/ffffff/ff5400?text=Aam+Admii';
                 }}
               />
               <button
@@ -143,7 +143,7 @@ function WishlistPage() {
                             : 'transparent',
                         color:
                           selectedSizes[product.id] === size
-                            ? '#000000'
+                            ? '#ffffff'
                             : 'var(--color-text-secondary)',
                         borderColor:
                           selectedSizes[product.id] === size
@@ -196,7 +196,7 @@ const styles = {
   title: {
     fontSize: '2.5rem',
     fontWeight: '900',
-    color: '#ffffff',
+    color: 'var(--color-text-primary)',
     marginBottom: '4px',
     fontFamily: 'var(--font-display)',
   },
@@ -233,7 +233,7 @@ const styles = {
   imageContainer: {
     position: 'relative',
     paddingBottom: '125%',
-    backgroundColor: '#050505',
+    backgroundColor: 'var(--color-bg-elevated)',
     overflow: 'hidden',
   },
   image: {
@@ -271,7 +271,7 @@ const styles = {
   productName: {
     fontSize: '1.1rem',
     fontWeight: '800',
-    color: '#ffffff',
+    color: 'var(--color-text-primary)',
     cursor: 'pointer',
     fontFamily: 'var(--font-display)',
   },
@@ -320,7 +320,7 @@ const styles = {
     flex: 2,
     padding: '12px',
     backgroundColor: 'var(--color-gold)',
-    color: '#000000',
+    color: '#ffffff',
     border: 'none',
     fontSize: '0.75rem',
     fontWeight: '800',
@@ -357,7 +357,7 @@ const styles = {
   emptyTitle: {
     fontSize: '2rem',
     fontWeight: '900',
-    color: '#ffffff',
+    color: 'var(--color-text-primary)',
     fontFamily: 'var(--font-display)',
   },
   emptyText: {
@@ -370,7 +370,7 @@ const styles = {
     marginTop: '12px',
     padding: '16px 44px',
     backgroundColor: 'var(--color-gold)',
-    color: '#000000',
+    color: '#ffffff',
     border: 'none',
     fontSize: '0.9rem',
     fontWeight: '800',

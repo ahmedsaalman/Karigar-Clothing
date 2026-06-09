@@ -39,7 +39,7 @@ export function AuthProvider({ children }) {
       const newUser = await authService.register(name, email, password, roleSecret);
       setUser(newUser);
       setIsAuthenticated(true);
-      showSuccess('Account created! Welcome to Karigar.');
+      showSuccess('Account created! Welcome to Aam Admii.');
       return newUser;
     } catch (error) {
       showError(error.message || 'Registration failed');

@@ -14,7 +14,7 @@ test('loadEnv throws when required variables are missing', () => {
 
 test('loadEnv parses cors origins and defaults', () => {
   const original = { ...process.env };
-  process.env.MONGO_URI = 'mongodb://localhost:27017/karigar';
+  process.env.MONGO_URI = 'mongodb://localhost:27017/aamadmii';
   process.env.JWT_SECRET = 'a';
   process.env.JWT_REFRESH_SECRET = 'b';
   process.env.CORS_ORIGINS = 'http://localhost:5173, http://localhost:5174';

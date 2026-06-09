@@ -29,8 +29,8 @@ const loadEnv = () => {
     requestLimit: process.env.REQUEST_BODY_LIMIT || '100kb',
     rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000),
     rateLimitMax: Number(process.env.RATE_LIMIT_MAX || 200),
-    accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME || 'karigar_access',
-    refreshTokenCookieName: process.env.REFRESH_TOKEN_COOKIE_NAME || 'karigar_refresh',
+    accessTokenCookieName: process.env.ACCESS_TOKEN_COOKIE_NAME || 'aamadmii_access',
+    refreshTokenCookieName: process.env.REFRESH_TOKEN_COOKIE_NAME || 'aamadmii_refresh',
     adminSecret: process.env.ADMIN_REGISTRATION_SECRET,
     isProd: (process.env.NODE_ENV || 'development') === 'production',
   };

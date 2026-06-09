@@ -88,7 +88,7 @@ function ProductDetailPage() {
                 src={getAssetUrl(images[selectedImage])}
                 alt={product.name}
                 className="pdp-gallery__img"
-                onError={e => { e.target.src = 'https://placehold.co/400x500/141414/ffffff?text=Karigar'; }}
+                onError={e => { e.target.src = 'https://placehold.co/400x500/ffffff/ff5400?text=Aam+Admii'; }}
               />
               {product.badge && (
                 <div className="pdp-gallery__badge">
@@ -108,7 +108,7 @@ function ProductDetailPage() {
                   className={`pdp-gallery__thumb ${selectedImage === i ? 'pdp-gallery__thumb--active' : ''}`}
                   onClick={() => setSelectedImage(i)}
                 >
-                  <img src={getAssetUrl(img)} alt="" onError={e => { e.target.src = 'https://placehold.co/100x100/141414/ffffff?text=Err'; }} />
+                  <img src={getAssetUrl(img)} alt="" onError={e => { e.target.src = 'https://placehold.co/100x100/ffffff/ff5400?text=Err'; }} />
                 </button>
               ))}
             </div>
@@ -126,8 +126,8 @@ function ProductDetailPage() {
                       width="14"
                       height="14"
                       viewBox="0 0 24 24"
-                      fill={i < Math.floor(product.rating) ? 'var(--color-gold)' : 'rgba(255,255,255,0.1)'}
-                      stroke={i < Math.floor(product.rating) ? 'var(--color-gold)' : 'rgba(255,255,255,0.2)'}
+                      fill={i < Math.floor(product.rating) ? 'var(--color-gold)' : 'rgba(0,0,0,0.05)'}
+                      stroke={i < Math.floor(product.rating) ? 'var(--color-gold)' : 'var(--color-border)'}
                     >
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
@@ -268,7 +268,7 @@ const detailCSS = `
   }
   .pdp-nav__link:hover { color: var(--color-gold); }
   .pdp-nav__sep { color: var(--color-border); font-size: 0.7rem; }
-  .pdp-nav__curr { color: #ffffff; font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 800; }
+  .pdp-nav__curr { color: var(--color-text-primary); font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 800; }
 
   .pdp-main {
     display: grid;
@@ -366,7 +366,7 @@ const detailCSS = `
   .pdp-title {
     font-family: var(--font-display);
     font-size: clamp(2rem, 4vw, 3rem);
-    color: #ffffff;
+    color: var(--color-text-primary);
     margin: 0;
     line-height: 1.1;
     font-weight: 900;
@@ -411,7 +411,7 @@ const detailCSS = `
     color: var(--color-text-muted);
     font-weight: 800;
   }
-  .pdp-option__label span { color: #ffffff; margin-left: 8px; }
+  .pdp-option__label span { color: var(--color-text-primary); margin-left: 8px; }
   .pdp-option__req { color: var(--color-error) !important; font-style: italic; opacity: 0.8; }
 
   .pdp-swatches { display: flex; gap: 12px; }
@@ -442,10 +442,10 @@ const detailCSS = `
     transition: all 0.2s;
     border-radius: 4px;
   }
-  .pdp-size-btn:hover { border-color: var(--color-gold); color: #ffffff; }
+  .pdp-size-btn:hover { border-color: var(--color-gold); color: var(--color-text-primary); }
   .pdp-size-btn--active {
     background: var(--color-gold);
-    color: #000000;
+    color: #ffffff;
     border-color: var(--color-gold);
     font-weight: 800;
   }
@@ -455,7 +455,7 @@ const detailCSS = `
     display: flex;
     align-items: center;
     width: fit-content;
-    background: rgba(255,255,255,0.03);
+    background: var(--color-bg-elevated);
     border: 1px solid var(--color-border);
     border-radius: 4px;
     overflow: hidden;
@@ -472,11 +472,11 @@ const detailCSS = `
     align-items: center;
     justify-content: center;
   }
-  .pdp-qty__btn:hover { background: rgba(255,255,255,0.05); color: #ffffff; }
+  .pdp-qty__btn:hover { background: rgba(0,0,0,0.05); color: var(--color-text-primary); }
   .pdp-qty__val {
     width: 50px;
     text-align: center;
-    color: #ffffff;
+    color: var(--color-text-primary);
     font-weight: 800;
     font-family: var(--font-body);
   }
@@ -503,7 +503,7 @@ const detailCSS = `
     width: 100%;
     padding: 20px;
     background: var(--color-gold);
-    color: #000000;
+    color: #ffffff;
     border: none;
     border-radius: 4px;
     font-size: 0.9rem;
@@ -519,14 +519,14 @@ const detailCSS = `
   .pdp-cart-btn:hover:not(:disabled) {
     background: var(--color-gold-light);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-gold);
+    box-shadow: 0 4px 14px var(--color-gold-glow);
   }
   .pdp-cart-btn--success {
     background: var(--color-success) !important;
     color: #fff !important;
   }
   .pdp-cart-btn:disabled {
-    background: #1a1a1a;
+    background: rgba(0,0,0,0.05);
     color: var(--color-text-muted);
     cursor: not-allowed;
   }
@@ -547,7 +547,7 @@ const detailCSS = `
   }
   .pdp-wish-btn:hover {
     border-color: var(--color-gold);
-    color: #ffffff;
+    color: var(--color-gold);
     background: var(--color-gold-dim);
   }
 

@@ -1,4 +1,4 @@
-# Karigar Backend API
+# Aam Admii Backend API
 
 ## Setup
 - Copy `.env.example` to `.env`.

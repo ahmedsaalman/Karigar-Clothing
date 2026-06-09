@@ -174,6 +174,7 @@ function SearchFocusButton() {
                       <button
                         key={hint}
                         onClick={() => setQuery(hint)}
+                        className="search-hint-tag"
                         style={styles.hintTag}
                       >
                         {hint}
@@ -212,6 +213,7 @@ function SearchFocusButton() {
                   {results.map(product => (
                     <div
                       key={product.id}
+                      className="search-result-item"
                       style={styles.resultItem}
                       onClick={() => handleProductClick(product.id)}
                     >
@@ -269,12 +271,26 @@ const modalCSS = `
   @keyframes modalSlideDown {
     from {
       opacity: 0;
-      transform: translateY(-20px);
+      transform: translateY(-20px) translateX(-50%);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) translateX(-50%);
     }
+  }
+  .search-result-item {
+    transition: background-color 0.2s ease;
+  }
+  .search-result-item:hover {
+    background-color: var(--color-bg-elevated) !important;
+  }
+  .search-hint-tag {
+    transition: all 0.2s ease;
+  }
+  .search-hint-tag:hover {
+    border-color: var(--color-gold) !important;
+    color: var(--color-gold) !important;
+    background-color: var(--color-bg-card) !important;
   }
 `;
 
@@ -295,7 +311,7 @@ const styles = {
     fontSize: '1.1rem',
     cursor: 'pointer',
     padding: '6px 8px',
-    color: '#ffffff',
+    color: 'var(--color-text-primary)',
     borderRadius: '4px',
     display: 'flex',
     alignItems: 'center',
@@ -305,9 +321,9 @@ const styles = {
   backdrop: {
     position: 'fixed',
     inset: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     zIndex: 200,
-    backdropFilter: 'blur(12px)',
+    backdropFilter: 'blur(8px)',
   },
   modal: {
     position: 'fixed',
@@ -316,10 +332,10 @@ const styles = {
     transform: 'translateX(-50%)',
     width: '94%',
     maxWidth: '600px',
-    backgroundColor: '#141414',
+    backgroundColor: 'var(--color-bg-card)',
     borderRadius: '12px',
-    border: '1px solid #2a2a2a',
-    boxShadow: '0 32px 64px rgba(0,0,0,0.8)',
+    border: '1px solid var(--color-border)',
+    boxShadow: '0 32px 64px rgba(0,0,0,0.08)',
     zIndex: 201,
     overflow: 'hidden',
     animation: 'modalSlideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -329,7 +345,7 @@ const styles = {
     alignItems: 'center',
     gap: '16px',
     padding: '20px 24px',
-    borderBottom: '1px solid #2a2a2a',
+    borderBottom: '1px solid var(--color-border)',
   },
   searchIcon: {
     fontSize: '1.1rem',
@@ -341,23 +357,23 @@ const styles = {
     border: 'none',
     outline: 'none',
     fontSize: '1.1rem',
-    color: '#ffffff',
+    color: 'var(--color-text-primary)',
     backgroundColor: 'transparent',
     fontFamily: 'var(--font-body)',
   },
   clearInputBtn: {
     background: 'none',
     border: 'none',
-    color: '#555',
+    color: 'var(--color-text-muted)',
     fontSize: '0.85rem',
     cursor: 'pointer',
     padding: '4px',
     flexShrink: 0,
   },
   closeBtn: {
-    background: '#222',
-    border: '1px solid #333',
-    color: '#888',
+    background: 'var(--color-bg-elevated)',
+    border: '1px solid var(--color-border)',
+    color: 'var(--color-text-secondary)',
     fontSize: '0.7rem',
     padding: '6px 10px',
     cursor: 'pointer',
@@ -375,7 +391,7 @@ const styles = {
   },
   hintsTitle: {
     fontSize: '0.7rem',
-    color: '#555',
+    color: 'var(--color-text-muted)',
     fontWeight: '800',
     letterSpacing: '2px',
     textTransform: 'uppercase',
@@ -388,12 +404,12 @@ const styles = {
   },
   hintTag: {
     padding: '8px 16px',
-    backgroundColor: '#1a1a1a',
-    border: '1px solid #2a2a2a',
+    backgroundColor: 'var(--color-bg-elevated)',
+    border: '1px solid var(--color-border)',
     borderRadius: '999px',
     fontSize: '0.8rem',
     fontWeight: '600',
-    color: '#ffffff',
+    color: 'var(--color-text-secondary)',
     cursor: 'pointer',
     transition: 'all 0.2s',
   },
@@ -402,7 +418,7 @@ const styles = {
     textAlign: 'center',
   },
   searchingText: {
-    color: '#666',
+    color: 'var(--color-text-muted)',
     fontSize: '0.9rem',
     fontStyle: 'italic',
   },
@@ -411,18 +427,18 @@ const styles = {
     textAlign: 'center',
   },
   noResultsText: {
-    color: '#ffffff',
+    color: 'var(--color-text-primary)',
     fontSize: '1rem',
     fontWeight: '700',
     marginBottom: '8px',
   },
   noResultsHint: {
-    color: '#555',
+    color: 'var(--color-text-muted)',
     fontSize: '0.85rem',
   },
   resultsLabel: {
     fontSize: '0.7rem',
-    color: '#555',
+    color: 'var(--color-text-muted)',
     padding: '16px 24px 8px',
     textTransform: 'uppercase',
     letterSpacing: '1.5px',
@@ -435,7 +451,7 @@ const styles = {
     padding: '16px 24px',
     cursor: 'pointer',
     transition: 'background-color 0.2s',
-    borderTop: '1px solid #1a1a1a',
+    borderTop: '1px solid var(--color-border)',
   },
   resultImage: {
     width: '48px',
@@ -443,8 +459,8 @@ const styles = {
     objectFit: 'cover',
     borderRadius: '4px',
     flexShrink: 0,
-    backgroundColor: '#111',
-    border: '1px solid #2a2a2a',
+    backgroundColor: 'var(--color-bg-elevated)',
+    border: '1px solid var(--color-border)',
   },
   resultInfo: {
     flex: 1,
@@ -453,7 +469,7 @@ const styles = {
   resultName: {
     fontSize: '1rem',
     fontWeight: '800',
-    color: '#ffffff',
+    color: 'var(--color-text-primary)',
     marginBottom: '2px',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
@@ -462,27 +478,27 @@ const styles = {
   },
   resultCategory: {
     fontSize: '0.75rem',
-    color: '#666',
+    color: 'var(--color-text-secondary)',
     textTransform: 'capitalize',
     fontWeight: '600',
   },
   resultPrice: {
     fontSize: '0.95rem',
     fontWeight: '800',
-    color: 'var(--color-gold)',
+    color: 'var(--color-price)',
     flexShrink: 0,
   },
   resultArrow: {
-    color: '#333',
+    color: 'var(--color-text-muted)',
     fontSize: '1.1rem',
     flexShrink: 0,
   },
   viewAllBtn: {
     width: '100%',
     padding: '18px 24px',
-    backgroundColor: '#111',
+    backgroundColor: 'var(--color-bg-elevated)',
     border: 'none',
-    borderTop: '1px solid #2a2a2a',
+    borderTop: '1px solid var(--color-border)',
     color: 'var(--color-gold)',
     fontSize: '0.85rem',
     cursor: 'pointer',

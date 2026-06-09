@@ -9,15 +9,15 @@ export const getAssetUrl = (path) => {
   return `${BACKEND_URL}${normalizedPath}`;
 };
 
-let accessToken = localStorage.getItem('karigar_access_token') || null;
+let accessToken = localStorage.getItem('aamadmii_access_token') || null;
 let onUnauthorized = null;
 
 export function setAccessToken(token) {
   accessToken = token || null;
   if (token) {
-    localStorage.setItem('karigar_access_token', token);
+    localStorage.setItem('aamadmii_access_token', token);
   } else {
-    localStorage.removeItem('karigar_access_token');
+    localStorage.removeItem('aamadmii_access_token');
   }
 }
 

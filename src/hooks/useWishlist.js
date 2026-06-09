@@ -5,7 +5,7 @@ import useLocalStorage from './useLocalStorage';
 
 function useWishlist() {
   const [wishlistItems, setWishlistItems] = useLocalStorage(
-    'karigar_wishlist',
+    'aamadmii_wishlist',
     []
   );
 
