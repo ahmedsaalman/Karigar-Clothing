@@ -202,6 +202,9 @@ img {
 .section-pad {
   padding: var(--space-20) var(--space-5);
 }
+@media (max-width: 640px) {
+  .section-pad { padding: var(--space-12) var(--space-4); }
+}
 
 /* ============================================
    KEYFRAME ANIMATIONS

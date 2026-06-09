@@ -31,6 +31,9 @@ const sectionTitleCSS = `
   .section-title {
     margin-bottom: 56px;
   }
+  @media (max-width: 640px) {
+    .section-title { margin-bottom: 32px; }
+  }
   .section-title--center { text-align: center; }
   .section-title--left   { text-align: left; }
 

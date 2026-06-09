@@ -131,6 +131,9 @@ const homeCSS = `
   @media (min-width: 768px) {
     .promise-banner { min-height: 520px; }
   }
+  @media (max-width: 480px) {
+    .promise-banner__content { padding: 40px 16px; }
+  }
   .promise-banner__bg {
     position: absolute;
     inset: 0;
@@ -223,6 +226,9 @@ const homeCSS = `
   @media (min-width: 640px) {
     .cat-teasers__grid { grid-template-columns: repeat(3, 1fr); }
   }
+  @media (max-width: 480px) {
+    .cat-teasers { padding: 48px 0; }
+  }
 
   .cat-card {
     position: relative;
@@ -306,6 +312,18 @@ const homeCSS = `
   .cat-card:hover .cat-card__cta {
     opacity: 1;
     transform: translateX(0);
+  }
+  /* Mobile: show CTA always (touch devices have no hover) */
+  @media (hover: none) {
+    .cat-card__cta {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  /* Touch active feedback */
+  .cat-card:active {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   }
 `;
 

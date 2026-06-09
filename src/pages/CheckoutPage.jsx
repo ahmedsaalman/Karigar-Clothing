@@ -328,9 +328,9 @@ const checkoutCSS = `
   @media (max-width: 768px) {
     .checkout-page { padding: 80px 16px 40px; }
     .checkout-title { font-size: 2rem; }
-    .checkout-section { padding: 24px 20px; }
-    .checkout-row { grid-template-columns: 1fr; gap: 0; }
-    .checkout-summary { padding: 24px 20px; position: static; }
+    .checkout-section { padding: 24px 16px; }
+    .checkout-row { grid-template-columns: 1fr; gap: 16px; }
+    .checkout-summary { padding: 24px 16px; position: static; }
     .checkout-success__title { font-size: 2rem; }
     .checkout-success__actions { flex-direction: column; width: 100%; }
     .checkout-success__actions button { width: 100%; }

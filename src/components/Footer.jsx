@@ -134,6 +134,9 @@ const footerCSS = `
     padding: 100px 20px 40px;
     color: var(--color-text-secondary);
   }
+  @media (max-width: 640px) {
+    .footer { padding: 48px 16px 32px; }
+  }
   .footer__divider {
     height: 1px;
     background: linear-gradient(to right, transparent, var(--color-gold), transparent);
