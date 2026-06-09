@@ -120,39 +120,21 @@ const loginCSS = `
     align-items: center;
     justify-content: center;
     padding: 60px 20px;
-    background-image: url(${bgLogin});
-    background-size: cover;
-    background-position: center;
+    background: var(--color-bg-elevated);
     position: relative;
-  }
-  .login-page::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(8px);
   }
   .login-card {
     position: relative;
-    background-image: url(${cardImg});
-    background-size: cover;
-    background-position: center;
-    padding: 60px 50px;
-    border-radius: 20px;
+    background: var(--color-bg-card);
+    padding: 50px 40px;
+    border-radius: 16px;
     width: 100%;
-    max-width: 500px;
-    box-shadow: var(--shadow-xl);
+    max-width: 460px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.06);
     overflow: hidden;
     animation: scaleIn 0.6s var(--ease-out);
-    border: 2px solid var(--color-gold);
+    border: 1px solid var(--color-border);
     z-index: 2;
-  }
-  .login-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.95));
-    z-index: 1;
   }
   .login-card > * {
     position: relative;
@@ -161,21 +143,19 @@ const loginCSS = `
   .login-title {
     font-family: var(--font-display);
     font-size: 2rem;
-    font-weight: 900;
-    color: #ffffff;
+    font-weight: 800;
+    color: var(--color-text-primary);
     margin-bottom: 8px;
     text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 0.5px;
   }
   .login-subtitle {
-    color: var(--color-gold);
+    color: var(--color-text-secondary);
     text-align: center;
-    margin-bottom: 40px;
-    font-size: 0.8rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    margin-bottom: 36px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
   }
   .login-fields {
     display: flex;
@@ -185,14 +165,14 @@ const loginCSS = `
   }
   .login-submit-btn {
     width: 100%;
-    padding: 18px;
+    padding: 16px;
     background: var(--color-gold);
-    color: #000000;
+    color: #ffffff;
     border: none;
     font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 900;
-    letter-spacing: 2px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     border-radius: 6px;
     cursor: pointer;
@@ -201,7 +181,7 @@ const loginCSS = `
   .login-submit-btn:hover:not(:disabled) {
     background: var(--color-gold-light);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-gold);
+    box-shadow: 0 4px 14px var(--color-gold-glow);
   }
   .login-submit-btn:disabled {
     opacity: 0.5;
