@@ -36,16 +36,16 @@ const sectionTitleCSS = `
 
   .section-title__eyebrow {
     font-size: 0.68rem;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: #c9a84c;
+    color: var(--color-gold);
     margin-bottom: 16px;
   }
   .section-title__bar {
     width: 0;
     height: 2px;
-    background: linear-gradient(to right, #c9a84c, rgba(201,168,76,0.2));
+    background: linear-gradient(to right, var(--color-gold), rgba(255,84,0,0.1));
     margin-bottom: 20px;
     animation: expandLine 0.8s 0.2s ease forwards;
     border-radius: 2px;
@@ -55,18 +55,17 @@ const sectionTitleCSS = `
     margin-right: auto;
   }
   .section-title__heading {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-    font-weight: 700;
-    color: #f5efe6;
+    font-weight: 800;
+    color: var(--color-text-primary);
     letter-spacing: 0.5px;
     margin-bottom: 14px;
     line-height: 1.2;
   }
-  .section-title--light .section-title__heading { color: #1a1a1a; }
   .section-title__sub {
     font-size: 0.95rem;
-    color: #6b6055;
+    color: var(--color-text-secondary);
     line-height: 1.7;
     max-width: 520px;
     margin: 0 auto;

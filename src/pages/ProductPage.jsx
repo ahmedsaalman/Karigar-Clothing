@@ -224,10 +224,10 @@ const productsPageCSS = `
     position: sticky;
     top: 72px;
     z-index: 50;
-    background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border-bottom: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
     padding: 0;
   }
   .pp-controls-container {
@@ -301,10 +301,10 @@ const productsPageCSS = `
     width: 100%;
     padding: 10px 40px 10px 40px;
     background: var(--color-bg-muted);
-    border: 1px solid var(--color-border);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 6px;
     font-size: 0.88rem;
-    color: #ffffff;
+    color: var(--color-text-primary);
     font-family: var(--font-body);
     transition: border-color 0.2s ease, background 0.2s ease;
   }
@@ -355,8 +355,8 @@ const productsPageCSS = `
     text-transform: capitalize;
     letter-spacing: 0.5px;
     color: var(--color-text-secondary);
-    background: #111;
-    border: 1px solid var(--color-border);
+    background: var(--color-bg-muted);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 999px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -365,10 +365,11 @@ const productsPageCSS = `
   .pp-pill:hover {
     color: var(--color-gold);
     border-color: var(--color-gold);
+    background: var(--color-gold-dim);
   }
   .pp-pill--active {
     background: var(--color-gold) !important;
-    color: #000000 !important;
+    color: #ffffff !important;
     border-color: var(--color-gold) !important;
     font-weight: 800 !important;
   }
@@ -383,17 +384,17 @@ const productsPageCSS = `
     appearance: none;
     -webkit-appearance: none;
     padding: 8px 36px 8px 14px;
-    background: #111;
-    border: 1px solid var(--color-border);
+    background: var(--color-bg-muted);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 6px;
     font-size: 0.82rem;
-    color: #ffffff;
+    color: var(--color-text-primary);
     font-family: var(--font-body);
     cursor: pointer;
     transition: border-color 0.2s ease;
   }
-  .pp-sort:focus { border-color: var(--color-gold); }
-  .pp-sort option { background: #111111; color: #ffffff; }
+  .pp-sort:focus { border-color: var(--color-gold); outline: none; }
+  .pp-sort option { background: #ffffff; color: var(--color-text-primary); }
   .pp-sort__chevron {
     position: absolute;
     right: 12px;
