@@ -20,7 +20,7 @@ function Preloader() {
       setTimeout(() => {
         setIsLoaded(true);
         // Save to session storage so it doesn't show again in the same session
-        sessionStorage.setItem('karigar_loaded', 'true');
+        sessionStorage.setItem('aamadmii_loaded', 'true');
       }, 600);
     };
 
@@ -28,7 +28,7 @@ function Preloader() {
   }, []);
 
   // Check if already loaded in this session
-  const alreadyLoaded = sessionStorage.getItem('karigar_loaded') === 'true';
+  const alreadyLoaded = sessionStorage.getItem('aamadmii_loaded') === 'true';
   if (alreadyLoaded || isLoaded) return null;
 
   return (
@@ -37,8 +37,8 @@ function Preloader() {
       <div className="preloader">
         <div className="preloader__content">
           <div className="preloader__brand">
-            <span className="brand-name">Karigar</span>
-            <span className="brand-co">Co.</span>
+            <span className="brand-name">Aam</span>
+            <span className="brand-co">Admii</span>
           </div>
           <div className="preloader__track">
             <div 
@@ -58,7 +58,7 @@ const preloaderCSS = `
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background: #000000;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,13 +78,13 @@ const preloaderCSS = `
     font-weight: 800;
     letter-spacing: 2px;
   }
-  .brand-name { color: #ffffff; }
-  .brand-co { color: #FFB800; }
+  .brand-name { color: #111111; }
+  .brand-co { color: var(--color-gold); }
 
   .preloader__track {
     width: 100%;
     height: 2px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.05);
     border-radius: 4px;
     overflow: hidden;
     position: relative;
@@ -95,8 +95,8 @@ const preloaderCSS = `
     top: 0;
     left: 0;
     height: 100%;
-    background: #FFB800;
-    box-shadow: 0 0 15px rgba(255, 184, 0, 0.5);
+    background: var(--color-gold);
+    box-shadow: 0 0 15px var(--color-gold-glow);
     transition: width 0.4s cubic-bezier(0.1, 0, 0.3, 1);
   }
 

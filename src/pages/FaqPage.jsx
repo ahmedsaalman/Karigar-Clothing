@@ -3,12 +3,12 @@ import { Accordion, AccordionItem, AccordionHeader, AccordionPanel } from '../co
 const faqs = [
   {
     id: 'q1',
-    question: 'What materials are used in Karigar shirts?',
+    question: 'What materials are used in Aam Admii shirts?',
     answer: 'We source premium Egyptian cotton and fine linen blends to ensure maximum breathability, durability, and a luxurious feel. Our fabrics are carefully selected to provide all-day comfort without compromising on a crisp, professional look.',
   },
   {
     id: 'q2',
-    question: 'How do I care for my Karigar shirt?',
+    question: 'How do I care for my Aam Admii shirt?',
     answer: 'For best results, machine wash cold on a gentle cycle with like colors. Avoid using bleach. Tumble dry on low or hang to dry. If needed, iron on a medium setting while the shirt is slightly damp.',
   },
   {
@@ -19,11 +19,11 @@ const faqs = [
   {
     id: 'q4',
     question: 'What is your return and exchange policy?',
-    answer: 'We offer a 14-day return and exchange policy for unworn, unwashed items with original tags attached. Please contact our support team at hello@karigar.co to initiate a return or exchange.',
+    answer: 'We offer a 14-day return and exchange policy for unworn, unwashed items with original tags attached. Please contact our support team at hello@aamadmii.com to initiate a return or exchange.',
   },
   {
     id: 'q5',
-    question: 'Where are Karigar shirts manufactured?',
+    question: 'Where are Aam Admii shirts manufactured?',
     answer: 'Our shirts are proudly crafted in Karachi, Pakistan, by skilled artisans who have generations of experience in fine tailoring and garment manufacturing.',
   },
   {
@@ -49,7 +49,7 @@ function FaqPage() {
       <div style={styles.header}>
         <h1 style={styles.title}>Frequently Asked Questions</h1>
         <p style={styles.subtitle}>
-          Everything you need to know about Karigar Co. and our products.
+          Everything you need to know about Aam Admii and our products.
         </p>
       </div>
 
@@ -78,14 +78,14 @@ const styles = {
   title: {
     fontSize: 'clamp(2.5rem, 6vw, 3.5rem)',
     fontWeight: '900',
-    color: '#ffffff',
+    color: 'var(--color-text-primary)',
     marginBottom: '20px',
     letterSpacing: '-1px',
     fontFamily: 'var(--font-display)',
   },
   subtitle: {
     fontSize: '1.1rem',
-    color: '#888',
+    color: 'var(--color-text-secondary)',
     maxWidth: '500px',
     margin: '0 auto',
     lineHeight: '1.6',

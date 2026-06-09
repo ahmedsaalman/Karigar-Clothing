@@ -16,7 +16,7 @@ function Welcome() {
       <section className="hero" id="hero">
         <img
           src={heroUrl}
-          alt="Karigar Collection Hero"
+          alt="Aam Admii Collection Hero"
           className="hero__img"
           fetchpriority="high"
         />

@@ -84,7 +84,7 @@ function ProductCard({ product, animDelay = 0 }) {
             src={getAssetUrl(image)}
             alt={name}
             className="pc__img"
-            onError={e => { e.target.src = 'https://placehold.co/400x500/141414/ffffff?text=Karigar'; }}
+            onError={e => { e.target.src = 'https://placehold.co/400x500/f8f9fa/111111?text=Aam+Admii'; }}
           />
 
           {/* Overlays */}
@@ -137,7 +137,7 @@ function ProductCard({ product, animDelay = 0 }) {
                 className="pc__swatch"
                 style={{
                   backgroundColor: color,
-                  border: (color === 'white' || color === '#ffffff') ? '1px solid #3a3a3a' : '1px solid transparent',
+                  border: (color === 'white' || color === '#ffffff') ? '1px solid #e2e8f0' : '1px solid transparent',
                 }}
                 title={colorNames[i]}
               />
@@ -149,7 +149,7 @@ function ProductCard({ product, animDelay = 0 }) {
             <p className="pc__size-label">
               Size:{' '}
               {selectedSize
-                ? <strong style={{ color: '#f5efe6' }}>{selectedSize}</strong>
+                ? <strong style={{ color: 'var(--color-text-primary)' }}>{selectedSize}</strong>
                 : <em style={{ color: '#e05c5c', fontStyle: 'normal', fontSize: '0.75rem' }}>Select one</em>
               }
             </p>
@@ -200,8 +200,8 @@ function ProductCard({ product, animDelay = 0 }) {
 
 const productCardCSS = `
   .pc {
-    background: #141414;
-    border: 1px solid rgba(255,255,255,0.06);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     overflow: hidden;
     display: flex;
@@ -215,7 +215,7 @@ const productCardCSS = `
   }
   .pc:hover, .pc--hovered {
     transform: translateY(-6px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.55), 0 0 0 1px var(--color-gold-glow);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.08), 0 0 0 1px var(--color-gold-glow);
     border-color: var(--color-gold-glow);
   }
   .pc--oos { opacity: 0.68; }
@@ -226,7 +226,7 @@ const productCardCSS = `
     position: relative;
     padding-bottom: 125%;
     overflow: hidden;
-    background: #050505;
+    background: #f9f9f9;
   }
   .pc__img {
     position: absolute !important;
@@ -249,7 +249,7 @@ const productCardCSS = `
   .pc__oos-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.7);
+    background: rgba(255,255,255,0.75);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -260,8 +260,8 @@ const productCardCSS = `
     font-size: 0.7rem;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
-    background: rgba(20,20,20,0.9);
+    color: var(--color-text-primary);
+    background: rgba(255,255,255,0.95);
     padding: 8px 20px;
     border: 1px solid var(--color-border);
     border-radius: 2px;
@@ -277,7 +277,7 @@ const productCardCSS = `
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: rgba(10,10,10,0.85);
+    background: rgba(255,255,255,0.9);
     backdrop-filter: blur(8px);
     border: 1px solid var(--color-border);
     display: flex;
@@ -326,7 +326,7 @@ const productCardCSS = `
     font-weight: 800;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #000000;
+    color: #ffffff;
     font-family: var(--font-body);
   }
   .pc:hover .pc__quick-view { transform: translateY(0); }
@@ -344,7 +344,7 @@ const productCardCSS = `
     font-family: var(--font-display);
     font-size: 1rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--color-text-primary);
     line-height: 1.3;
     transition: color 0.2s ease;
   }
@@ -378,7 +378,7 @@ const productCardCSS = `
     font-size: 0.7rem;
     font-weight: 600;
     font-family: var(--font-body);
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     background: transparent;
     border: 1px solid var(--color-border);
     border-radius: 4px;
@@ -392,7 +392,7 @@ const productCardCSS = `
   }
   .pc__size-btn--active {
     background: var(--color-gold) !important;
-    color: #000000 !important;
+    color: #ffffff !important;
     border-color: var(--color-gold) !important;
     font-weight: 800 !important;
   }
@@ -418,15 +418,15 @@ const productCardCSS = `
     transition: all 0.2s ease;
   }
   .pc__details-btn:hover {
-    color: #ffffff;
-    border-color: rgba(255,255,255,0.25);
-    background: rgba(255,255,255,0.04);
+    color: var(--color-text-primary);
+    border-color: rgba(0,0,0,0.15);
+    background: rgba(0,0,0,0.02);
   }
   .pc__cart-btn {
     flex: 2;
     padding: 11px 12px;
     background: var(--color-gold);
-    color: #000000;
+    color: #ffffff;
     border: none;
     font-size: 0.7rem;
     font-weight: 800;
@@ -437,9 +437,9 @@ const productCardCSS = `
     transition: all 0.25s ease;
   }
   .pc__cart-btn:hover:not(.pc__cart-btn--disabled) {
-    background: #e0c06e;
+    background: var(--color-gold-light);
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(201,168,76,0.3);
+    box-shadow: 0 4px 16px var(--color-gold-dim);
   }
   .pc__cart-btn--success {
     background: #4caf7d !important;
@@ -447,8 +447,8 @@ const productCardCSS = `
     animation: successPop 0.35s ease;
   }
   .pc__cart-btn--disabled {
-    background: #2a2a2a !important;
-    color: #4a3f35 !important;
+    background: var(--color-bg-muted) !important;
+    color: var(--color-text-muted) !important;
     cursor: not-allowed;
     transform: none !important;
     box-shadow: none !important;

@@ -7,7 +7,7 @@ function AboutPage() {
 
   const values = [
     {
-      icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M2 12h20"/><path d="m19 9-7 7-7-7"/></svg>, // Mockup placeholder icons
+      icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M2 12h20"/><path d="m19 9-7 7-7-7"/></svg>,
       title: 'Master Craftsmanship',
       description:
         'Every shirt passes through the hands of craftsmen with decades of experience. 47 quality checks before it reaches you.',
@@ -28,7 +28,7 @@ function AboutPage() {
       icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>,
       title: 'Lifetime Guarantee',
       description:
-        'If a Karigar shirt ever fails due to craftsmanship, we replace it. No questions asked. That is our promise.',
+        'If an Aam Admii shirt ever fails due to craftsmanship, we replace it. No questions asked. That is our promise.',
     },
   ];
 
@@ -44,7 +44,7 @@ function AboutPage() {
             <span style={styles.heroAccent}>We Don't Compromise.</span>
           </h1>
           <p style={styles.heroText}>
-            Karigar Co. was born from a simple frustration — great shirts
+            Aam Admii was born from a simple frustration — great shirts
             were either too expensive or too poorly made. We decided to
             change that.
           </p>
@@ -54,21 +54,19 @@ function AboutPage() {
       {/* Story Section */}
       <div style={styles.storySection}>
         <div style={styles.storyContent}>
-          <h2 style={styles.storyTitle}>The Karigar Story</h2>
+          <h2 style={styles.storyTitle}>The Aam Admii Story</h2>
           <p style={styles.storyText}>
-            The word "Karigar" in Urdu means craftsman — a skilled artisan
-            who takes pride in their work. That word is our north star.
+            Aam Admii means the common person — clothing made for everyone who deserves premium comfort and style.
           </p>
           <p style={styles.storyText}>
-            We started in a small workshop in Karachi with three tailors and
-            one mission: build shirts that professionals are proud to wear.
+            We started in a small workshop in Karachi with a simple mission: build shirts that everyone is proud to wear.
             Eight years later, we have delivered over 50,000 shirts across
             45 cities in Pakistan.
           </p>
           <p style={styles.storyText}>
             Every decision we make — the cotton we pick, the buttons we
             source, the thread we use — comes back to one question:
-            <em> "Would a true Karigar be proud of this?"</em>
+            <em> "Would an Aam Admii be proud to wear this?"</em>
           </p>
         </div>
       </div>
@@ -89,7 +87,7 @@ function AboutPage() {
 
       {/* CTA */}
       <div style={styles.cta}>
-        <h2 style={styles.ctaTitle}>Ready to experience Karigar quality?</h2>
+        <h2 style={styles.ctaTitle}>Ready to experience Aam Admii quality?</h2>
         <button
           onClick={() => navigate('/products')}
           style={styles.ctaBtn}
@@ -104,39 +102,41 @@ function AboutPage() {
 
 const styles = {
   hero: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: 'var(--color-bg-elevated)',
     padding: '100px 20px',
     textAlign: 'center',
+    borderBottom: '1px solid var(--color-border)',
   },
   heroContent: {
     maxWidth: '700px',
     margin: '0 auto',
   },
   eyebrow: {
-    color: '#d4af37',
+    color: 'var(--color-gold)',
     fontSize: '0.8rem',
     letterSpacing: '3px',
     textTransform: 'uppercase',
     marginBottom: '20px',
   },
   heroTitle: {
-    color: '#ffffff',
+    color: 'var(--color-text-primary)',
     fontSize: 'clamp(2rem, 5vw, 3.5rem)',
     fontWeight: '700',
     lineHeight: '1.2',
     marginBottom: '24px',
   },
   heroAccent: {
-    color: '#d4af37',
+    color: 'var(--color-gold)',
   },
   heroText: {
-    color: '#aaa',
+    color: 'var(--color-text-secondary)',
     fontSize: '1.1rem',
     lineHeight: '1.8',
   },
   storySection: {
     padding: '80px 20px',
-    backgroundColor: '#fafafa',
+    backgroundColor: 'var(--color-bg)',
+    borderBottom: '1px solid var(--color-border)',
   },
   storyContent: {
     maxWidth: '700px',
@@ -148,11 +148,11 @@ const styles = {
   storyTitle: {
     fontSize: '2rem',
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: 'var(--color-text-primary)',
     marginBottom: '8px',
   },
   storyText: {
-    color: '#555',
+    color: 'var(--color-text-secondary)',
     fontSize: '1rem',
     lineHeight: '1.9',
   },
@@ -164,7 +164,7 @@ const styles = {
   valuesTitle: {
     fontSize: '2rem',
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: 'var(--color-text-primary)',
     textAlign: 'center',
     marginBottom: '48px',
   },
@@ -175,41 +175,43 @@ const styles = {
   },
   valueCard: {
     padding: '32px',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'var(--color-bg-card)',
     borderRadius: '4px',
-    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+    border: '1px solid var(--color-border)',
+    boxShadow: '0 2px 12px rgba(0,0,0,0.03)',
     display: 'flex',
     flexDirection: 'column',
     gap: '12px',
   },
   valueIcon: {
     fontSize: '2rem',
+    color: 'var(--color-gold)',
   },
   valueTitle: {
     fontSize: '1.1rem',
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: 'var(--color-text-primary)',
   },
   valueDesc: {
-    color: '#666',
+    color: 'var(--color-text-secondary)',
     fontSize: '0.9rem',
     lineHeight: '1.7',
   },
   cta: {
-    backgroundColor: '#d4af37',
+    backgroundColor: 'var(--color-gold)',
     padding: '80px 20px',
     textAlign: 'center',
   },
   ctaTitle: {
     fontSize: 'clamp(1.5rem, 3vw, 2rem)',
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: '#ffffff',
     marginBottom: '32px',
   },
   ctaBtn: {
     padding: '16px 48px',
-    backgroundColor: '#1a1a1a',
-    color: '#ffffff',
+    backgroundColor: '#ffffff',
+    color: 'var(--color-gold)',
     border: 'none',
     fontSize: '0.9rem',
     fontWeight: '700',
@@ -217,6 +219,7 @@ const styles = {
     textTransform: 'uppercase',
     cursor: 'pointer',
     borderRadius: '2px',
+    boxShadow: '0 4px 14px rgba(0,0,0,0.1)',
   },
 };
 

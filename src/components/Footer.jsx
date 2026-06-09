@@ -19,11 +19,11 @@ function Footer() {
             {/* Brand column */}
             <div className="footer__col footer__col--brand">
               <div className="footer__brand">
-                <span className="footer__brand-name">Karigar</span>
-                <span className="footer__brand-co">Co.</span>
+                <span className="footer__brand-name">Aam</span>
+                <span className="footer__brand-co">Admii</span>
               </div>
               <p className="footer__brand-desc">
-                Premium shirts crafted for the modern professional.
+                Premium shirts crafted for everyone.
                 Quality that speaks before you do.
               </p>
               <p className="footer__owner" style={{ fontSize: '0.8rem', color: 'var(--color-gold)', marginBottom: '16px', fontWeight: '700' }}>
@@ -75,7 +75,7 @@ function Footer() {
                   },
                   { 
                     icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>, 
-                    text: 'ahmad04salman@gmail.com' 
+                    text: 'hello@aamadmii.com' 
                   },
                 ].map(({ icon, text }) => (
                   <li key={text} className="footer__contact-item">
@@ -114,7 +114,7 @@ function Footer() {
         <div className="footer__bottom">
           <div className="footer__bottom-inner">
             <p className="footer__copy">
-              © {currentYear} Karigar Co. All rights reserved.
+              © {currentYear} Aam Admii. All rights reserved.
             </p>
             <p className="footer__made">
               Crafted by Ahmed Salman in Pakistan
@@ -163,7 +163,7 @@ const footerCSS = `
     font-family: var(--font-display);
     font-size: 1.5rem;
     font-weight: 800;
-    color: #ffffff;
+    color: #111111;
     letter-spacing: 1px;
   }
   .footer__brand-co {
@@ -208,7 +208,7 @@ const footerCSS = `
     font-weight: 800;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: #ffffff;
+    color: #111111;
     margin-bottom: 20px;
   }
   .footer__links {
@@ -266,10 +266,10 @@ const footerCSS = `
   .footer__nl-input {
     flex: 1;
     padding: 11px 14px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(0,0,0,0.02);
     border: none;
     font-size: 0.84rem;
-    color: #ffffff;
+    color: #111111;
     font-family: var(--font-body);
     min-width: 0;
   }
@@ -277,7 +277,7 @@ const footerCSS = `
   .footer__nl-btn {
     padding: 11px 18px;
     background: var(--color-gold);
-    color: #000000;
+    color: #ffffff;
     border: none;
     font-size: 1rem;
     font-weight: 800;

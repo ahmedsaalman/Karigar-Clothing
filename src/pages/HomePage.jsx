@@ -14,10 +14,10 @@ import apiClient from '../services/apiClient';
 function HomePage() {
   const navigate = useNavigate();
 
-  const promoUrl = apiClient.getAssetUrl('/assets/photos/model_pics/model6.jpg');
-  const article1 = apiClient.getAssetUrl('/assets/photos/article_01/blckwh1.png');
-  const article2 = apiClient.getAssetUrl('/assets/photos/article_02/001.png');
-  const article3 = apiClient.getAssetUrl('/assets/photos/article_02/002.png');
+  const promoUrl = 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&q=80&w=1200';
+  const article1 = 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=800';
+  const article2 = 'https://images.unsplash.com/photo-1516257984-b1b4d707412e?auto=format&fit=crop&q=80&w=800';
+  const article3 = 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800';
 
   const fetchFeatured = useCallback(
     () => getProducts().then(p => p.filter(x => x.featured)),
@@ -50,7 +50,7 @@ function HomePage() {
         )}
       </div>
 
-      {/* ── Karigar Promise Banner ── */}
+      {/* ── Aam Admii Promise Banner ── */}
       <section className="promise-banner">
         <div
           className="promise-banner__bg"
@@ -58,7 +58,7 @@ function HomePage() {
         />
         <div className="promise-banner__overlay" />
         <div className="promise-banner__content">
-          <p className="promise-banner__eyebrow">The Karigar Promise</p>
+          <p className="promise-banner__eyebrow">The Aam Admii Promise</p>
           <h2 className="promise-banner__title">Every Shirt.<br />Perfectly Crafted.</h2>
           <p className="promise-banner__sub">
             We use only the finest fabrics sourced from certified mills.
@@ -212,7 +212,7 @@ const homeCSS = `
     font-family: var(--font-display);
     font-size: clamp(1.6rem, 3vw, 2.4rem);
     font-weight: 800;
-    color: #ffffff;
+    color: var(--color-text-primary);
     margin: 0;
   }
   .cat-teasers__grid {
@@ -237,7 +237,7 @@ const homeCSS = `
   }
   .cat-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px var(--color-gold-glow);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12), 0 0 0 1px var(--color-gold-glow);
     border-color: var(--color-gold-glow);
   }
   .cat-card__img-wrap {

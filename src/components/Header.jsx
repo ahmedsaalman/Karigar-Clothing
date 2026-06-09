@@ -45,9 +45,9 @@ function Header() {
 
           {/* Brand */}
           <Link to="/" className="kgr-brand">
-            <span className="kgr-brand__name">Karigar</span>
-            <span className="kgr-brand__co">Co.</span>
-            <span className="kgr-brand__tag">Crafted for Professionals</span>
+            <span className="kgr-brand__name">Aam</span>
+            <span className="kgr-brand__co">Admii</span>
+            <span className="kgr-brand__tag">Premium Clothes for Everyone</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -188,15 +188,15 @@ const headerCSS = `
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: rgba(10, 10, 10, 0.6);
+    background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
     transition: background 0.3s ease, box-shadow 0.3s ease;
   }
   .kgr-header.scrolled {
-    background: rgba(10, 10, 10, 0.92);
-    box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.05);
   }
   .kgr-header__inner {
     max-width: 1200px;
@@ -222,7 +222,7 @@ const headerCSS = `
     font-family: var(--font-display);
     font-size: 1.6rem;
     font-weight: 800;
-    color: #ffffff;
+    color: #111111;
     letter-spacing: 1px;
     line-height: 1;
   }
@@ -236,7 +236,7 @@ const headerCSS = `
   .kgr-brand__tag {
     display: none;
     font-size: 0.6rem;
-    color: #6b6055;
+    color: #64748b;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     margin-left: 8px;
@@ -260,7 +260,7 @@ const headerCSS = `
     font-family: var(--font-body);
     font-size: 0.78rem;
     font-weight: 600;
-    color: #b0a090;
+    color: #475569;
     text-decoration: none;
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -282,7 +282,7 @@ const headerCSS = `
     transform: translateX(-50%);
     transition: width 0.25s ease;
   }
-  .kgr-nav__link:hover { color: #ffffff; }
+  .kgr-nav__link:hover { color: #111111; }
   .kgr-nav__link:hover::after { width: 60%; }
   .kgr-nav__link.active { color: var(--color-gold); }
   .kgr-nav__link.active::after { width: 60%; }
@@ -308,20 +308,20 @@ const headerCSS = `
     border-radius: 8px;
     background: transparent;
     border: 1px solid transparent;
-    color: #b0a090;
+    color: #475569;
     transition: all 0.2s ease;
   }
   .kgr-icon-btn:hover {
-    color: #f5efe6;
-    background: rgba(255,255,255,0.06);
-    border-color: rgba(255,255,255,0.08);
+    color: #111111;
+    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.05);
   }
   .kgr-badge-dot {
     position: absolute;
     top: 5px;
     right: 5px;
     background: var(--color-gold);
-    color: #0a0a0a;
+    color: #ffffff;
     font-size: 0.58rem;
     font-weight: 800;
     width: 16px;
@@ -349,14 +349,14 @@ const headerCSS = `
     transition: all 0.2s ease;
   }
   .kgr-hamburger:hover {
-    background: rgba(255,255,255,0.06);
-    border-color: rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.05);
   }
   .kgr-hamburger span {
     display: block;
     width: 20px;
     height: 1.5px;
-    background: #b0a090;
+    background: #475569;
     border-radius: 2px;
     transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
     transform-origin: center;
@@ -377,10 +377,10 @@ const headerCSS = `
 
   /* Mobile menu */
   .kgr-mobile-nav {
-    background: rgba(10, 10, 10, 0.98);
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(0,0,0,0.05);
     padding: 8px 20px 20px;
     display: flex;
     flex-direction: column;
@@ -391,12 +391,12 @@ const headerCSS = `
     display: block;
     font-size: 0.9rem;
     font-weight: 500;
-    color: #b0a090;
+    color: #475569;
     text-decoration: none;
     letter-spacing: 1px;
     text-transform: uppercase;
     padding: 14px 4px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
     transition: color 0.2s ease, padding-left 0.2s ease;
     background: none;
     border-top: none;
