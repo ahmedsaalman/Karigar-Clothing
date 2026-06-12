@@ -16,7 +16,7 @@ import ImageZoomPortal from '../components/ImageZoomPortal';
 function ProductDetailPage() {
   const { productId } = useParams();
   const { addToCart } = useCart();
-  const { showSuccess, showError } = useToast();
+  const { showSuccess } = useToast();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
@@ -26,6 +26,8 @@ function ProductDetailPage() {
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [addedConfirm, setAddedConfirm] = useState(false);
+  const [sizeError, setSizeError] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
 
@@ -51,7 +53,7 @@ function ProductDetailPage() {
 
   function handleAddToCart() {
     if (!selectedSize) {
-      showError('Please select a size first');
+      setSizeError(true);
       return;
     }
     for (let i = 0; i < quantity; i++) {
@@ -59,7 +61,10 @@ function ProductDetailPage() {
     }
     showSuccess(`${quantity} × ${product.name} (${selectedSize}) added to cart!`);
     setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 1000);
+    setAddedConfirm(true);
+    setSizeError(false);
+    setTimeout(() => setAddedToCart(false), 1500);
+    setTimeout(() => setAddedConfirm(false), 3000);
   }
 
   if (isLoading) return <LoadingSpinner message="Refining product details..." />;
@@ -172,13 +177,16 @@ function ProductDetailPage() {
                 {product.sizes?.map(size => (
                   <button
                     key={size}
-                    className={`pdp-size-btn ${selectedSize === size ? 'pdp-size-btn--active' : ''}`}
-                    onClick={() => setSelectedSize(size === selectedSize ? null : size)}
+                    className={`pdp-size-btn ${selectedSize === size ? 'pdp-size-btn--active' : ''} ${sizeError && !selectedSize ? 'pdp-size-btn--error-hint' : ''}`}
+                    onClick={() => { setSelectedSize(size === selectedSize ? null : size); setSizeError(false); }}
                   >
                     {size}
                   </button>
                 ))}
               </div>
+              {sizeError && (
+                <p className="pdp-size-error">← Please select a size before adding to cart</p>
+              )}
             </div>
 
             {/* Quantity */}
@@ -223,6 +231,14 @@ function ProductDetailPage() {
                 View Shopping Cart
               </button>
             </div>
+            {addedConfirm && (
+              <div className="pdp-added-confirm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                {quantity > 1 ? `${quantity}× ` : ''}{product.name} ({selectedSize}) added to your cart
+              </div>
+            )}
 
             <button className="pdp-back" onClick={() => navigate('/products')}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -549,6 +565,48 @@ const detailCSS = `
     border-color: var(--color-gold);
     color: var(--color-gold);
     background: var(--color-gold-dim);
+  }
+
+  /* Inline size error */
+  .pdp-size-error {
+    font-size: 0.8rem;
+    color: #e05c5c;
+    font-weight: 700;
+    margin: 0;
+    padding: 8px 12px;
+    background: rgba(224,92,92,0.06);
+    border: 1px solid rgba(224,92,92,0.2);
+    border-radius: 4px;
+    animation: pdpShake 0.35s ease;
+  }
+  @keyframes pdpShake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  .pdp-size-btn--error-hint {
+    border-color: rgba(224,92,92,0.45) !important;
+    color: #e05c5c !important;
+  }
+
+  /* Inline add-to-cart confirmation */
+  .pdp-added-confirm {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    background: rgba(76,175,125,0.1);
+    border: 1px solid rgba(76,175,125,0.3);
+    border-radius: 4px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #4caf7d;
+    letter-spacing: 0.5px;
+    animation: pdpConfirmIn 0.3s ease;
+  }
+  @keyframes pdpConfirmIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .pdp-back {

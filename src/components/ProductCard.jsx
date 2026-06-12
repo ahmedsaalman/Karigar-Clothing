@@ -12,7 +12,7 @@ import { getAssetUrl } from '../services/apiClient';
 
 function ProductCard({ product, animDelay = 0 }) {
   const { addToCart } = useCart();
-  const { showSuccess, showError } = useToast();
+  const { showSuccess } = useToast();
   const { toggleWishlist, isWishlisted } = useWishlistContext();
   const navigate = useNavigate();
 
@@ -25,6 +25,8 @@ function ProductCard({ product, animDelay = 0 }) {
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [addedConfirm, setAddedConfirm] = useState(false);
+  const [sizeError, setSizeError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const wishlisted = isWishlisted(id);
@@ -35,17 +37,25 @@ function ProductCard({ product, animDelay = 0 }) {
     showSuccess(added ? `${name} added to wishlist!` : `${name} removed from wishlist`);
   }
 
+  function handleSizeSelect(size) {
+    setSelectedSize(selectedSize === size ? null : size);
+    setSizeError(false);
+  }
+
   function handleAddToCart(e) {
     e.stopPropagation();
     if (!inStock) return;
     if (!selectedSize) {
-      showError('Please select a size first');
+      setSizeError(true);
       return;
     }
     addToCart(product, selectedSize);
     showSuccess(`${name} (${selectedSize}) added to cart!`);
     setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 1000);
+    setAddedConfirm(true);
+    setSizeError(false);
+    setTimeout(() => setAddedToCart(false), 1500);
+    setTimeout(() => setAddedConfirm(false), 2500);
   }
 
   function renderStars(r) {
@@ -150,20 +160,23 @@ function ProductCard({ product, animDelay = 0 }) {
               Size:{' '}
               {selectedSize
                 ? <strong style={{ color: 'var(--color-text-primary)' }}>{selectedSize}</strong>
-                : <em style={{ color: '#e05c5c', fontStyle: 'normal', fontSize: '0.75rem' }}>Select one</em>
+                : <em style={{ color: sizeError ? '#e05c5c' : 'var(--color-text-muted)', fontStyle: 'normal', fontSize: '0.75rem' }}>Select one</em>
               }
             </p>
             <div className="pc__sizes">
               {sizes.map(size => (
                 <button
                   key={size}
-                  className={`pc__size-btn ${selectedSize === size ? 'pc__size-btn--active' : ''}`}
-                  onClick={() => setSelectedSize(selectedSize === size ? null : size)}
+                  className={`pc__size-btn ${selectedSize === size ? 'pc__size-btn--active' : ''} ${sizeError && !selectedSize ? 'pc__size-btn--error-hint' : ''}`}
+                  onClick={() => handleSizeSelect(size)}
                 >
                   {size}
                 </button>
               ))}
             </div>
+            {sizeError && (
+              <p className="pc__size-error">← Pick a size to add to cart</p>
+            )}
           </div>
 
           <PriceDisplay price={price} originalPrice={originalPrice} />
@@ -191,6 +204,14 @@ function ProductCard({ product, animDelay = 0 }) {
               ) : 'Add to Cart'}
             </button>
           </div>
+          {addedConfirm && (
+            <div className="pc__added-confirm">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              {selectedSize} · Added to your cart
+            </div>
+          )}
 
         </div>
       </article>
@@ -402,6 +423,43 @@ const productCardCSS = `
     display: flex;
     gap: 8px;
     margin-top: auto;
+  }
+
+  /* Inline size error */
+  .pc__size-error {
+    font-size: 0.7rem;
+    color: #e05c5c;
+    font-weight: 700;
+    margin: 0;
+    animation: pcShake 0.35s ease;
+  }
+  @keyframes pcShake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+  .pc__size-btn--error-hint {
+    border-color: rgba(224,92,92,0.5) !important;
+  }
+
+  /* Inline added-to-cart confirmation */
+  .pc__added-confirm {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: rgba(76,175,125,0.12);
+    border: 1px solid rgba(76,175,125,0.3);
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #4caf7d;
+    letter-spacing: 0.5px;
+    animation: pcConfirmIn 0.3s ease;
+  }
+  @keyframes pcConfirmIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
   .pc__details-btn {
     flex: 1;
