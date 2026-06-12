@@ -1,7 +1,7 @@
 // src/pages/CartPage.jsx
 // Now uses all the new reducer-powered cart features
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
@@ -33,6 +33,9 @@ function CartPage() {
   const [discountInput, setDiscountInput] = useState('');
   const [discountLoading, setDiscountLoading] = useState(false);
 
+  // Inline clear-cart confirmation
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+
   function formatPrice(amount) {
     return new Intl.NumberFormat('en-PK', {
       style: 'currency',
@@ -47,10 +50,17 @@ function CartPage() {
   }
 
   function handleClearCart() {
-    if (window.confirm('Clear your entire cart?')) {
-      clearCart();
-      showSuccess('Cart cleared');
-    }
+    setShowClearConfirm(true);
+  }
+
+  function confirmClearCart() {
+    clearCart();
+    setShowClearConfirm(false);
+    showSuccess('Cart cleared');
+  }
+
+  function cancelClearCart() {
+    setShowClearConfirm(false);
   }
 
   async function handleApplyDiscount() {
@@ -105,9 +115,17 @@ function CartPage() {
             <h1 className="cart-title">Shopping Cart</h1>
             <p className="cart-subtitle">{cartCount} item{cartCount !== 1 ? 's' : ''}</p>
           </div>
-          <button onClick={handleClearCart} className="cart-clear-btn">
-            Clear Cart
-          </button>
+          {showClearConfirm ? (
+            <div className="cart-clear-confirm">
+              <span className="cart-clear-confirm__text">Clear entire cart?</span>
+              <button onClick={confirmClearCart} className="cart-clear-confirm__yes">Yes, Clear</button>
+              <button onClick={cancelClearCart} className="cart-clear-confirm__no">Cancel</button>
+            </div>
+          ) : (
+            <button onClick={handleClearCart} className="cart-clear-btn">
+              Clear Cart
+            </button>
+          )}
         </header>
 
         <div className="cart-layout">
@@ -208,6 +226,14 @@ const cartCSS = `
   .cart-subtitle { font-size: 0.9rem; color: var(--color-text-muted); margin-top: 4px; }
   .cart-clear-btn { background: none; border: none; color: var(--color-error); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; opacity: 0.7; transition: opacity 0.2s; }
   .cart-clear-btn:hover { opacity: 1; }
+
+  .cart-clear-confirm { display: flex; align-items: center; gap: 10px; background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.25); border-radius: 8px; padding: 10px 16px; animation: confirmSlideIn 0.2s ease; }
+  @keyframes confirmSlideIn { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: translateX(0); } }
+  .cart-clear-confirm__text { font-size: 0.85rem; color: var(--color-text-secondary); font-weight: 600; white-space: nowrap; }
+  .cart-clear-confirm__yes { background: var(--color-error, #dc2626); border: none; color: #fff; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 7px 14px; border-radius: 5px; cursor: pointer; transition: opacity 0.2s; }
+  .cart-clear-confirm__yes:hover { opacity: 0.85; }
+  .cart-clear-confirm__no { background: none; border: 1px solid var(--color-border); color: var(--color-text-muted); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 7px 14px; border-radius: 5px; cursor: pointer; transition: all 0.2s; }
+  .cart-clear-confirm__no:hover { border-color: var(--color-text-secondary); color: var(--color-text-primary); }
 
   .cart-layout { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: start; }
   @media (min-width: 1000px) { .cart-layout { grid-template-columns: 1fr 380px; } }

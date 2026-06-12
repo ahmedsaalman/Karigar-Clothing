@@ -19,15 +19,18 @@ function WishlistPage() {
   const navigate = useNavigate();
 
   const [selectedSizes, setSelectedSizes] = useState({});
+  const [sizeErrors, setSizeErrors] = useState({});
 
   function handleSizeSelect(productId, size) {
     setSelectedSizes(prev => ({ ...prev, [productId]: size }));
+    // Clear any size error for this product when user selects a size
+    setSizeErrors(prev => ({ ...prev, [productId]: false }));
   }
 
   function handleMoveToCart(product) {
     const size = selectedSizes[product.id];
     if (!size) {
-      alert(`Please select a size for ${product.name}`);
+      setSizeErrors(prev => ({ ...prev, [product.id]: true }));
       return;
     }
     addToCart(product, size);
@@ -171,6 +174,9 @@ function WishlistPage() {
                   View
                 </button>
               </div>
+              {sizeErrors[product.id] && (
+                <p style={styles.sizeError}>Please select a size first</p>
+              )}
 
             </div>
           </div>
@@ -315,6 +321,18 @@ const styles = {
     display: 'flex',
     gap: '10px',
     marginTop: 'auto',
+  },
+  sizeError: {
+    fontSize: '0.75rem',
+    color: 'var(--color-error, #dc2626)',
+    fontWeight: '600',
+    margin: '0',
+    padding: '6px 10px',
+    background: 'rgba(220,38,38,0.08)',
+    border: '1px solid rgba(220,38,38,0.2)',
+    borderRadius: '5px',
+    textAlign: 'center',
+    animation: 'fadeIn 0.2s ease',
   },
   cartBtn: {
     flex: 2,
