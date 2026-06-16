@@ -1,23 +1,39 @@
-// src/App.jsx
-
-import React from 'react';
+import React, { lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import RootLayout from './layouts/RootLayout';
 import Toast from './components/Toast';
 import Preloader from './components/Preloader';
 
-const HomePage = React.lazy(() => import('./pages/HomePage'));
-const ProductsPage = React.lazy(() => import('./pages/ProductsPage'));
-const ProductDetailPage = React.lazy(() => import('./pages/ProductDetailPage'));
-const CartPage = React.lazy(() => import('./pages/CartPage'));
-const WishlistPage = React.lazy(() => import('./pages/WishlistPage'));
-const AboutPage = React.lazy(() => import('./pages/AboutPage'));
-const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
-const FaqPage = React.lazy(() => import('./pages/FaqPage'));
-const CheckoutPage = React.lazy(() => import('./pages/CheckoutPage'));
-const LoginPage = React.lazy(() => import('./pages/LoginPage'));
-const SignUpPage = React.lazy(() => import('./pages/SignUpPage'));
-const AdminDashboardPage = React.lazy(() => import('./pages/AdminDashboardPage'));
+function lazyWithRetry(componentImport) {
+  return lazy(async () => {
+    const pageHasRefreshed = window.sessionStorage.getItem('page-has-refreshed') === 'true';
+    try {
+      const component = await componentImport();
+      window.sessionStorage.removeItem('page-has-refreshed'); // Reset on success
+      return component;
+    } catch (error) {
+      if (!pageHasRefreshed) {
+        window.sessionStorage.setItem('page-has-refreshed', 'true');
+        window.location.reload();
+        return new Promise(() => {}); // Return pending promise while reloading
+      }
+      throw error;
+    }
+  });
+}
+
+const HomePage = lazyWithRetry(() => import('./pages/HomePage'));
+const ProductsPage = lazyWithRetry(() => import('./pages/ProductsPage'));
+const ProductDetailPage = lazyWithRetry(() => import('./pages/ProductDetailPage'));
+const CartPage = lazyWithRetry(() => import('./pages/CartPage'));
+const WishlistPage = lazyWithRetry(() => import('./pages/WishlistPage'));
+const AboutPage = lazyWithRetry(() => import('./pages/AboutPage'));
+const NotFoundPage = lazyWithRetry(() => import('./pages/NotFoundPage'));
+const FaqPage = lazyWithRetry(() => import('./pages/FaqPage'));
+const CheckoutPage = lazyWithRetry(() => import('./pages/CheckoutPage'));
+const LoginPage = lazyWithRetry(() => import('./pages/LoginPage'));
+const SignUpPage = lazyWithRetry(() => import('./pages/SignUpPage'));
+const AdminDashboardPage = lazyWithRetry(() => import('./pages/AdminDashboardPage'));
 
 function App() {
   return (

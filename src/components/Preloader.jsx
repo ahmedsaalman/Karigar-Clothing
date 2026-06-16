@@ -15,7 +15,16 @@ function Preloader() {
     // Preload the main hero image
     const img = new Image();
     img.src = HERO_IMAGE_URL;
+
+    // Safety timeout in case load takes too long or hangs
+    const safetyTimeout = setTimeout(() => {
+      setProgress(100);
+      setIsLoaded(true);
+      sessionStorage.setItem('aamadmii_loaded', 'true');
+    }, 3500);
+
     img.onload = () => {
+      clearTimeout(safetyTimeout);
       setProgress(100);
       setTimeout(() => {
         setIsLoaded(true);
@@ -24,7 +33,17 @@ function Preloader() {
       }, 600);
     };
 
-    return () => clearInterval(interval);
+    img.onerror = () => {
+      clearTimeout(safetyTimeout);
+      setProgress(100);
+      setIsLoaded(true);
+      sessionStorage.setItem('aamadmii_loaded', 'true');
+    };
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(safetyTimeout);
+    };
   }, []);
 
   // Check if already loaded in this session

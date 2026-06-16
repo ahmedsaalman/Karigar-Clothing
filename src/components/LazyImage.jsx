@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 function LazyImage({ src, alt, className, style, containerStyle, ...props }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const wrapRef = useRef(null);
 
   useEffect(() => {
@@ -36,10 +37,14 @@ function LazyImage({ src, alt, className, style, containerStyle, ...props }) {
 
         {isInView && (
           <img
-            src={src}
+            src={hasError ? 'https://placehold.co/400x500/ffffff/ff5400?text=Image+Unavailable' : src}
             alt={alt}
             className={className}
             onLoad={() => setIsLoaded(true)}
+            onError={() => {
+              setHasError(true);
+              setIsLoaded(true); // Stop the shimmer
+            }}
             decoding="async"
             style={{
               ...style,

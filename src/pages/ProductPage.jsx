@@ -1,11 +1,12 @@
 // src/pages/ProductPage.jsx — ProductsPage
 
-import { useState, useEffect, useRef, useCallback, useMemo, useTransition } from 'react';
+import { useState, useEffect, useCallback, useMemo, useTransition } from 'react';
 import ProductCard from '../components/ProductCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import SectionTitle from '../components/SectionTitle';
 import useFetch from '../hooks/useFetch';
+import useDebounce from '../hooks/useDebounce';
 import { getProducts, searchProducts } from '../services/productService';
 
 function ProductsPage() {
@@ -20,18 +21,20 @@ function ProductsPage() {
   const [showControls, setShowControls] = useState(false);
   const { data: allProducts, isLoading, error, refetch } = useFetch(getProducts);
 
+  const debouncedFilterQuery = useDebounce(filterQuery, 400);
+
   useEffect(() => {
-    if (!filterQuery.trim()) { setSearchResults(null); return; }
+    if (!debouncedFilterQuery.trim()) { setSearchResults(null); return; }
     async function runSearch() {
       try {
         setIsSearching(true);
-        const results = await searchProducts(filterQuery);
+        const results = await searchProducts(debouncedFilterQuery);
         setSearchResults(results);
       } catch { setSearchResults([]); }
       finally { setIsSearching(false); }
     }
     runSearch();
-  }, [filterQuery]);
+  }, [debouncedFilterQuery]);
 
   const baseProducts = searchResults !== null ? searchResults : allProducts || [];
 
